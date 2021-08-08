@@ -200,9 +200,42 @@ var (minimum, maximum) = FindMinMax(input);
 
 3.4 Return from a method before the end of the method
 
+> ​	nothing special, but to remember, to block ends at where `return` is.
+
+```c#
+void PrintSomething()
+{
+    Console.WriteLine("1");	// √
+    Console.WriteLine("1");	// √
+    return;
+    Console.WriteLine("3");	// x(this won't be printed.)
+}
+```
+
 3.5 Define an expression bodied method
 
+> ​	a.k.a. it just replace the `{}` and `return` by using `=>`
+
+```c#
+double CalculateFee(double dailyRate, int days)
+{
+    return dailyRate * days;
+}
+```
+
+> ​	it will be:
+
+```c#
+double CalculateFee(double dailyRate, int days) => dailyRate * days;
+```
+
 3.6 Call a method
+
+> ​	nothing special, just put the `methodName(argument1, argument2, ...);`
+
+```c#
+addValues(39, 3);
+```
 
 3.7 Call a method that returns a tuple
 
