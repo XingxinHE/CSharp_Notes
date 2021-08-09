@@ -237,19 +237,62 @@ double CalculateFee(double dailyRate, int days) => dailyRate * days;
 addValues(39, 3);
 ```
 
-3.7 Call a method that returns a tuple
-
 3.8 Use the Generate Method Stub Wizard
 
-3.9 Create a nested method
+> ​	double click the method, right click, `Quick Action and Refactoring`(Ctrl+,)
+
+3.9 Create a nested method( method in method )
+
+> ​	as you can see there is a method `factorial` inside the method `CalculateFactorial`.
+
+```c#
+long CalculateFactorial(string input)
+{
+    //...
+    long factorial(int dataValue)
+    {
+        if (dataValue == 1)
+        {
+            return 1;
+        }
+        else
+        {
+            return dataValue * factorial(dataValue - 1);
+        }
+    }
+}
+```
 
 3.10 Display the Debug toolbar
 
+> ​	anytime you can't find the icon of your tool. Go to **View - Toolbar** ...
+>
+> ​	in this case, **View - Toolbar - Debug**
+
 3.11 Step into a method
+
+> ​	
 
 3.12 Step out of a method
 
 3.13 Specify an optional parameter to a method
 
+> ​	nothing special, just give an initial value when you define it
+
+```c#
+void optMethod(int first, double second = 0.0, string third = "Hello")
+{
+    //...
+}
+```
+
 3.14 Pass a method argument as a named parameter
+
+> ​	Since you already have some default argument, you don't want to assign it again...
+
+```c#
+optMethod(first: 100, third: "World");
+```
+
+> ​	as you can see, you can skip typing something for `second`.
 
