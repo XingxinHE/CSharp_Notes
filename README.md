@@ -374,3 +374,139 @@ switch(choice)
 
 > ​	tips: always leave `default` value
 
+
+
+### 5.Compound assignment and iteration statements
+
+5.1What is compound assignment
+
+> ​	It is a shortcut for arithmetic operation and assignment.
+
+```c#
+variable += 13;  //equivalent to variable = variable + 13;
+variable -= 10;  //equivalent to variable = variable - 13;
+variable *= 13;  //equivalent to variable = variable * 13;
+variable /= 13;  //equivalent to variable = variable / 13;
+```
+
+> ​	However, if there is multiple variable on the right hand side. I personally not recommend this shortcut.
+
+5.2`while` loop
+
+> ​	`while` something is `true`, do something
+
+```c#
+int i = 0;
+while(i < 10)
+{
+    Console.WriteLine(i);
+    i++;  //Please don't forget increment the condition!
+}
+```
+
+5.3`for` loop
+
+> ​	`[local variable]; [termination condition]; [incrementation(sometimes decrease)]`
+
+```c#
+for (int i = 0; i < 10; i ++)
+{
+    Console.WriteLine(i);
+}
+```
+
+> ​	sometimes you can iterate backward or increment based on 2
+
+```c#
+for (int i = 10; i > 0; i--)
+{
+    //do something...
+}
+for (int i = 0; i < 10; i+=2)
+{
+    //do something...
+}
+```
+
+5.4`do-while` loop
+
+> ​	the difference between `do-while` loop and `while` loop is that: **`do-while` loop iterate at least once.**
+
+```c#
+int i = 0;
+do
+{
+    Console.WriteLine(i);
+    i++;
+}
+while(i < 10);
+```
+
+
+
+### 6.Errors and exceptions
+
+6.1 Catch a specific exception
+
+> ​	if you want to catch **specific** exception, you have to specify the type of exception
+
+```c#
+try
+{
+    //do something...
+}
+catch(FormatException fEx)
+{
+    //do something...
+}
+```
+
+> ​	in convention, we denote `exception` to be `??Ex`
+
+6.4 Catch all types of exceptions with one call
+
+> ​	use `Exception` to cover all types of exception
+
+```c#
+try
+{
+    //do something...
+}
+catch(Exception ex)
+{
+    //do something...
+}
+```
+
+6.2 Use `checked` to prevent overflow
+
+> ​	 this is very handy in arithmetic computation for it prevent overflow
+
+```c#
+int number = Int32.MaxValue;
+checked {number++};  //in this case, the overflow error will be caught
+```
+
+6.3 Throw an exception
+
+> ​	use `throw` keyword
+
+```c#
+throw new FormatException(source);
+```
+
+6.4 Ensure code will always run even though with an exception
+
+> ​	this is very handy
+
+```c#
+try
+{
+    //do something..
+}
+finally
+{
+    //this will be run no matter there is an exception above
+}
+```
+
