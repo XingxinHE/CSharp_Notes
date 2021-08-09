@@ -296,3 +296,81 @@ optMethod(first: 100, third: "World");
 
 > ​	as you can see, you can skip typing something for `second`.
 
+
+
+### 4.Decision statements
+
+4.1`==`, `!=` determine equivalent
+
+```c#
+thisYear == 2021;
+```
+
+4.2`>, >=, <, <=`Compare the value of two expressions
+
+```c#
+bool flag = 13 > 23;
+```
+
+4.3Declare a Boolean variable
+
+```c#
+bool isOdd;
+```
+
+4.4`AND` true
+
+> ​	use `&&`
+
+```c#
+inRange = (lo <= number) && (number <= hi);
+```
+
+4.5`or` true
+
+> ​	use `||`
+
+```c#
+outOfRange = (number < lo) || (hi < number);
+```
+
+4.6`if` statement
+
+> ​	in short(not recommend)::x:
+
+```c#
+if (inRange)
+	process();
+```
+
+> ​	complete written(recommend)::heavy_check_mark:
+
+```c#
+if (inRange)
+{
+    process;
+}
+```
+
+4.7`switch` statement
+
+> ​	it is sort of a gate, which controls the output
+
+```c#
+int choice;
+switch(choice)
+{
+    case 0:
+        //do something (if choice== 0)
+        break;    
+    case 1:
+        //do something (if choice== 1)
+        break;    
+    default:
+        //do something (if (choice !==0 && choice!=1))
+        break;
+}
+```
+
+> ​	tips: always leave `default` value
+
