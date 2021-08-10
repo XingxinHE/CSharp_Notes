@@ -510,3 +510,109 @@ finally
 }
 ```
 
+
+
+### 7.Class and objects
+
+7.1 Declare a `class`
+
+```c#
+class className
+{
+    //..
+}
+```
+
+7.2 Declare a `constructor`
+
+> ​	Write a method whose name is the same as the name of the class, and that **has no return type**
+
+```c#
+class Point
+{
+    //..place the field at here
+    public Point(int x, int y)
+    {
+        //..
+    }
+}
+```
+
+7.3 Call a `constructor`
+
+> ​	Use the `new` keyword and specify the constructor with an **appropriate set of parameters**
+
+```c#
+Point origin = new Point(10, 10);
+```
+
+7.4 Declare a `static` method
+
+> ​	use the `static` keyword;  a `static` method is that you can call this method without initializing an instance of this class.
+
+```c#
+class Point
+{
+    //...
+    public static int ObjectCount()
+    {
+        //...
+    }
+}
+```
+
+7.5 Call a `static` method
+
+> ​	to call a `static` method, just : `[ClassName].[staticMethodName]`
+
+```c#
+int pointsCreatedSoFar = Point.ObjectCount();
+```
+
+7.6 Declare and acess a `static` field
+
+```c#
+class Point
+{
+    //...
+    public static int ObjectCount;
+}
+```
+
+> ​	and you can acess the static field by invoke it directly
+
+```c#
+int num = Point.ObjectCount;
+```
+
+7.7 Declare a `const` field
+
+> ​	`const` is a constant value
+
+```c#
+class Math
+{
+    //...
+    public const double PI = 3.14159;
+}
+```
+
+
+
+### 8.Values and references
+
+8.1 Copy a **value type** variable
+
+8.2 Copy a **reference type** variable
+
+8.3 Declare a variable that can hold a value type or the null value
+
+8.4 Pass an argument to a ref parameter
+
+8.5 Pass an argument to an out parameter
+
+8.6 Box a value
+
+8.7 Unbox a value
+
+8.8 Cast an object safely
