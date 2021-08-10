@@ -34,7 +34,7 @@ The notes when I learned C#. It could also be a reference manual applied to dail
 
 # Quick Reference
 
-## Microsoft Visual C# Step by Step
+## C# Step by Step
 
 ### 1.Welcome to C#
 
@@ -603,16 +603,106 @@ class Math
 
 8.1 Copy a **value type** variable
 
+> ​	when you copy value type, there are two distinct copies
+
+```c#
+int i = 13;
+int copyi = i;
+i++; //the change won't affect `copyi`
+```
+
 8.2 Copy a **reference type** variable
 
-8.3 Declare a variable that can hold a value type or the null value
+> ​	when you copy a reference type, you actually copied the `reference` of the variable
 
-8.4 Pass an argument to a ref parameter
+```c#
+Curve arcCrv = new Curve();
+Curve crv = arcCrv;
+arcCrv.Translate();  //this not only translates `arcCrv` but also `crv`.
+```
 
-8.5 Pass an argument to an out parameter
+8.3 Declare a variable that can hold a value type or the `null` value
 
-8.6 Box a value
+> ​	use `?` modifier
 
-8.7 Unbox a value
+```c#
+int? i = null;
+```
+
+8.4 Pass an argument to a `ref` parameter
+
+> ​	the key word `ref` simply implies that the change will affect itself
+
+```c#
+static void doIncrement(ref int number)
+{
+    number++;
+}
+int i = 42;
+doIncrement(ref i);  //i is changed
+```
+
+> ​	although the function `doIncrement` is a `void` function which returns nothing, 
+>
+> ​	we should pay attention to `ref` keyword. In this case, the `i` was incremented.
+
+8.5 Pass an argument to an `out` parameter
+
+> ​	it is very similar to `ref` keyword, my way to perceive this is that whenever you see `out`,
+>
+> ​	it is a decoration for output, you have to *prepare something for the output*.
+
+```c#
+using System.Linq;
+static void duplicateTenTimes(int i, out List<int> duplicatedList)
+{
+    duplicatedList = Enumerable.Repeat(i, 10).ToList();
+}
+
+List<int>tenDuplicate = new List<int>();
+duplicateTenTimes(10, out tenDuplicate); //at this point, the `tenDuplicate` has 10 copies of 10.
+```
+
+8.6 Box and unbox a value
+
+> ​	you can see `box` as a way wrapping anything to a generic type, 
+>
+> ​	in this case we use `object`
+
+```c#
+object o = 42;
+```
+
+> ​	respectively, you can see `unbox` as way casting the generic type to specific type
+
+```c#
+int i = (int)o;
+```
 
 8.8 Cast an object safely
+
+> ​	1.First choice, use `is` keyword to check if the cast success
+
+```c#
+WrappedInt wi = new WrappedInt();
+//...
+object o = wi;
+if (o is WrappedInt temp)
+{
+	//...
+}
+```
+
+> ​	2.Second choice, use `as` to perform the cast, and check if it is `null`
+
+```c#
+WrappedInt wi = new WrappedInt();
+//...
+object o = wi;
+WrappedInt temp = o as WrappedInt;
+if (temp != null)
+{
+    //...
+}
+```
+
