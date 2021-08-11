@@ -706,3 +706,399 @@ if (temp != null)
 }
 ```
 
+
+
+### 9.Enumerations and structures
+
+:star: Remember, the biggest difference between `struct` and `class` is that: **Structs are value type** whereas **Classes are reference type**.
+
+9.1 Declare an enumeration
+
+> ​	use the `enum` keyword => name of this `enum` => enumeration **literal** names
+
+```c#
+enum Days = {Sunday, Monday, Tuesday, Wednesday, Thursday, Friday};
+```
+
+9.2 Declare an enumeration variable
+
+```
+Days today;
+```
+
+9.3 Assign an enumeration variable to a value
+
+```c#
+today = Sunday;		//WRONG!! on the rhs, the compiler can't detect what is "Sunday" literally.
+today = Days.Sunday;//Correct.
+```
+
+9.4 Declare a structure type
+
+> use the keyword `struct` => the name of the `struct` =>  the body of the `struct` (the constructors, methods, and fields).  [similar to class]
+
+```c#
+struct Point3d
+{
+    internal double _x, _y, _z;
+    public Point3d(double x, double y, double z)
+    {
+        this._x = x;
+        this._y = y;
+        this._z = z;
+    }
+}
+```
+
+9.5 Declare a structure variable
+
+```c#
+Point3d pt;
+```
+
+9.6 Initialize a structure variable to a value
+
+> ​	nothing special, similar to `class`
+
+```c#
+Point3d = new Point3d(0, 1, 2);
+```
+
+
+
+### 10.Arrays
+
+> ​	:star: What is the biggest difference betweem `Array` and `List`?
+>
+> ​			`Array` is fixed size once it is initialized. `List` is dynamic, you can `either` add or `remove` items from it.
+
+10.1 **Declare** an array variable
+
+> ​	[data_type] [name_of_array];
+
+```c#
+bool[] flags;
+```
+
+10.2 **Create an instance** of an array
+
+> ​	when you create an **instance**, you have to explicitly define the amount of the array.
+
+```c#
+bool[] flags = new bool[10];
+```
+
+10.3 **Initialize** the elements of an array to specific values
+
+> ​	when you **initialize** the array, you have to assign specific values
+
+```c#
+int[] numPI = {3, 1, 4, 1, 5, 9};
+```
+
+10.4 Find how many elements in an array
+
+> ​	use `Length` property
+
+```c#
+int[] numPI = {3, 1, 4, 1, 5, 9};
+int numPIAmount = numPI.Length;  //here you got 6
+```
+
+10.5 Access a single array element
+
+> ​	use the `[]` to access particular element
+
+```c#
+int num = numPIAmount[2];  //here you got 4
+```
+
+10.6 Loop over an array
+
+> ​	use `for` loop or `foreach` loop
+
+```c#
+bool[] flags = { true, false, true, false };
+for (int i = 0; i < flags.Length; i++)
+{
+    Console.WriteLine(flags[i]);
+}
+foreach (bool flag in flags)
+{
+    Console.WriteLine(flag);
+}
+```
+
+10.7 Declare a **multidimensional array** variable
+
+> ​	use something like this `[,]`
+
+```c#
+int[,] table;
+table = new int[4, 6];  //initialize an 4*6 array
+```
+
+10.8 Declare a **jagged array** variable
+
+> ​	use something like this `[][]`
+
+```c#
+int[][] items;
+items = new int[4][];
+items[0] = new int[3];
+items[1] = new int[10];
+items[2] = new int[40];
+items[3] = new int[25];
+```
+
+:star: Intuitively, the difference between *multidimensional array* and *jagged array* is that the
+
+*multidimensional array* is like a **square** with anything aligned.
+
+*jagged array* is like zig-zag **non-symmetric shape**.
+
+```c#
+public class ArrayHolder
+{
+    int[,] multiDimArray =  {{1,2,3,4},
+                             {5,6,7,0},
+                             {8,0,0,0},
+                             {9,0,0,0}
+                            };
+    int[][] jaggedArray = { new int[] {1,2,3,4},
+                            new int[] {5,6,7},
+                            new int[] {8},
+                            new int[] {9}
+                          };
+}
+```
+
+
+
+### 11.Parameter arrays
+
+> ​	By using the `params` keyword, you can specify a [method parameter](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) that takes **a variable number of arguments**. :warning: However, the parameter type **must be a single-dimensional array**.
+
+```c#
+public class MyClass
+{
+    public static void IntParams(params int[] list)  //with `params` keyword, the length of array can be dynamic
+    {
+        for (int i = 0; i < list.Length; i++)
+        {
+            Console.Write(list[i] + " ");
+        }
+        Console.WriteLine();
+    }
+    public static void objParams(params object[] list)
+    {
+        for (int i = 0; i < list.Length; i++)
+        {
+            Console.Write(list[i] + " ");
+        }
+        Console.WriteLine();
+    }
+
+    static void Main()
+    {
+        //output: 1 2 3 4
+        IntParams(1, 2, 3, 4);
+        
+        //output: 1 a test
+        objParams(1, 'a', "test");
+
+        //output: a blank line
+        objParams();
+
+        //output: 5 6 7 8 9
+        int[] myIntArray = { 5, 6, 7, 8, 9 };
+        IntParams(myIntArray);  //the length can be varied
+
+        //output: 2 b test again
+        object[] myObjArray = { 2, 'b', "test", "again" };
+        objParams(myObjArray);  //you can pass different types elements in it
+
+        // output: error!!! no output!!
+        IntParams(myObjArray);  //this cannot be compiled
+        
+        //output: System.Int32[]
+        objParams(myIntArray);  // No error, but!! the entire integer array becomes the 1st element of the params array.
+    }
+}
+/*
+Output:
+    1 2 3 4
+    1 a test
+
+    5 6 7 8 9
+    2 b test again
+    System.Int32[]
+*/
+```
+
+
+
+### 12.Inheritance
+
+12.1 Create a derived class from a base class
+
+> ​	use the colon `:`
+
+```c#
+class BaseClass
+{
+    public BaseClass(int x, int y)
+    {
+        //ctor...
+    }
+}
+
+class DerivedClass : BaseClass
+{
+	public DerivedClass(int x, int y) : base(x, y)
+    {
+    }
+    // if you want to inherit the constructor from the BaseClass,
+    // then you don't need to write the code here, leave it blank.
+}
+```
+
+12.2 Declare a `virtual` method in the `base` class and `override` it in the `derived` class
+
+> ​	Remember:
+>
+> ​				`virtual` in the `base` class
+>
+> ​				`override` in the `derived` class
+
+```c#
+class Mammal
+{
+    public virtual void Breathe()
+    {
+    	//the general method for Mamml
+    }
+	//...
+}
+
+class Whale : Mammal
+{
+    public override void Breathe()
+    {
+    	//override the breathe method rather than using the general breathe
+    }
+	//...
+}
+```
+
+12.3 Define an extension method for a type
+
+> ​	:question: What is `extension method` in the first place? 
+>
+> ​			It is the `.` method you use everyday! Like `.Select()`, `.ToString()`, `.OrderBy()`.
+>
+> ​	:star: To conclude, the `extension method` is a **static method** which **extends** some sort of method by invoke the dot `.`
+>
+> ​	For example, I can write my own `countStringLength` method by decorating the `variable` with **this**.:star2::star2:
+>
+> ​	:question: What is `this` keyword? 
+>
+> ​	The `this` keyword refers to **the current instance of the class** and is also used as a modifier of the first parameter of an extension method.
+
+```c#
+namespace ExtensionMethods
+{
+    static class Util
+    {
+        public static int Negate(this int i)
+        {
+        	return -i;
+        }
+    }
+}
+```
+
+> ​	so you see `this String str` is decorated with `this`, which means the variable can be the current instance of the class!!
+
+```c#
+using ExtensionMethods;  //bring the Extension method here
+//...
+int ten = 10;
+int nine = ten.Negate();  //now you can use `.Negate()` method without writing this method inside a class
+```
+
+
+
+### 13.Interfaces and `abstract` classes
+
+:star: the concept of `interface` is a little bit similar to `.header` file in C++, which is **a must for such class to implement it**.
+
+13.1 Declare an interface
+
+> ​	use `interface` keyword
+
+```c#
+interface IDemo
+{
+    string GetName();
+	string GetDescription();
+}
+```
+
+13.2 Implement an interface
+
+> ​	implement the class to fulfill interface **explicitly**
+
+```c#
+class Test : IDemo
+{
+    public string IDemo.GetName()
+    {
+    	//...
+    }
+    public string IDemo.GetDescription()
+    {
+    	//...
+    }
+}
+```
+
+> ​		implement the class to fulfill interface **implicitly**
+
+```c#
+class Test : IDemo
+{
+    public string GetName()
+    {
+    	//...
+    }
+    public string GetDescription()
+    {
+    	//...
+    }
+}
+```
+
+13.3 `abstract` class which **can only be a base class**
+
+> ​	use the `abstract` keyword. **You cannot create an instance from an abstract class**.
+>
+> ​	:question: OK, so what is the purpose to create an `abstract` class?
+>
+> ​	:star:It means **to be a template**. For example, you define a class call `Felidae猫科动物`, but `Felidae` should be treated as a family of mammals! There 		is no 	such instance of `Felidae`.
+
+```c#
+abstract class Felidae
+{
+    //...
+    public virtual void 
+}
+```
+
+
+
+### 14.Garbage collection and resource management
+
+### 15.Properties
+
+### 16.Indexers
