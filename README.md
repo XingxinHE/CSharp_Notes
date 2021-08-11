@@ -1091,7 +1091,25 @@ class Test : IDemo
 abstract class Felidae
 {
     //...
-    public virtual void 
+    public virtual void Sound();
+}
+
+public class Cat : Felidae
+{
+    //...
+    public override void Sound()
+    {
+        Console.WriteLine("Meow Meow~");
+    }
+}
+```
+
+13.4  A `sealed` class that **cannot be a base class**
+
+```c#
+sealed class Horse
+{
+    //...
 }
 ```
 
@@ -1099,6 +1117,181 @@ abstract class Felidae
 
 ### 14.Garbage collection and resource management
 
+14.1 Write a destructor
+
+> ​	use the `~` prefix. In the meantime, the method of destructor can't have access modifier!!(such as `public`)
+
+```c#
+class Example
+{
+    //..
+    ~Example()
+    {
+    }
+}
+```
+
+14.2 Call the destructor is invalid
+
+> You can’t call a destructor. **Only the garbage collector can call a destructor**.
+
+14.3 :x:Force garbage collection (**not recommended**)
+
+```c#
+GC.Collect;
+```
+
+14.4 Release a resource at a known point in time
+
+> :warning:cons: this is at the risk of resource leaks if an exception interrupts the execution
+>
+> How to do it? => Write a **disposal method** (a method that disposes of a resource) and **call it explicitly** from the program.
+
+```c#
+class TextReader
+{
+    //...
+    public virtual void Close()
+    {
+    	//write the disposal method here
+    }
+}
+class Example
+{
+    void Use()
+    {
+        TextReader reader = ...;
+        
+        reader.Close();  // call it explicitly to dispose a resource
+    }
+}
+```
+
+14.5 Support exception-safe disposal in a class
+
+> ​	that said, to implement the `IDisposable` interface
+
+```c#
+class SafeResource : IDisposable
+{
+	//...
+    public void Dispose()
+    {
+    // Dispose resources here
+    }
+}
+```
+
+14.6 Implement exception-safe disposal for an object that implements the `IDisposable` interface
+
+> ​	:star: This is the recommended option in garbage collection.
+>
+> ​	How to do that? => Create the object in a `using` statement
+
+```c#
+using (SafeResource resource = new SafeResource())
+{
+    // Use SafeResource here
+    // ...
+}
+```
+
+
+
 ### 15.Properties
+
+:star: Big picture: The design of property in C# is to inherit the `get()` and `set()` method in C++, but in an efficient, elegant and safe way.
+
+15.1 Declare a read/write `property` for a structure or class
+
+> ​	define the `type` of that property with `get` and `set`
+>
+> ​	`get`: able to read
+>
+> ​	`set`: able to write
+
+```c#
+struct ScreenPosition
+{
+	//...
+    public int X
+    {
+        get { ... } // or get => ...
+        set { ... } // or set => ...
+    }
+    //...
+}
+```
+
+> ​	property with only `get` keyword is **read-only**
+>
+> ​	property with only `set` keyword is **write-only**
+
+15.2 Declare a property in an `interface`
+
+> ​	just write down the `get` and `set`
+
+```c#
+interface IScreenPosition
+{
+    int X { get; set; }
+    int Y { get; set; }
+}
+```
+
+> ​	the class implemented the interface will look like this:
+
+```c#
+struct ScreenPosition : IScreenPosition
+{
+    private int _x;
+    private int _y;
+    
+    public int X
+    {
+        get => this._x;
+        set => this._x = value;
+    }
+    public int Y
+    {
+        get => this._y;
+        set => this._y = value;
+    }
+}
+```
+
+15.3 Create an automatic property
+
+> ​	In the class or structure that contains the property, define the property with empty `get` and `set` accessors.
+>
+>    :heavy_check_mark:This is a very handy feature!
+
+```c#
+public class Customer
+{
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+}
+```
+
+> ​	now this class can be used as a sort of data container!!
+
+```c#
+var customerBob = new Customer
+{
+    Id = 1,
+    FirstName = "Bob",
+    LastName = "Smith"
+}
+var customerDavid = new Customer
+{
+    Id = 3,
+    FirstName = "David",
+    LastName = "Rutten"
+}
+```
+
+
 
 ### 16.Indexers
