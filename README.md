@@ -1295,3 +1295,189 @@ var customerDavid = new Customer
 
 
 ### 16.Indexers
+
+:star: Big picture: What is the purpose of indexer?
+
+​				It aims to **deconstruct the integer to binary value**(`1/0` and `true/false`) which is very **flexible**!
+
+:pushpin:Fun fact: What the heck is integer, binary, hex, etc?
+
+​				We use `decimal system十进制` in our daily life, e.g. "I am `26` years old." In the following context, the `hex`, `binary` are all another form, so to speak, of `decimal system`. Nothing special, that is it. `hexadecimal 十六进制` is 16-base. `binary` is 2-base.
+
+16.1 Specify an integer value using binary or hexadecimal notation
+
+> `0b0` for **binary** values prefixes.
+>
+> `0x0` for **hexadecimal** values prefixes. 
+>
+> Include `_` separators to make values easier to read.
+
+```c#
+uint moreBinData = 0b0_11110000_01011010_11001100_00001111;
+uint moreHexData = 0x0_F0_5A_CC_0F;
+```
+
+16.2 Display an integer value as its binary or hexadecimal representation
+
+> ​	Use the `Convert.ToString()` method, and specify 2 (for binary) or 16 (for hexadecimal) as the number base.
+
+```c#
+uint moreHexData = 0x0_F0_5A_CC_0F;
+Console.WriteLine($"{Convert.ToString(moreHexData, 2)}");
+// displays 11110000010110101100110000001111
+// so `0x0_F0_5A_CC_0F` is `11110000010110101100110000001111` although they are in different base.
+```
+
+16.3 Create an indexer for a class or structure
+
+> ​	use the keyword `this` and **square bracket `[]`**
+
+```c#
+struct RawInt
+{
+    //...
+    public bool this [ int index ]
+    {
+        get { ... }
+        set { ... }
+    }
+    //...
+}
+```
+
+16.4 Define an indexer in an interface and implement it
+
+> ​	define it:
+
+```c#
+interface IRawInt
+{
+	bool this [ int index ] { get; set; }
+}
+```
+
+> ​	**implicitly** implement it:
+
+```c#
+struct RawInt : IRawInt
+{
+    //...
+    public bool this [ int index ]
+    {
+        get { ... }
+        set { ... }
+    }
+    //...
+}
+```
+
+> ​	**explicitly** implement it:
+
+```c#
+struct RawInt : IRawInt
+{
+    //...
+    bool IRawInt.this [ int index ]
+    {
+        get { ... }
+        set { ... }
+    }
+    //...
+}
+```
+
+
+
+### 17.Generics
+
+17.1 Instantiate an object by using a generic type
+
+> ​	when you see `<>` , it means this is used in a generic way
+
+```c#
+Queue<int> myQueue1 = new Queue<int>();
+Queue<double> myQueue2 = new Queue<double>();
+Queue<string> myQueue3 = new Queue<string>();
+List<int> myList1 = new List<int>();
+List<double> myList2 = new List<double>();
+List<string> myList3 = new List<string>();
+```
+
+> ​	as you can see, the `Queue` can contain `int`, `double`, and `string` etc. That is due to the design of `Queue` and `List`
+>
+> ​	:star:it use `T` notated as **generic**.
+
+```c#
+public class Queue<T> : IEnumerable<T>, ICollection, IEnumerable
+{
+    //...
+}
+public class List<T> : IList<T>, ICollection<T>, IList, ICollection, IReadOnlyList<T>, IReadOnlyCollection<T>, IEnumerable<T>, IEnumerable
+{
+    //...
+}
+```
+
+17.2 Create a new generic type
+
+```c#
+public class Tree<T>
+{
+ 	//...   
+}
+```
+
+17.3 :star:**Restrict** the type **that can be substituted** for the generic type parameter
+
+> ​	It means that if you want to use this generic formwork, the data-type you set my implement something.
+>
+> ​	The following means the `T` in the `Tree` must implement `IComparable<T>`
+
+```c#
+public class Tree<T> where T : IComparable<T>
+{
+	//...
+}
+```
+
+17.4 Define a generic method
+
+> ​	put `<T>` before the `()`
+
+```c#
+static void InsertIntoTree<T>(Tree<T> tree, params T[] data)
+{
+    //...
+}
+```
+
+17.5 Invoke a generic method
+
+> ​	just put the data type you use to replace the `T`
+
+```c#
+InsertIntoTree<char>(charTree, 'Z', 'X');
+```
+
+17.6 Define a **covariant** interface
+
+> ​	Specify the `out` qualifier for covariant type parameters. Reference the covariant type parameters only as the return types from methods and not as 	the types for method parameters:
+
+```c#
+interface IRetrieveWrapper<out T>
+{
+	T GetData();
+}
+```
+
+17.7 Define a **contravariant** interface
+
+> ​	Specify the `in` qualifier for contravariant type parameters. Reference the contravariant type parameters only as the types of method parameters and 	not as return types:
+
+```c#
+public interface IComparer<in T>
+{
+	int Compare(T x, T y);
+}
+```
+
