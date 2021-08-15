@@ -1029,7 +1029,7 @@ int nine = ten.Negate();  //now you can use `.Negate()` method without writing t
 
 
 
-### 13.Interfaces and `abstract` classes
+### 13.Interfaces and abstract classes
 
 :star: the concept of `interface` is a little bit similar to `.header` file in C++, which is **a must for such class to implement it**.
 
@@ -1478,6 +1478,129 @@ interface IRetrieveWrapper<out T>
 public interface IComparer<in T>
 {
 	int Compare(T x, T y);
+}
+```
+
+
+
+### 18.Collections
+
+> ​	The frequently used collections in C# are:
+>
+> 	- 
+
+18.1 Create a new collection
+
+> ​	use `List<T>` as an example
+
+```c#
+List<PlayingCard> cards = new List<PlayingCard>();
+```
+
+18.2 Add an item to a collection
+
+> ​	`List<T>` use `Add`
+>
+> ​	`HashSet<T>` use `Add`
+>
+> ​	`Dictionary<T,T>` use `Insert`
+>
+> ​	`Queue<T>` use `Enqueue`
+>
+> ​	`Stack<T>` use `Push`
+
+```c#
+HashSet<string> employees = new HashSet<string>();
+employees.Add("John");
+
+LinkedList<int> data = new LinkedList<int>();
+data.AddFirst(101);
+
+Stack<int> numbers = new Stack<int>(); numbers.Push(99);
+```
+
+18.3 Remove an item from a collection
+
+> 	- `Remove` is used in `List<T>`, `HashSet<T>`, `Dictionary<T, T>`
+> 	- `Dequeue` is used in `Queue<T>`
+> 	- `Pop` is used in `Stack<T>`
+
+```c#
+HashSet<string> employees = new HashSet<string>();
+//..
+employees.Remove("John");
+
+LinkedList<int> data = new LinkedList<int>();
+//..
+data.Remove(101);
+
+Stack<int> numbers = new Stack<int>();
+//..
+int item = numbers.Pop();
+```
+
+18.4 Find the number of elements in a collection
+
+> ​	use `Count`
+
+```c#
+List<PlayingCard> cards = new List<PlayingCard>();
+//...
+int noOfCards = cards.Count;
+```
+
+18.5 Locate an item in a collection
+
+> ​	*array notation* is used in *dictionary-oriented collections*.
+>
+> ​	`Find` is used in *lists*.
+
+```c#
+Dictionary<string, int> ages = new Dictionary<string, int>();
+ages.Add("John", 47);
+int johnsAge = ages["John"];
+```
+
+> ​	in case there is a class named `Person`
+
+```c#
+public class Person
+{
+    public int ID { get; set; }
+    public string Name { get; set; }
+    public double Height { get; set; }
+}
+```
+
+> ​	you can find the info in a list by `Find` using `System.Linq`
+
+```c#
+List<Person> personnel = new List<Person>();
+Person Simon = new Person { ID = 3, Name = "Simon Botazzi", Height = 173.2 };
+personnel.Add(Simon);
+Person match = personnel.Find(p => p.ID == 3);  //there you go, you find Simon by searching ID==3
+```
+
+:warning:Note: The `Stack<T>`, `Queue<T>`, and `HashSet<T>` collection classes **do not** support searching, although you can test for membership of an item in a hash set by using the `Contains` method.
+
+
+
+18.6 Iterate through the elements of a collection
+
+> ​	Use a `for` statement or a `foreach` statement
+
+```c#
+LinkedList<int> numbers = new LinkedList<int>();
+//...
+for (LinkedListNode<int> node = numbers.First; node != null; node = node.Next)
+{
+    int number = node.Value;
+    Console.WriteLine(number);
+}
+//...
+foreach (int number in numbers)
+{
+	Console.WriteLine(number);
 }
 ```
 
