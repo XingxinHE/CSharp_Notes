@@ -1483,6 +1483,23 @@ public interface IComparer<in T>
 
 
 
+:pushpin: A note on `T`. Here the `T` is literal symbol of `Generic`. What really does represent `Generic` is `< >`. See the following example:
+
+```c#
+public class Tree<T>
+{
+ 	//...   
+}
+public class Tree<TItem>
+{
+ 	//...   
+}
+```
+
+They are the same in functionality no matter used `T` or `TItem`. I personally prefer `T` for simplicity.
+
+
+
 ### 18.Collections
 
 > ​	The frequently used collections in C# are:
@@ -1605,4 +1622,115 @@ foreach (int number in numbers)
 	Console.WriteLine(number);
 }
 ```
+
+
+
+### 19.Enumerating collections
+
+19.1 Make class enumerable which support the `foreach` construct
+
+> ​	Implement the `IEnumerable` interface and provide a `GetEnumerator` method that returns an IEnumerator object.
+
+```c#
+public class Tree<T> : IEnumerable<T>
+{
+    //...
+    IEnumerator<T> GetEnumerator()
+    {
+    	//...
+    }
+}
+```
+
+19.2 Implement an enumerator without using an iterator
+
+> ​	Define an enumerator class that implements the `IEnumerator` interface, and that provides the `Current` property and the `MoveNext` method (and 	optionally the `Reset` method).
+
+```c#
+public class TreeEnumerator<T> : IEnumerator<T>
+{
+    //...
+    T Current
+    {
+        get
+        {
+        	//...
+        }
+    }
+    bool MoveNext()
+    {
+    	//...
+    }
+}
+```
+
+19.3 Define an enumerator by using an iterator
+
+> ​	Implement the enumerator to indicate which items should be returned (using the `yield` statement) and in which order.
+
+```C#
+IEnumerator<TItem> GetEnumerator()
+{
+    for (...)
+    {
+    	yield return ...
+    }
+}
+```
+
+
+
+### 20.Delegate and Event
+
+:star: `delegate` is literally an agent which can be seen as **delegate** of function.
+
+:star: `delegate` is a pointer to method.
+
+
+
+20.1 Declare a delegate type
+
+> ​	just put the `delegate` ahead the decoration of the function.
+
+```c#
+delegate void myDelegate();
+```
+
+20.2 Create an instance of a delegate with initialization
+
+> ​	:pushpin: Big picture: why do we need `delegate`? 
+>
+> ​			because sometime we don't know which method we should use. Imagine **delegate is a variable of method** rather than value.
+
+```c#
+//there are 2 methods defined
+public double Add(double lhs, double rhs) => lhs + rhs;
+public double Subtract(double lhs, double rhs) => lhs - rhs;
+
+//declare an delegate whose parameter must match whom you want to use
+public delegate double ArithmeticOperation(double lhs, double rhs);
+
+//initialized
+ArithmeticOperation operation;
+bool flag = false;
+
+//now the method operation is decided by the boolean value
+public void AutoSelectOperation()
+{
+    if (flag)
+    {
+        operation = Add;
+    }
+    else
+    {
+        operation = Subtract;
+    }
+}
+
+//use the delegate method
+double result = operation(10, 3);  //since flag=false, the operation points to subtract
+								   //so the result = 7
+```
+
+20.3 Declare an event
 
