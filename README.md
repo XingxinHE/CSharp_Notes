@@ -1521,9 +1521,9 @@ Stack<int> numbers = new Stack<int>(); numbers.Push(99);
 
 18.3 Remove an item from a collection
 
-> 		- `Remove` is used in `List<T>`, `HashSet<T>`, `Dictionary<T, T>`
-> 		- `Dequeue` is used in `Queue<T>`
-> 		- `Pop` is used in `Stack<T>`
+> ​	 `Remove` is used in `List<T>`, `HashSet<T>`, `Dictionary<T, T>`
+> ​	 `Dequeue` is used in `Queue<T>`
+> ​	 `Pop` is used in `Stack<T>`
 
 ```c#
 HashSet<string> employees = new HashSet<string>();
