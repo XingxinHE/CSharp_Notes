@@ -1856,3 +1856,91 @@ var allEmployees = from e in empTree.ToList<Employee>()
 
 ### 22.Operator overloading
 
+:star: Big picture: operator overloading is to mimic arithmetic operation between instances. See following example to demonstrate all.
+
+> ​	suppose we want to mimic the complex number in C# which can be written as:
+>
+> ​	$a + bi$, $a$ is called the **real part** and $b$ is called the **imaginary part**.
+>
+> ​	for two complex number $A: 5+3i$,  $B: 4+2i$, then $A+B=(5+4)+(3i+2i)=9+5i$
+
+```c#
+class Complex
+{
+    public int Real { get; set; }	//the real part of complex num
+    public int Imaginary { get; set; }  //the imaginary part of complex num
+
+    public Complex(int real, int imaginary)
+    {
+        this.Real = real;
+        this.Imaginary = imaginary;
+    }
+    public Complex(int real)
+    {
+        this.Real = real;
+        this.Imaginary = 0;
+    }
+
+    public override string ToString() => $"({this.Real} + {this.Imaginary}i )";
+
+    //overloaded '+' operator
+    public static Complex operator +(Complex lhs, Complex rhs) =>
+        new Complex(lhs.Real + rhs.Real, lhs.Imaginary + rhs.Imaginary);
+	//overloaded '-' operator
+    public static Complex operator -(Complex lhs, Complex rhs) =>
+        new Complex(lhs.Real - rhs.Real, lhs.Imaginary - rhs.Imaginary);
+	//overloaded '==' operator
+    public static bool operator ==(Complex lhs, Complex rhs) => lhs.Equals(rhs);
+	//overloaded '!=' operator
+    public static bool operator !=(Complex lhs, Complex rhs) => !(lhs.Equals(rhs));
+
+    //override the `Equals` method
+    public override bool Equals(object obj)
+    {
+        if (obj is Complex)
+        {
+            Complex compare = (Complex)obj;
+            return (this.Real == compare.Real) && (this.Imaginary == compare.Imaginary);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    // `int` TO=> `Complex instance` can be implicit
+    public static implicit operator Complex(int from) => new Complex(from);
+	// `Complex instance` TO=> `int` has to be explicit
+    public static explicit operator int (Complex complex) => complex.Real;
+}
+```
+
+> ​	having everything set up, we can take advantage of the `overloaded` operator
+
+```c#
+Complex first = new Complex(10, 4);
+Complex second = new Complex(5, 2);
+Complex temp = first + second;  //since the `+` is overloaded for Complex class, this operation is valid
+
+//since the '==' is overloaded for Complex class
+//the two instance can compared under the way defined above
+if (temp==first)
+{
+    Console.WriteLine("Comparison: temp == first");
+}
+else
+{
+    Console.WriteLine("Comparison: temp!= first");
+}
+
+//since from `complex instance` TO=> `int` is implicitly overloaded, this operation is valid
+temp += 2;
+Console.WriteLine($"Value after adding 2: temp = {temp}");
+
+//since from `int` TO=> `complex instance`, this operation is valid
+int tempInt = (int)temp;  //use `(int)` to unbox explicitly
+Console.WriteLine($"Int value after conversion: tempInt == {tempInt}");
+```
+
+
+
