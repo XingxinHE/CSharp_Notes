@@ -1734,3 +1734,125 @@ double result = operation(10, 3);  //since flag=false, the operation points to s
 
 20.3 Declare an event
 
+//TODO
+
+
+
+### 21.Query
+
+The following examples use a class called `Address` with 3 properties: `CompanyName`, `City`, `Country`.
+
+21.1 **Select** specified fields from an enumerable collection
+
+> ​	use `Select` method with lambda expression
+
+```c#
+using System.Linq;
+//Linq way of doing
+var customerFirstNames = customers.Select(cust => cust.FirstName);
+```
+
+> ​	use `select` and `from`
+
+```c#
+//SQL way of doing
+var customerFirstNames = from cust in customers
+						select cust.FirstName;
+```
+
+21.2 **Filter** rows from an enumerable collection
+
+> ​	Use the `Where` method with lambda expression.
+
+```c#
+using System.Linq;
+//Linq way of doing
+var usCompanies = addresses.Where(addr =>
+							String.Equals(addr.Country,"United States"))
+							.Select(usComp => usComp.CompanyName);
+```
+
+> ​	Use `where`
+
+```c#
+//SQL way of doing
+var usCompanies = from a in addresses
+    			  where String.Equals(a.Country, "United States")
+    			  select a.CompanyName;
+```
+
+21.3 **Enumerate** data in a specific order
+
+> ​	Use the `OrderBy` method with lambda expression.
+
+```c#
+using System.Linq;
+//linq way of doing
+//sort the list in light of CompanyName then select the names
+var companyNames = addresses.OrderBy(addr => addr.CompanyName)
+							.Select(comp => comp.CompanyName);
+```
+
+> ​	 Use `orderby`
+
+```c#
+//SQL way of doing
+var companyNames = from a in addresses
+                   orderby a.CompanyName
+                   select a.CompanyName;
+```
+
+21.4 **Group** data by the values in a field
+
+> ​	Use the `GroupBy` method with lambda expression
+
+```c#
+using System.Linq;
+//linq way of doing
+var companiesGroupedByCountry = addresses.GroupBy(addres => addrs.Country);
+```
+
+> ​	Use `group by`
+
+```c#
+//SQL way of doing
+var companiesGroupedByCountry = from a in addresses
+								group a by a.Country;
+```
+
+21.5 **Join** data held in two different collections
+
+> ​	Use the `Join` method, specifying the collection with which to join, the join criteria, and the fields for the result
+
+```c#
+using System.Linq;
+//linq way of doing
+var countriesAndCustomers = customers.Select(c => new { c.FirstName, c.LastName, c.CompanyName })
+									 .Join(addresses, custs => custs.CompanyName,
+                                           addrs => addrs.CompanyName,
+										(custs, addrs) => new {custs.FirstName, custs.LastName, addrs.Country });
+```
+
+> ​	Use `join`
+
+```c#
+//SQL way of doing
+var countriesAndCustomers = from a in addresses
+							join c in customers
+							on a.CompanyName equals c.CompanyName
+							select new { c.FirstName, c.LastName, a.Country};
+```
+
+21.6 Force immediate generation of the results for a LINQ query
+
+> ​	Use `ToList()` and `ToArray()` to generate a list or an array
+
+```c#
+var allEmployees = from e in empTree.ToList<Employee>()
+				   select e;
+```
+
+
+
+### 22.Operator overloading
+
