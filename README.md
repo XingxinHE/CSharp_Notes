@@ -1944,3 +1944,8 @@ Console.WriteLine($"Int value after conversion: tempInt == {tempInt}");
 
 
 
+## C# in Depth
+
+### 2. C#2
+
+#### 2.1 Generics
