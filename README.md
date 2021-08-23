@@ -1944,8 +1944,21 @@ Console.WriteLine($"Int value after conversion: tempInt == {tempInt}");
 
 
 
+# Complete Notes
+
 ## C# in Depth
 
 ### 2. C#2
 
 #### 2.1 Generics
+
+:pushpin: Where `Generics` is heavily used?
+
+- Collections
+
+- Delegates, particularly in LINQ
+
+- Asynchronous code
+
+- Nullable value types
+
