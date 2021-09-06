@@ -1967,7 +1967,111 @@ Task task = Task.Run(() => doWork());
 Task task = new Task(doWork); task.Start();
 ```
 
+23.2. **Wait** for a task to finish
 
+> ​	Use `Wait`
+
+```c#
+Task task = ...; 
+//... 
+task.Wait();
+```
+
+> ​	Use `await` (only legal in `async` method)
+
+```c#
+await task;
+```
+
+23.3. **Wait** for **all** tasks to finish
+
+> ​	Use `WaitAll` method
+
+```c#
+Task task1 = ...;
+Task task2 = ...;
+Task task3 = ...;
+Task task4 = ...;
+//... 
+Task.WaitAll(task1, task2, task3, task4);
+```
+
+23.4. **Continue** a task after last task finished
+
+> ​	Use `ContinueWith`
+
+```c#
+Task task = new Task(doWork);
+task.ContinueWith(doMoreWork, TaskContinuationOptions.NotOnFaulted);
+```
+
+23.5. **Parallel** Computing
+
+> ​	 Use `Parallel.For` or `Parallel.ForEach` to iterate parallely
+
+```c#
+private void performLoopProcessing(int x) 
+{
+	// Perform loop processing 
+}
+//...
+Parallel.For(0, 100, performLoopProcessing);
+```
+
+> ​	Use `Parallel.Invoke` to perform concurrent method with multiple tasks
+
+```c#
+Parallel.Invoke( doWork, doMoreWork, doYetMoreWork);
+```
+
+23.6. **Handle exceptions** raised by one or more tasks
+
+```c#
+//1. Catch the aggregate exception
+try 
+{
+	Task task = Task.Run(...);
+    task.Wait();
+    //...
+} 
+catch (AggregateException ae) 
+{
+	ae.Handle(handleException);
+} 
+ 
+//2. Check which bunch of exceptions are in aggregate exceptions
+private bool handleException(Exception e) 
+{
+	if (e is TaskCanceledException) 
+	{
+		//... 
+        return true;
+	}
+    else
+    {
+		return false; 
+    } 
+}
+```
+
+23.7. Enable **cancellation** in a task
+
+> ​	a. create a `CancellationTokenSource` object first
+>
+> ​	b. put `CancellationToken` in method parameter
+>
+> ​	c. call `ThrowIfCancellationRequested` to throw `OperationCanceledException`
+>
+> ​	d. terminate this task
+
+```c#
+private void generateGraphData(..., CancellationToken token) 
+{
+	//...
+    token.ThrowIfCancellationRequested(); 
+    ...
+}
+```
 
 
 
