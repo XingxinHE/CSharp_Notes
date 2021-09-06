@@ -1942,6 +1942,33 @@ int tempInt = (int)temp;  //use `(int)` to unbox explicitly
 Console.WriteLine($"Int value after conversion: tempInt == {tempInt}");
 ```
 
+### 23.Tasks
+
+23.1. Create a task and run it
+
+:pushpin: use the `Task` class and suppose there is a void method
+
+```c#
+private void doWork() 
+{
+	// The task runs this code when it is started ...
+}
+```
+
+> ​	a.  create and `Run` the task in a single step
+
+```c#
+Task task = Task.Run(() => doWork());
+```
+
+> ​	b. reference the method and `Start` it
+
+```c#
+Task task = new Task(doWork); task.Start();
+```
+
+
+
 
 
 # Complete Notes
