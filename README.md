@@ -2321,67 +2321,180 @@ Console.WriteLine(message);
 
 #### 2.5 Arithmetic Operators
 
-:pushpin:****
+:pushpin:**What are they?**
+
+`+`, `-` ,`*`, `/`
+
+Although they are called *arithmetic* operators, they are also able to do other operations like `string` operation.
 
 
 
+:pushpin:What are **operands & operators**?
+
+operand: 操作数/运算子, e.g. 750,20
+
+operator: 操作符, e.g. `*`
+
+```
+750*20
+```
 
 
 
+:pushpin:**`+` for concatenation** and **`$` for string interpolation**
 
-:pushpin:****
+`+` in string interpolation:
 
+```c#
+string name = "Sam";
+string message = "Hello " + "to " + name + "!";
+```
 
+With `$` for string interpolation:
 
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
+```c#
+string message = $"Hello to {name}!";
+```
 
 
 
+:pushpin:**`NaN` and Infinity**
 
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
+```c#
+5 / 0         //this will be infinity
+0.0 / 0.0     //this will be NaN
+10 + NaN      //this will be NaN
+5 + Infinity  //this will be Infinity
+```
 
 
 
+:pushpin:What is **controlling precedence**?
 
+```
+2 + 3*4
+```
 
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
+The `3*4` will run first and then `2+12`
 
 
 
+:pushpin:What is **associativity**?
+
+It is the direction (left or right) in which the operands of an operator are evaluated.
 
 
-:pushpin:****
+
+:pushpin: Different associativity
+
+e.g. For arithmetic operation, it is from left to right. :arrow_forward:
+
+```
+4/2*6 = 2*6 = 12
+```
+
+e.g. For assignment operation, it is from right to left. :arrow_backward:
+
+```c#
+int myInt;
+int myInt2;
+myInt2 = myInt = 10;
+//In the end, myInt2 and myInt are all 10.
+```
+
+e.g. For declaration operation, it is from left to right. :arrow_forward:
+
+:warning:
+
+```c#
+int myInt, myInt2, myInt3 = 10;
+//this is confusing, please don't do this.
+//it is equivalent to the following
+int myInt;
+int myInt2;
+int myInt3 = 10;
+```
 
 
 
+#### 2.6 Incrementing and Decrementing
 
+:pushpin:What is **unary operator**?
+
+Those operators with **ONE** operand. e.g. `++`, `--`
+
+
+
+:pushpin:What is **prefix and postfix**?
+
+```c#
+count++;  //postfix
+count--;  //postfix
+++count;  //prefix
+--count;  //prefix
+```
+
+
+
+:pushpin:What is the **difference** between **prefix and postfix**?
+
+`var++` return first then increment.
+
+`++var` increment first then return.
+
+```c#
+int x = 28;
+Console.WriteLine(x++);  //output is 28, x is now 29
+
+int y = 28;
+Console.WriteLine(++y);  //output is 29, x is now 29
+```
+
+How to remember the rules? :thinking:
+
+In `var++` , `var` appear first , so return first, then increment.
+
+In `++var` , `++`  appear first , so increment first, then return.
+
+
+
+#### 2.7 Implicitly typed variable
+
+:pushpin:**`var`**
+
+What is so-called *implicit* is that "suggested though not directly expressed". Therefore, `var` is a keyword which ask compiler to detect what is the type of this variable. Of course, the type must be defined already!
+
+:heavy_check_mark:
+
+```c#
+var myAge = 99;
+var myName = "Sam";
+List<int> days = new List<int>();
+var dayOne = days[0];
+```
+
+:x:
+
+```c#
+var myNumber;  //ERROR!!
+```
+
+
+
+:pushpin: **Why `var` is useful**?
+
+From my programming experience, the straight-forward benefit is that you can type less code.
+
+```c#
+List<Rhino.Geometry.Point3d> pts = new List<Rhino.Geometry.Point3d>();
+
+Rhino.Geometry.Point3d ptOne = pts[0];  //complicate code
+var ptTwo = pts[1];  //less code
+```
+
+
+
+### 3. Methods and Scope
 
 
 
