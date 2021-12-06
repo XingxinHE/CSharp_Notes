@@ -1,4 +1,4 @@
-# C# Notes:notebook_with_decorative_cover: Overview
+#  C# Notes:notebook_with_decorative_cover: Overview
 The notes when I learned C#. It could also be a reference manual applied to daily basis.
 
 `Quick Reference` is for you to recall the knowledge at once.
@@ -2496,73 +2496,243 @@ var ptTwo = pts[1];  //less code
 
 ### 3. Methods and Scope
 
+#### 3.1. Create Method
 
+:pushpin:**`return` at the end of method**
 
-:pushpin:****
+The `return` keyword is at the end of the method which return the return type of a method.
 
+```c#
+//int function
+int addValues(int lhs, int rhs)
+{
+    return lhs + rhs;
+}
+//void function
+void sayHello()
+{
+    Console.WriteLine("Hello world!");
+    return;
+}
+```
 
-
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
+:star: It is recommended that return nothing at the end of a `void` function.
 
 
 
+:pushpin:**expression-bodied method**
+
+Such design of programming language is called **syntactic sugar** which simplify the code and improve readability.
+
+```c#
+int addValues(int lhs, int rhs) => lhs + rhs;
+void sayHello() => Console.WriteLine("Hello world!");
+```
 
 
 
-:pushpin:****
+:pushpin:**return multiple values**
+
+This is only supported by VS 2017 and above which you have to install **`System.ValueTuple`**
+
+```c#
+private (int, int) divide(int lhs, int rhs)
+{
+    int division = lhs / rhs;
+    int remainder = lhs % rhs;
+
+    return (division, remainder);
+}
+```
+
+
+
+#### 3.2. Scope
+
+:pushpin:**What is the lifetime of a variable?**:star::star::star:
+
+The born of a variable **starts from where it is declared** and it **ends after the method is finished**.
+
+
+
+:pushpin:**What is a scope?**
+
+The scope of a variable is simply **the region of the program in which that variable is usable**. (inside the bracket`{}`)
+
+
+
+:pushpin:**local variable**
+
+The variable inside the bracket`{}` of a method is **local variable**.
+
+:x:
+
+```c#
+void myMethod()
+{
+    string myName = "";
+}
+void yourMethod()
+{
+    myName += "Angela";  //ERROR!! myName is a local variable
+}
+```
+
+:heavy_check_mark:
+
+```c#
+void myHello()
+{
+    string myName = "Daniel";
+    Console.WriteLine($"{myName} said hello.");
+}
+void yourHello()
+{
+    string myName = "Theresa";
+    Console.WriteLine($"{myName} said hello.");
+}
+```
+
+
+
+:pushpin:**field(global variable)**
+
+In C#, they name the global variable as **field**. ("字段" in Chinese)
+
+```c#
+class Example
+{
+    int count;  //global variable
+    
+    void setZero() => count = 0;
+    void addValue(int num) => count += num;
+}
+```
 
 
 
 
 
-:pushpin:****
+:pushpin:**overloaded method**
+
+In short, a method with:
+
+- same return type and same name
+- different input parameters
+
+A nice example we can take a look at `RhinoCommon` methods.
+
+```c#
+//Create twin curves
+public static Curve[] CreateTweenCurves(Curve curve0, Curve curve1, int numCurves)
+public static Curve[] CreateTweenCurves(Curve curve0, Curve curve1, int numCurves, double tolerance)
+```
+
+The return type is an array of curve:    `Curve[]`
+
+But the parameters can't be different.
 
 
 
+:pushpin:**Refactoring code**:star::star::star:
 
+This is holly important and useful!! Suppose you have an average method which does:
 
+- :one:sum up all the numbers
+- :two:take the average
 
+```c#
+double average(double[] numbers)
+{
+    double sum;
+    int amount;
+    double average;
+    sum = numbers.Sum();
+    amount = numbers.Length;
+    average = sum / amount;
+    return average;
+}
+```
 
-:pushpin:****
+Select the code you want to extract as a smaller method / helper method.
 
+You can extract them into:
 
+```c#
+double average(double[] numbers)
+{
+    double sum;
+    int amount;
+    double average;
+    sum = OperationSum(numbers);
+    amount = numbers.Length;
+    average = OperationDivide(sum, amount);
+    return average;
+}
 
+private static double OperationDivide(double sum, int amount)
+{
+    return sum / amount;
+}
 
+private static double OperationSum(double[] numbers)
+{
+    return numbers.Sum();
+}
+```
 
-:pushpin:****
+#### 3.3. Nested Method
 
+:pushpin:**Why should we use Nested Method?**
 
+Big Picture:star::  For those help methods which are called only by one main method, must be encapsulated.
 
+:pushpin:**Example**
 
+Suppose a function is:
 
+```c#
+long calculateFactorial(string input)
+{
+    
+}
+```
 
+The input is `string` and it must be parsed into numbers for operation. Apparently, it also demand a real factorial method for number operation. Hence the design should be:
 
-:pushpin:****
+```c#
+long calculateFactorial(string input)
+{
+    //1. Parse to number
+    //2. Declare a factorial method
+    //3. Run the factorial method and return value
+}
+```
 
+The result:
 
-
-
-
-:pushpin:****
-
-
+```c#
+long calculateFactorial(string input)
+{
+    //1.
+    int number = int.Parse(input);
+    //2.
+    long factorial(int num)
+    {
+        if (num == 1)
+        {
+            return 1;
+        }
+        else
+        {
+            return num * factorial(num - 1);
+        }
+    }
+    //3.
+    long result = factorial(number);
+    return result;
+}
+```
 
 
 
