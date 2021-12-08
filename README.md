@@ -2307,6 +2307,32 @@ Console.WriteLine(age);  //Error!!
 
 
 
+:pushpin:**Special Meaning of `''` and `""`** 
+
+The single quotation mark `‘`  delimits character `char`. 
+
+The double quotation mark `“` delimits string constants  `string`.
+
+> ​	:thinking: So what if you want to set the string as `"` or `'` literally but not what inside them?
+
+Use `\` escape character!! It asks the compiler to **treat these characters as literals** rather than as delimiters
+
+```c#
+Console.WriteLine("\"");
+Console.WriteLine('\'');
+Console.WriteLine('\"');
+```
+
+The output:
+
+```
+"
+'
+"
+```
+
+
+
 :pushpin:**Display** primitive data type value
 
 To display the value *literally*, you can use `ToString()` method. It is a MUST method that all variable have and it could output the value in `string` format. e.g. :
@@ -2736,6 +2762,62 @@ long calculateFactorial(string input)
 
 
 
+#### 3.4 Optional and Named Parameters
+
+:pushpin:**What is Optional Parameter?**
+
+In short, the parameter defined inside the bracket`()` has default value.
+
+```c#
+void ransac(double[] input, int seed=1, string mode="default");
+```
+
+The later 2 parameters are optional.
+
+> ​	:warning::rotating_light: Optional parameters **must** be declared after mandatory parameters.
+
+```c#
+void ransac(numbers);
+void ransac(numbers, 2);
+void ransac(numbers, "super");
+```
+
+
+
+:pushpin:**What is Named Parameter?**
+
+In short, it explicitly assigns the variables.
+
+```c#
+void ransac(numbers, mode:"super", seed:2);
+void ransac(seed:2, mode:"super", input:numbers);
+```
+
+If the arguments are explicitly assigned, they can be in arbitrary position.
+
+
+
+:pushpin:**Dangerous and Bad Habit**:rotating_light:
+
+The following one can be tricky!
+
+```c#
+void Method(int first, double second=0.0, string third="Hello");
+void Method(int first, double second=1.0, string third="Goodbye", int fourth=100);
+```
+
+when you type:
+
+```c#
+Method(1, 2.5);
+```
+
+The compiler does not know whether to use which method since the beginning of them are the same! I personally don't like the overloaded function with similar parameters and default value.
+
+
+
+
+
 ### 4.Decision Statement
 
 #### 4.1. Declare `bool` Variable
@@ -2770,87 +2852,193 @@ They are `==`, `!=`.
 
 
 
-:pushpin:****
+:pushpin:**relational operator**
 
+| Operator | Meaning                  | Example     | Output  |
+| -------- | ------------------------ | ----------- | ------- |
+| `<`      | Less than                | `age < 21`  | `false` |
+| `<=`     | Less than or equal to    | `age <= 18` | `false` |
+| `>`      | Greater than             | `age > 16`  | `true`  |
+| `>=`     | Greater than or equal to | `age >= 33` | `true`  |
 
 
 
+:pushpin:**conditional logic operator**
 
+`&&` , logic **AND**
 
+`||`, logic **OR**.
 
-:pushpin:****
 
 
+:pushpin:**Bad habit using logic operator**:rotating_light:
 
+> ​	:x: Error:
 
+```c#
+bool flag = num >= 0 && <= 100;  //ERROR!!!
+```
 
-:pushpin:****
+This is hell wrong! When playing with logical operator, the variable can only appear once at a time.
 
+> ​	:no_mouth: Not good but OK:
 
+```c#
+bool flag = num >= 0 && num <= 100;
+```
 
+> ​	:smile: Clear:
 
+```c#
+bool flag = (num>=0)&&(num<=100);
+```
 
 
 
-:pushpin:****
+:pushpin:**Short-circuiting**:star:
 
+This is very useful for boosting the performance of the codes:rocket::
 
+> ​	Write the easier and computation-less condition on the **LEFT** side of the operator.
 
+```c#
+int num = -10;
+bool flag = (num>=0) && (num<=100);
+```
 
+```c#
+int num = -10;
+bool flag = (num<=100) || (num>=0);
+```
 
-:pushpin:****
+Apparently, putting the easier codes on the left is more efficient as they will jump out of the condition soon.
 
 
 
+:pushpin:**operator precedence and associativity**:star:
 
+> ​	The operators higher up in the table take precedence over operators lower down:
 
+https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/
 
 
-:pushpin:****
 
+#### 4.3. `if-else` Statement
 
+:pushpin:**sample of `if`**
 
+```c#
+if(flag)
+{
+    //..
+}
+else if(flag2)
+{
+    //..
+}
+else
+{
+    //..
+}
+```
 
 
-:pushpin:****
 
+:pushpin:**good and bad examples**
 
+> ​	:x:Error:
 
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
+```c#
+int num = 10;
+if(num)
+{
+    //..
+}
+```
+
+Since `num` is not boolean, it can't be placed into the `()`.
+
+> ​	:thumbsup:Recommend:
+
+```c#
+bool flag = true;
+if(flag)
+{
+    //..
+}
+```
+
+> ​	:no_mouth:OK, but not recommend:
+
+```c#
+bool flag = true;
+if(flag==true)
+{
+    //..
+}
+```
+
+
+
+#### 4.4. `switch` Statement
+
+:pushpin:**When should we use `switch`?**
+
+Use it when you have *multiple* and *parallel* conditions.
+
+```c#
+int day = 5;
+string dayName = "";
+switch (day)
+{
+    case 0:
+        dayName = "Sunday";
+        break;
+    case 1:
+        dayName = "Monday";
+        break;
+    case 2:
+        dayName = "Tuesday";
+        break;
+    case 3:
+        dayName = "Wednesday";
+        break;
+	//..
+    default:
+        dayName = "Unknown";
+        break;
+}
+```
+
+
+
+:pushpin:**Rules Using `switch`**
+
+- `case` must be unique.
+- every `case` should be ended with `break`
+
+
+
+:pushpin:**What is fall-through?**
+
+```c#
+switch(flag)
+{
+    case Hearts:
+    case Diamonds:
+        color="Red";
+        break;
+    case Clubs:
+    case:Spades:
+        color="Black";
+        break;
+    default:
+        color=null;
+        break;
+}
+```
+
+In short, it combines conditions with same behaviors.
 
 
 
