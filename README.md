@@ -2736,23 +2736,37 @@ long calculateFactorial(string input)
 
 
 
+### 4.Decision Statement
 
+#### 4.1. Declare `bool` Variable
 
-:pushpin:****
+:pushpin:**Romantic interpretation of Boolean**
 
-
-
-
-
-:pushpin:****
-
+In the world of C# programming (unlike in the real world), **everything is** **black** or **white**, **right** or **wrong**, **true** or **false**.
 
 
 
+:pushpin:**`true`, `false`**
 
-:pushpin:****
+```c#
+bool areYouReady;
+areYouReady = true;
+Console.WriteLine(areYouReady);
+//output is true
+```
 
 
+
+#### 4.2. Use `bool` Variable
+
+:pushpin:**equality operator**
+
+They are `==`, `!=`.
+
+| Operator | Meaning      | Example      | Output(if age=42) |
+| -------- | ------------ | ------------ | ----------------- |
+| `==`     | Equal to     | `age == 100` | `false`           |
+| `!=`     | Not Equal to | `age != 0`   | `true`            |
 
 
 
@@ -7372,3 +7386,75 @@ Counter for System.String : 1
 
 #### 2.2 Nullable value types
 
+:star: **Big Picture**
+
+*Regularity*: There are hundreds of questions on StackOverflow on `null`.
+
+*Quote*: Tony Hoare introduced `null` references into Algol in 1965 and has subsequently called it his “billion-dollar mistake.”
+
+*Everyday*: Countless developers have become frustrated when their code throws `NullReferenceException`(.NET).
+
+##### 2.2.1. `null` = Absence of info
+
+**:thinking:What are the cases using `null` in daily life?**
+
+The following are some examples.
+
+- :one:the form of a person including `born` and `death`
+  - the person is not dead right now, `death=null`
+  - the person's child was not born yet, `born=null`
+- :two:the form of a customer including `company_info`
+  - the person was not an employee currently, `company_info=null`
+
+
+
+:pushpin:**Days before `null` in C#**
+
+- :one:Use **a reserved value to represent missing data**. For example, you might use `decimal.MaxValue` in a price filter to represent “no maximum price specified.”
+- :two:Keep a separate **Boolean flag to indicate** whether it has a real value or the value should be ignored. 
+
+For case :one:, it is so common! For instance, the `Unset` property of `Point3d, Plane` are with extremely high value.
+
+```c#
+//
+// Summary:
+//     Gets a plane that contains Unset origin and axis vectors.
+public static Plane Unset { get; }
+```
+
+For case :two:, it is also common! In the old repo, you see the programmer always check before the value.
+
+:bangbang::warning: **Both are error prone!!** Unfortunately, both solution are **bad**. Why?:thinking: 
+
+- case 1, you remember, it is ok:no_mouth:
+
+```c#
+//case 1.  you remember to do the check
+var someValue = xxx;
+if(the_value_valid)
+{
+    //do sth
+}
+else
+{
+    //do sth
+}
+operation(somevalue);
+```
+
+- case 2, you forget to check, **damn**!:dizzy_face::x:
+
+```c#
+//case 2.  you forget
+operation(somevalue);
+```
+
+It’ll silently do the wrong thing and quite possibly **propagate the mistake to other parts of the system**. :warning:**Silent failure is the worst kind**, because it can be hard to track down and hard to undo. 
+
+
+
+##### 2.2.2. `Nullable <T> struct` 
+
+:pushpin:****
+
+I prefer nice loud exceptions that stop the broken code in its tracks.
