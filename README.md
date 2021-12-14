@@ -2333,6 +2333,27 @@ The output:
 
 
 
+:pushpin:**literal value `'0'` is `int 48`**
+
+In C#, the character `'0'` is actually equal to `int i = 48`. Therefore they can do arithmetic operation.
+
+```c#
+char zero = '0';
+int num = 0;
+int result = num + zero;
+Console.WriteLine(result);
+```
+
+Output:
+
+```
+48
+```
+
+Therefore, `'0'` has an integer value. Same with `1,2,3,4,5,...`
+
+
+
 :pushpin:**Display** primitive data type value
 
 To display the value *literally*, you can use `ToString()` method. It is a MUST method that all variable have and it could output the value in `string` format. e.g. :
@@ -3042,67 +3063,183 @@ In short, it combines conditions with same behaviors.
 
 
 
-:pushpin:****
+### 5.Compound and Iteration statements
+
+#### 5.1. Compound Assignment Operator
+
+:pushpin:**What is it?**
+
+```c#
+int num = 13;
+num = num + 28;  //this is not
+num += 28;  //this is compound
+```
+
+:pushpin:**Recommend**
+
+| Don't:no_mouth:         | Yes!:smile:        |
+| ----------------------- | ------------------ |
+| `num = num + variable;` | `num += variable;` |
+| `num = num - variable;` | `num -= variable;` |
+| `num = num * variable;` | `num *= variable;` |
+| `num = num / variable;` | `num /= variable;` |
+| `num = num % variable;` | `num %= variable;` |
+| `num += 1;`             | `num++;`           |
 
 
 
+#### 5.2. `while` loop
+
+:pushpin:**`while` loop in abstract**
+
+```
+initialization
+while(Boolean expression)
+{
+	statement
+	update sentinel variable
+}
+```
+
+:pushpin:**sentinel variable哨兵变量**
+
+The variable to end the `while` loop.
+
+```c#
+int i = 0;  //sentinel variable
+while(i < 10)
+{
+    Console.WriteLine(i);
+    i++;
+}
+```
 
 
 
+#### 5.3. `for` loop
 
-:pushpin:****
+:pushpin:**`for` loop in abstract**
 
-
-
-
-
-:pushpin:****
-
-
-
-
+```
+for(initialization; Boolean expression; update sentinel variable)
+{
+	statement
+}
+```
 
 
 
-:pushpin:****
+:pushpin:**`for` loop in real**
+
+```c#
+for(int i = 0; i < 10; i++)
+{
+    Console.WriteLine(i);
+}
+```
 
 
 
+:pushpin:**Multiple variable `for` loop**:star:
 
+```c#
+for (int i = 0, j=10; i < j; i++, j--)
+{
+    Console.WriteLine($"i val:{i}, j val:{j}");
+}
+```
 
-:pushpin:****
+Output:
 
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
-
-
-
+```
+i val:0, j val:10
+i val:1, j val:9
+i val:2, j val:8
+i val:3, j val:7
+i val:4, j val:6
+```
 
 
 
-:pushpin:****
+:pushpin:**`for` loop can do more!**:star::star::star:
+
+```c#
+for(string line = reader.ReadLine(); line!=null; line=reader.ReadLine())
+{
+    source.Text += line + "\n";
+}
+```
 
 
 
+:pushpin:**Variable in `for` loop is local variable**
+
+```c#
+for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine($"Say {i}.");
+}
+for (int i = 20; i > 15; i--)
+{
+    Console.WriteLine($"Yell {i}!");
+}
+```
+
+Output:
+
+```
+Say 0.
+Say 1.
+Say 2.
+Say 3.
+Say 4.
+Yell 20!
+Yell 19!
+Yell 18!
+Yell 17!
+Yell 16!
+```
 
 
-:pushpin:****
+
+#### 5.4. `do` statement
+
+:pushpin:**`do` in abstract**
+
+```
+do
+{
+	statement
+}while(Boolean expression)
+```
 
 
 
+:pushpin:**`do` in real**
 
+```c#
+int i = 0;
+do
+{
+    Console.WriteLine(i);
+    i++;
+} while (i < 10);  //don't forget the ;  here
+```
+
+
+
+:pushpin:**difference between `do-while` and `while`**
+
+In short, `do-while` has to **do it at least once** before iterating!
+
+
+
+:pushpin:**`break` and `continue`**
+
+Same with it in Python,
+
+- `break` - it jumps out the `for`/`while` loop directly
+- `continue` - it goes to the next iteration of `for`/`while` loop
 
 
 
