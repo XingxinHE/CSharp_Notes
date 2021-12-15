@@ -3243,63 +3243,149 @@ Same with it in Python,
 
 
 
-:pushpin:****
+### 6.Errors and exceptions
+
+:pushpin:**Handling errors in old days**
+
+In the old days, programmers make a GLOBAL variable. When the method is called, the program is asked to check the GLOBAL variable to see if it is successful.
+
+:pushpin:**What C# does?**
+
+C# use `exception` to handle error in a more robust way.
 
 
 
+#### 6.1. `try-catch` exception
 
+:pushpin:**`try-catch` block**
 
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
+```c#
+try
+{
+    //the code may have errors
+}
+catch (Exception ex)
+{
+    //handle the exception
+}
+```
 
 
 
+:pushpin:**unhandled exception**
+
+The catch mechanism is cascading back(由内向外遍历). If the certain type of exception was still not catch, then it will be **unhandled exception**.
+
+```c#
+string numStr = "2147483648";
+try
+{
+    int num = int.Parse(numStr);
+    Console.WriteLine(num);
+}
+catch(FormatException fEx)
+{
+    
+}
+```
+
+Because the `catch` block only handles `FormatException`, the number exceeds the maximum which will conduct an `OverflowException`.
 
 
 
+:pushpin:**multiple `catch` handler**
 
-:pushpin:****
+C# supports multiple handlers in light of different exception.
 
+```c#
+string numStr = "2147483648";
+try
+{
+    int num = int.Parse(numStr);
+    Console.WriteLine(num);
+}
+catch(FormatException fEx)
+{
+    
+}
+catch(OverflowException oEx)
+{
+    
+}
+```
 
-
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
-
+With these pattern, the preceding code will not only handle `FormatException` but also `OverflowException`.
 
 
 
+:pushpin:**catch multiple exception all in once**
+
+C# provides a robust solution for handling exception which is defined very carefully with an **inheritance hierarchies**(异常用继承层次结构组织). The following is an example:
+
+<img src="img/image-20211216005854504.png" alt="image-20211216005854504" style="zoom: 67%;" />
+
+Therefore, we could use `Exception` to catch any types of exception since it is the *great-granddaddy* of all exceptions.
+
+```c#
+try
+{
+    
+}
+catch (Exception ex)
+{
+    //this block will handle all kinds of exception
+}
+```
 
 
-:pushpin:****
+
+:pushpin:**The order execute the `catch` block**
+
+Taking the following as an example:
+
+```c#
+try
+{
+    //some code here
+}
+catch(FormatException fEx)
+{
+    
+}
+catch(OverflowException oEx)
+{
+    
+}
+```
+
+If the code throw both `FormatException` and `OverflowException`, the program will only fall in **ONE** `catch` block which is the **first** catching block!!
+
+
+
+:pushpin:**A great practice ordering the `Exception`**
+
+With preceding demonstration, a general good practice is to handle the **specific exception in the head** and **general exception at the tail**.
+
+<img src="img/image-20211216011134685.png" alt="image-20211216011134685" style="zoom:50%;" />
+
+```c#
+try
+{
+}
+catch(FormatException fEx)
+{
+}
+catch(OverflowException oEx)
+{
+}
+catch(Exception ex)
+{
+}
+```
+
+
+
+:pushpin:**filtering exception**
 
 
 
