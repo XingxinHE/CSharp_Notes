@@ -3387,53 +3387,246 @@ catch(Exception ex)
 
 :pushpin:**filtering exception**
 
+Although the exception is catch, while you only want to process those errors you are interested. You can:
+
+```c#
+try
+{
+    
+}
+catch(Exception ex) when (errorType == 4)
+{
+    //it will handle errors only if the variable errorType == 4
+}
+```
 
 
 
+:pushpin:**Propagating Exception**
 
-:pushpin:****
+The propagating exception is nothing else but decide when to handle the exception in which scope.
+
+> ​	Propagating exception to outside
+
+```C#
+try
+{
+    ScopeA
+    {
+        ScopeB
+        {
+            //ERROR
+        }
+    }
+}
+catch
+{
+    //catch ERROR
+}
+```
+
+> ​	catch right away, no propagation!
+
+```c#
+try
+{
+    ScopeA
+    {
+        try
+        {
+            ScopeB
+            {
+                //ERROR
+            }
+        }
+        catch
+        {
+            //catch ERROR
+        }
+    }
+}
+catch
+{
+    
+}
+```
 
 
 
+:page_facing_up: To conclude, you can either propagate exception or not. It depends on the nature of the app you are building.
 
 
 
+#### 6.2. `checked` and `unchecked` for integer operation
 
-:pushpin:****
+:pushpin:**integer may overflow silently**
 
+> ​	You CAN'T notice it is overflowed with `try-catch`
 
+```c#
+try
+{
+    int max = int.MaxValue;
+    Console.WriteLine(max+1);
+}
+catch(Exception ex)
+{
+    
+}
+```
 
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
+There is no errors in console but with `-2147483648` as result. That's because **C# allows the calculation to overflow silently**. 
 
 
 
+:pushpin:**Why doesn't C# check overflow?**
+
+Because!! Arithmetic operation are everywhere in the program and it is SO BAD for performance if checks every arithmetic operation.
 
 
 
+:pushpin:**How should we catch `OverflowException`?**
 
-:pushpin:****
+There are **2** methods:
+
+1.Turn on such flag to ask C# compiler to check. (NOT recommend:x:)
+
+> ​	Right click the Project - Properties - Build - Advanced - [x]Check for arithmetic overflow 
+
+2.Use `checked` and `unchecked` (recommend:heavy_check_mark:)
+
+Use the `checked` and `unchecked` keywords to turn on and off integer arithmetic overflow checking in where you want to check.
 
 
 
+:pushpin:**`checked` and `unchecked` statement**
+
+```c#
+int max = int.MaxValue;
+unchecked
+{
+    Console.WriteLine($"Unchecked: {max + 1}");
+}
+checked
+{
+    Console.WriteLine($"Checked: {max + 1}");  //this will not be printed since it is overflow
+}
+```
+
+The output:
+
+```
+Unchecked: -2147483648
+
+Unhandled Exception: System.OverflowException: Arithmetic operation resulted in an overflow.
+```
 
 
-:pushpin:****
+
+:pushpin:**`checked` and `unchecked` expression**
+
+```c#
+int maxUnchecked = unchecked(int.MaxValue+1);  //NO ERROR
+int maxChecked = checked(int.MaxValue+1);      //ERROR!!!
+```
+
+
+
+:pushpin:**NOT support floating-point**
+
+You cannot use the `checked` and `unchecked` keywords to control floating-point (noninteger) arithmetic. The `checked` and `unchecked` keywords apply only to integer arithmetic using data types such as `int` and `long`.
+
+
+
+#### 6.3. `throw` exception
+
+There are many `Exception` that can be throw. Just search and throw!
+
+:pushpin:**`throw` statement**
+
+```c#
+if(day==1)
+{
+    
+}
+else if(day==3)
+{
+    
+}
+//..
+else if(day==7)
+{
+    
+}
+else
+{
+    //day is in the domain of 1 to 7, now there is no options suitable
+    throw new ArgumentOutOfRangeException("No such day!");
+}
+```
+
+
+
+:pushpin:**`throw` expression** :star:
+
+Suppose:
+
+```c#
+string name;
+if(nameField.Text != "")
+{
+    name = nameField.Text;
+}
+else
+{
+    throw new Exception("No input!");
+}
+```
+
+The objective of this statement is to **assign** value to this variable. Recommend to use ternary operator!
+
+```c#
+string name = nameField.Text != "" ? nameField.Text : throw new Exception("No Input!");
+```
+
+This is more elegant!!
+
+
+
+#### 6.4. `finally` block
+
+:pushpin:**What does it do?**
+
+A `finally` block to **ensure** that critical **code always runs**, **even if an exception occurs**.
+
+
+
+:pushpin:**Example - Dispose file** :star:
+
+This is very handy dealing with accessing a file. Because you have to make sure `Dispose` statement always executes at the end even if an exception occurs. Otherwise the file is occupied.
+
+```c#
+TextReader reader = ...; 
+//...
+try 
+{
+    string line = reader.ReadLine(); 
+    while (line != null) 
+    {
+        //...
+        line = reader.ReadLine();
+    }
+} 
+finally
+{
+    if (reader != null)
+    {
+        reader.Dispose();   //Dispose the file in the end no matter what
+    }
+}
+```
+
+
 
 
 
