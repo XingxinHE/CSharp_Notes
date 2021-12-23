@@ -3593,7 +3593,7 @@ finally
 
 
 
-### 14.Garbage collection and resource management
+# 14.Garbage collection and resource management
 
 **Overview:dart:**:
 
@@ -3607,27 +3607,99 @@ finally
 
 
 
-#### 14.1. The lifetime of an object
+## 14.1. The lifetime of an object
 
-:pushpin:****
+:pushpin:**What is garbage collection?**
 
+Like object creation, object destruction is a **<u>two-phase</u>** process. The phases of destruction mirror the phases of creation:
+1. The **<u>common language runtime (CLR)</u>** perform tidying up by a destructor you write.
+2. The **<u>CLR deallocate the memory</u>** of the object and return the memory back to the heap.
 
+The process of destroying an object and returning memory to the heap is known as **<u>garbage collection</u>**.
 
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
+|        | Object Creation       | Object Destruction                           |
+| ------ | --------------------- | -------------------------------------------- |
+| Step 1 | define in Constructor | define in Destructor                         |
+| Step 2 | use `new` keyword     | in C++, they use `delete`. but in C# use CLR |
 
 
 
+### 14.1.1. Writing destructor
 
+:pushpin:**When should you use destructor?**
+
+The CLR will automatically clear up any managed resources that an object uses, so **in many of these cases, writing a destructor is unnecessary**. Therefore you could use destructor in the following circumstances:
+
+- a managed resource is <u>large</u> (such as a multidimensional array)
+- an object references an <u>directly/indirectly unmanaged resource</u>  (such as file streams, network connections, database connections)
+
+
+
+:pushpin:**Syntax of destructor**
+
+`~`
+
+```c#
+class FileProcessor
+{
+	FileStream file = null;
+    public FileProcessor(string fileName)
+    {
+        this.file = File.OpenRead(fileName); // open file for reading
+    }
+    ~FileProcessor()
+    {
+        this.file.Close(); // close file
+    }
+}
+```
+
+Note: this is simply an example, and don't follow preceding pattern for opening and closing files.:warning:
+
+
+
+:pushpin:**Constraint of destructor**
+
+:one:Destructors apply only to reference types. You can't apply to value type like `struct`.
+
+:x:
+
+```c#
+struct MyStruct
+{
+	~MyStruct() { ... } // compile-time ERROR!!
+}
+```
+
+:two:No access modifier for a destructor.
+
+:x:
+
+```c#
+public ~FileProcessor() 
+{
+	... // compile-time ERROR!!
+} 
+```
+
+Because only CLR can access destructor and therefore you can specify the access modifier.
+
+:three:No parameters for destructor.
+
+:x:
+
+```c#
+~FileProcessor(int num) 
+{
+	... // compile-time ERROR!!
+} 
+```
+
+It still due to the fact that only CLR can access destructor.
+
+
+
+### 14.1.2. Why use the garbage collector?
 
 :pushpin:****
 
