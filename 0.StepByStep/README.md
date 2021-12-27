@@ -3701,72 +3701,257 @@ It still due to the fact that only CLR can access destructor.
 
 ### 14.1.2. Why use the garbage collector?
 
-:pushpin:****
+:pushpin:**Tell me why?**
 
+In short, **<u>managing object lifetimes is complex</u>**, and therefore the designers of C# decided to prevent your code from taking on this responsibility.
 
 
 
+:pushpin:**Difference between C# and C++**
 
+|                                  | C#               | C++                |
+| -------------------------------- | ---------------- | ------------------ |
+| Access to manage object lifetime | :x:              | :heavy_check_mark: |
+| Robustness & Security            | :arrow_up_small: | :arrow_down_small: |
 
 
-:pushpin:****
 
+:pushpin:**What Garbage Collector promise?**
 
+Few things it promises:
 
+:one:  **<u>Every object will be destroyed</u>**, and its destructor will be run. When a program ends, all outstanding objects will be destroyed. 
 
+:two:  **<u>Every object will be destroyed exactly once</u>**. 
 
-:pushpin:****
+:three:  <u>**Every object will be destroyed only when it becomes unreachable**</u>—that is, when there are **no references to the object** in the process running your application.
 
 
 
+:pushpin:**What is a GREAT practice using Garbage Collector?**
 
+$\because$ Garbage collection is an **<u>expensive process</u>**.
 
+$\therefore$ Performing **a few large sweeps of memory** is more efficient than performing lots of little dustings.
 
 
-:pushpin:****
 
+### 14.1.3. How does Garbage Collector work?
 
+This topic is out of the scope of this book. Please refer to the following link:
 
+[Fundamentals of garbage collection by Microsoft](https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals)
 
+[My note for CLR][clrViaCs]
 
-:pushpin:****
 
 
+### 14.1.4. Tips for using Garbage Collector
 
+:one: Try to **AVOID using destructors** except when you really need them—use them only to reclaim unmanaged resources.
 
+:two:  Be very **careful** when you write a destructor.
 
+:three:  Ensure that destructors **do not depend on one another**.
 
 
-:pushpin:****
 
+## 14.2. Resource management
 
+:thinking:**Context**:
 
+> ​	The context for resource management is that **some resources have to be released** *as soon as possible*.
 
+:envelope:**Example**:
 
-:pushpin:****
+> ​	Memory
+>
+> ​	Database Connection
+>
+> ​	File Handles
 
+🎯**Strategy**:
 
+> ​	Release the resource yourself.
 
+:hammer:**Tools**:
 
+> ​	Create a **disposal**[^1] method—a method that <u>**explicitly disposes of a resource**</u>. If a class has a disposal method, you can call it and control when the resource is released.
 
 
 
-:pushpin:****
+### 14.2.1. Disposal Method
 
+:pushpin:**Example Code**
 
+```c#
+TextReader reader = new StreamReader(filename);
+string line;
+while ((line = reader.ReadLine()) != null)
+{
+	Console.WriteLine(line);
+}
+reader.Close();  //Here! Dispose/Close!!
+```
 
+The main purpose of the preceding code is to **read a text file line by line** and **close it in the end**. 
 
 
-:pushpin:****
 
+:pushpin:**Serious Problem!**:warning:
 
+It’s **not safe from exceptions**. If the call to the block`{}` throws an exception, the call to `Close()` **will not happen**; it will be bypassed. It may **<u>run out of file handles</u>** and be **<u>unable to open any more files</u>**.:x:
 
-:pushpin:****
+
+
+### 14.2.2. Exception-safe disposal
+
+To **ensure** that a disposal method (such as `Close()`) is **always called**, you can use `try-finally` block.
+
+```c#
+TextReader reader = new StreamReader(filename);
+try
+{
+	string line;
+    while ((line = reader.ReadLine()) != null)
+    {
+		Console.WriteLine(line);
+    }
+}
+finally
+{
+	reader.Close();  //no matter how, it will close the file.
+}
+```
+
+
+
+:pushpin:**Constraint of `try-finally` logic**
+
+:one:  Can't handle multiple resources.  e.g. If **1** `try-finally` block refers to **1** file. Multiple resources means nested `try-finally` blocks!
+
+:x:
+
+```c#
+A-Resources;
+try
+{
+    //operation on A-Resources
+    BResources
+    try
+    {
+        //operation on B-Resources
+    }
+    finally
+    {
+        //release the B-Resources
+    }
+}
+finally
+{
+    //release the A-Resources
+}
+```
+
+:two:  Fail to create an abstraction of the solution. Because this mechanism is hard-code and therefore it is hard to reproduce.
+
+:three:  Possibly use the resource after it has been released.  Because the variable is declared out of the `try-finally` block.
+
+:x:
+
+```c#
+TextReader someReader = new StreamReader(filename)
+try
+{
+    //operation
+}
+finally
+{
+    //release the someReader
+}
+
+//!!You may reuse the someReader here!!
+```
+
+
+
+### 14.2.3. `using` statement and `IDisposable` interface:star:
+
+:pushpin:**Different meanings of `using`**:rotating_light:
+
+`using` in this section refers to `using ` **statement**.
 
+`using` **directive** is the one which brings a namespace into scope.
 
 
 
+:pushpin:**Why `using` is good?**
 
+:one:  It provides **a clean mechanism** for controlling the lifetimes of resources.
+
+:two:  Object **only exists inside** the `using` statement block and it will be destroyed out of the block.
+
+
+
+:pushpin:**Example**
+
+Pseudo code:
+
+```c#
+using ( type variable = initialization )
+{
+	StatementBlock
+}
+```
+
+Code:
+
+```c#
+//variable declared in using will be destroyed once left the block
+using (TextReader reader = new StreamReader(filename))
+{
+	string line;
+    while ((line = reader.ReadLine()) != null)
+    {
+		Console.WriteLine(line); 
+    } 
+}
+```
+
+
+
+:pushpin:**Prerequisite of `using`**
+
+The variable inside `using` statement **MUST** be of a type that **implements** the `IDisposable` interface. The `IDisposable` interface contains just one method, `Dispose()`.
+
+```c#
+namespace System
+{
+	interface IDisposable
+    {
+        void Dispose(); 
+    }
+}
+```
+
+The purpose of the `Dispose()` method is to **free** any **resources used by an object**.
+
+
+
+:pushpin:**Benefits of `using` statement**
+
+:one:Scalability when disposing multiple resources. 
+
+:two:Compatible with the program code. 
+
+:three:Abstracts away the problem and avoids repetition. 
+
+:four:**ROBUST**:star:
+
+
+
+### 14.2.4. `Dispose()` in a destructor
+
 :pushpin:****
 
 
@@ -7368,8 +7553,16 @@ It still due to the fact that only CLR can access destructor.
 
 
 :pushpin:****
+
+
+
+# End
+
+
 
+[clrViaCs]:../2.CLR/README.md
 
 
 
+[^1]: Disposal被翻译为资源清理，原因在于disposal/dispose强调了"资源清理"的概念，指的是清理对象中包装的资源（比如它的字段所引用的对象），然后等待垃圾回收器自动回收该对象本身占用的内存（这时才真正释放）。
 
