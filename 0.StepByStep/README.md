@@ -3950,19 +3950,116 @@ The purpose of the `Dispose()` method is to **free** any **resources used by an 
 
 
 
-### 14.2.4. `Dispose()` in a destructor
+### 14.2.4. `Dispose()` in a destructor:star::star::star:
 
-:pushpin:****
+:pushpin:**What is the context writing `Dispose()` in destructor?**
+
+When you are writing your own class, there are 2 options to manage resources:
+
+- :one: Write the **destructor** by your own.
+- :two: Implement `IDisposable` interface, so that you can take `using` to manage your instances.
+
+Therefore, the best practice is do **both**.
 
 
 
+:pushpin:**Great practice of implementing `Dispose()`**
+
+The following is the best practice of implementing `IDisposable` and `Dispose()`.
+
+```c#
+class Example : IDisposable
+{
+    private Resource scarce;
+    //The variable is to prevent disposing of the resources multiple times
+    //if it is called concurrently
+    private bool disposed = false;
+    
+    ~Example()
+    {
+        //`false` means only the unmanaged resources will be released.
+        //why don't release the managed resources?
+        //Because they will be, or might already have been, handled by the garbage collector,
+        this.Dispose(false);
+    }
+    
+    public virtual void Dispose()
+    {
+        //`true` means both managed and unmanaged resources will be release.
+        this.Dispose(true);
+        
+        //This method stops the garbage collector from
+        //calling the destructor on this object because
+        //the object has already been finalized.
+        GC.SuppressFinalize(this);
+    }
+    
+    protected virtual void Dispose(bool disposing)
+    {
+        if(!this.disposed)
+        {
+            if(disposing)
+            {
+                //release large, managed resource here
+            	//..
+            }
+            //release unmanaged resources here
+        	//..
+            this.disposed = true;
+        }
+    }
+    
+    public void SomeBehavior()  //example method
+    {
+        this.checkIfDisposed();
+        //...
+    }
+    
+    private void checkIfDisposed()
+    {
+        if(this.disposed)
+        {
+            throw new ObjectDisposedException("Example: object has been disposed");
+        }
+    }
+}
+```
 
 
 
+There are **2** `Dispose` method with different signature. The difference can be elaborated in the following:
 
-:pushpin:****
+> ​	:one:
+
+```c#
+public virtual void Dispose();
+```
+
+> ​	:two:
+
+```c#
+protected virtual void Dispose(bool disposing);
+```
+
+**Comparison**::star:
 
 
+|                   | `public virtual void Dispose()`             | `protected virtual void Dispose(bool disposing)`             |
+| ----------------- | ------------------------------------------- | ------------------------------------------------------------ |
+| Access            | can be called at any time                   | cannot be called at any time, only inside class or derived class |
+| Use               | it <u>just call</u> the `protected` version | it <u>actually performs</u> the resource disposal            |
+| Called by `using` | This is used in `using` statement directly  | This not directly used in `using` statement                  |
+
+
+
+The overload version of `protected virtual void Dispose(bool disposing)` has **2** options:
+
+- `disposing == true`
+  - release <u>large, managed resource</u>:heavy_check_mark: and <u>unmanaged resource</u>:heavy_check_mark:
+  - used by `public` version
+- `disposing == false`
+  - don't release <u>large, managed resource</u>:x: and but release <u>unmanaged resource</u>:heavy_check_mark:
+  - used by destructor, only called by the garbage collector when your object is being finalized
 
 
 
