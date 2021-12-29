@@ -682,7 +682,7 @@ if (temp != null)
 > ​	use the `enum` keyword => name of this `enum` => enumeration **literal** names
 
 ```c#
-enum Days = {Sunday, Monday, Tuesday, Wednesday, Thursday, Friday};
+enum Days {Sunday, Monday, Tuesday, Wednesday, Thursday, Friday};
 ```
 
 9.2 Declare an enumeration variable
@@ -3978,37 +3978,410 @@ The purpose of the `Dispose()` method is to **free** any **resources used by an 
 
 
 
+# 20.Delegate and Event
 
+**Overview:dart:**:
 
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
+- Declare a `delegate` type to create an <u>abstraction of a method signature</u>.
+- Create an instance of a delegate to refer to a specific method.
+- Call a method through a delegate.
+- Define a lambda expression to specify the code to be executed by a delegate.
+- Declare an `event` field.
+- Handle an `event` by using a `delegate`.
+- **Raise** an <u>event</u>.
 
 
 
+:pushpin:**Why delegate?**
+
+You need to <u>avoid introducing dependencies</u> that might restrict the use of your class. **Delegates** provide the ideal solution, which fully **decouple**[^3] the <u>application logic in your methods</u> from the <u>applications that invoke them</u>.
+
+
+
+## 20.1. Understanding delegates
+
+:pushpin:**Definition of `delegate`**
+
+A `delegate` is a **<u>reference</u>** to a method.
+
+
+
+:pushpin:**A smell of `delegate`**
+
+(what the following method does or how the Processor class is defined is immaterial for this discussion, please focus on the idea of `delegate`)
+
+```c#
+class Program
+{
+    //Declare a delegate 
+    public delegate void AnimalSound(int num);
+
+    static void Main(string[] args)
+    {
+        //Init the delegate
+        AnimalSound sound;
+
+        //dog -> point the delegate to Dog's sound
+        sound = Dog.DogSound;
+        sound(3);
+
+        //cat -> point the delegate to Cat's sound
+        sound = Cat.CatSound;
+        sound(2);
+    }
+}
+
+class Cat
+{
+    //the function must match the SIGNATURE of delegate
+    public static void CatSound(int num)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            Console.WriteLine("mew...");
+        }
+    }
+}
+class Dog
+{
+    //the function must match the SIGNATURE of delegate
+    public static void DogSound(int num)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            Console.WriteLine("woof...");
+        }
+    }
+}
+```
+
+
+
+Few things to be noticed:
+
+- :one:  **No parentheses and parameters after the method name**, even if the method has. This is just an **<u>assignment</u>** statement.
+
+- :two:  A `delegate` is **similar** to a <u>function pointer</u> in C++. The difference is that `delegate` is **type-safe**!! a.k.a. 
+  - You can make a `delegate` refer ONLY to a method that **<u>matches</u>** **the signature of the `delegate`**
+  - You CANNOT invoke[^4] a `delegate` that does not refer to a valid method.  (analogy in variable, you cannot use a variable without value)
+
+
+
+## 20.2. Example of using `delegate`
+
+:pushpin:**`delegate` in the .NET Framework class library**
+
+We will introduce **2** delegates type, which are:
+
+- `Func<T, ...>`  , this will be covered in this section.
+- `Action<T, ...>`  , this will only be mentioned a little bit.
+
+
+
+> ​	`Func<T, ..>`
+
+You are actually using it everyday! The parameter taken by the `Average`, `Max`, `Count`, and other methods of the `List<T>` class **<u>is actually a generic</u>** `Func<T, TResult>` delegate:star:.  You may wonder 'What the heck?!':thinking:  Here is a code example:
+
+```c#
+struct Person
+{
+    public int ID { get; set; }
+    public string Name { get; set; }
+    public int Age { get; set; }
+} 
+//...
+List<Person> personnel = new List<Person>()
+{
+    new Person() { ID = 1, Name = "John", Age = 53 },
+    new Person() { ID = 2, Name = "Sid", Age = 28 },
+    new Person() { ID = 3, Name = "Fred", Age = 34 },
+    new Person() { ID = 4, Name = "Paul", Age = 22 }
+};
+```
+
+You want to get the amount of people around 30-39.
+
+```c#
+int thirties = personnel.Count(p => p.Age >= 30 && p.Age <= 39);
+```
+
+- `T` in `Func<T, TResult>` is <u>the type of data</u> in the list  (in this case, the `Person` struct)
+
+- `TResult` in `Func<T, TResult>` is <u>determined by the context</u> in which the delegate is used.  (in this case, the `int`)
+
+Therefore, the type of the **<u>delegate</u>** expected by the `Count` method is `Func<Person, int>`.
+
+
+
+> ​	`Action<T, ..>`
+
+An `Action` delegate is used to **<u>reference a method that performs an action</u>** instead of returning a value (a `void` method).
+
+
+
+**Conclusion**: You **<u>can't</u>** actually see `delegate` in `Count` or `Func<T, ...>` or `Action<T, ...>`. It rather <u>implements the `delegate` behind the scenes</u>. 
 
 
 
 
-:pushpin:****
+
+:pushpin:**`delegate` in the automated factory scenario **
+
+Suppose you have **3** machines, and each machine has its own way to **shut down**.
+
+- Folding Machine
+  - Stop Folding
+- Welding Machine
+  - Finish Welding
+- Painting Machine
+  - Paint Off
+
+Now you want to have a Controller to control all the **`Shut Down()`** button in case of any dangers.:warning:
+
+
+
+> :x:	The old and <u>**outdated**</u> way to do is:
+
+```c#
+//Shut down method in Folding Machine
+public class FoldingMachine
+{
+    public void StopFolding() => Console.WriteLine("Folding Machine stop folding...");
+}
+//Shut down method in Welding Machine
+public class WeldingMachine
+{
+    public void FinishWelding() => Console.WriteLine("Welding Machine finished welding...");
+}
+//Shut down method in Painting Machine
+public class PaintingMachine
+{
+    public void PaintOff() => Console.WriteLine("Painting Machine off...");
+}
+
+//Explicitly includes the shut down function one by one
+public class Controller
+{
+    private FoldingMachine foldingMachine = new FoldingMachine();
+    private WeldingMachine weldingMachine = new WeldingMachine();
+    private PaintingMachine paintingMachine = new PaintingMachine();
+
+    public void ShutDown()
+    {
+        foldingMachine.StopFolding();
+        weldingMachine.FinishWelding();
+        paintingMachine.PaintOff();
+    }
+}
+```
+
+Call the shut down:
+
+```c#
+static void Main(string[] args)
+{
+    Controller controller = new Controller();
+    controller.ShutDown();
+}
+```
+
+Result:
+
+```
+Folding Machine stop folding...
+Welding Machine finished welding...
+Painting Machine off...
+```
+
+
+
+> :no_mouth:	<u>**Stupid way**</u>: adds the machine methods to the `delegate` in the Controller constructor
+
+(The stop method in each machine remains the same.)
+
+```c#
+public class Controller
+{
+    //declare the delegate
+    delegate void StopMachineDelegate();
+    //instance of delegate as the field
+    private StopMachineDelegate stopMachineDelegate;
+	
+    //instances of each machine
+    private FoldingMachine foldingMachine = new FoldingMachine();
+    private WeldingMachine weldingMachine = new WeldingMachine();
+    private PaintingMachine paintingMachine = new PaintingMachine();
+
+    public Controller()
+    {
+        //add stop method to this delegate
+        this.stopMachineDelegate += foldingMachine.StopFolding;
+        this.stopMachineDelegate += weldingMachine.FinishWelding;
+        this.stopMachineDelegate += paintingMachine.PaintOff;
+    }
+
+    //the shut down method includes all the stop methods
+    public void ShutDown()
+    {
+        this.stopMachineDelegate();
+    }
+}
+```
+
+Run it:
+
+```c#
+static void Main(string[] args)
+{
+    Controller controller = new Controller();
+    controller.ShutDown();
+}
+```
+
+
+
+> :heavy_check_mark:	Add `delegate` outside of the class
+
+(The stop method in each machine remains the same.)
+
+```c#
+public class Controller
+{
+    //make the delegate as public
+    public delegate void StopMachineDelegate();
+    public StopMachineDelegate stopMachineDelegate;
+
+    public void ShutDown()
+    {
+        this.stopMachineDelegate();  //run it
+    }
+}
+```
+
+Run it:
+
+```c#
+static void Main(string[] args)
+{
+    //Init the machines
+    FoldingMachine foldingMachine = new FoldingMachine();
+    WeldingMachine weldingMachine = new WeldingMachine();
+    PaintingMachine paintingMachine = new PaintingMachine();
+    //Init the controller
+    Controller controller = new Controller();
+
+    //Add stop methods to delegate
+    controller.stopMachineDelegate += foldingMachine.StopFolding;
+    controller.stopMachineDelegate += weldingMachine.FinishWelding;
+    controller.stopMachineDelegate += paintingMachine.PaintOff;
+
+    //run
+    controller.ShutDown();
+}
+```
 
 
 
 
 
-:pushpin:****
+> :heavy_check_mark:	Create a **read/write property** to provide access to a `private` delegate
+
+(The stop method in each machine remains the same.)
+
+```c#
+public class Controller
+{
+    //public delegate, private delegate instance
+    public delegate void StopMachineDelegate();
+    private StopMachineDelegate stopMachineDelegate;
+
+    //public property handling StopMachine delegate
+    public StopMachineDelegate StopMachine
+    {
+        get => this.stopMachineDelegate;
+        set => this.stopMachineDelegate = value;
+    }
+    
+    public void ShutDown()
+    {
+        this.stopMachineDelegate();
+    }
+}
+```
+
+Run it:
+
+```c#
+//Init the machines
+FoldingMachine foldingMachine = new FoldingMachine();
+WeldingMachine weldingMachine = new WeldingMachine();
+PaintingMachine paintingMachine = new PaintingMachine();
+//Init the controller
+Controller controller = new Controller();
+
+//Add stop methods to Property
+controller.StopMachine += foldingMachine.StopFolding;
+controller.StopMachine += weldingMachine.FinishWelding;
+controller.StopMachine += paintingMachine.PaintOff;
+
+//run
+controller.ShutDown();
+```
+
+
+
+
+
+> :heavy_check_mark:	Provide complete **<u>encapsulation</u>** by implementing separate `Add` and `Remove` methods
+
+(The stop method in each machine remains the same.)
+
+```c#
+public class Controller
+{
+    public delegate void StopMachineDelegate();
+    private StopMachineDelegate stopMachineDelegate;
+
+    public void ShutDown()
+    {
+        this.stopMachineDelegate();
+    }
+    
+	//Add stop method to delegate instance
+    public void AddStopMethod(StopMachineDelegate machineDelegate)
+    {
+        this.stopMachineDelegate += machineDelegate;
+    }
+    
+	//Remove stop method to delegate instance
+    public void RemoveStopMethod(StopMachineDelegate machineDelegate)
+    {
+        this.stopMachineDelegate -= machineDelegate;
+    }
+}
+```
+
+Run it:
+
+```c#
+static void Main(string[] args)
+{
+    //Init the machines
+    FoldingMachine foldingMachine = new FoldingMachine();
+    WeldingMachine weldingMachine = new WeldingMachine();
+    PaintingMachine paintingMachine = new PaintingMachine();
+    //Init the controller
+    Controller controller = new Controller();
+
+    //Add stop methods to delegate
+    controller.AddStopMethod(foldingMachine.StopFolding);
+    controller.AddStopMethod(weldingMachine.FinishWelding);
+    controller.AddStopMethod (paintingMachine.PaintOff);
+
+    //run
+    controller.ShutDown();
+}
+```
 
 
 
@@ -7565,4 +7938,7 @@ The purpose of the `Dispose()` method is to **free** any **resources used by an 
 
 
 [^1]: Disposal被翻译为资源清理，原因在于disposal/dispose强调了"资源清理"的概念，指的是清理对象中包装的资源（比如它的字段所引用的对象），然后等待垃圾回收器自动回收该对象本身占用的内存（这时才真正释放）。
+
+[^3]: decouple, 解耦
+[^4]: invoke和call都被翻译成调用，但两者在语义上有巨大的区别。执行一个所有信息都已知的方法时，用call比较恰当。但在需要"唤出"某个东西来帮你调用一个信息不明的方法时，用invoke比较恰当。
 
