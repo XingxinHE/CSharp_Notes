@@ -4484,6 +4484,223 @@ static void Main(string[] args)
 
 
 
+:pushpin:**`delegate`in UWP**
+
+Suppose you have the following business logic, you start checking out, then trigger shipping and auditing[^5] at the same time.
+
+
+<img src="img/image-20211230212310133.png" alt="image-20211230212310133" style="zoom:50%;" />
+
+
+
+Suppose in the **`MainPage.xaml`**,  you have a button
+
+```xaml
+<Button x:Name="checkout" Grid.Row="4" IsEnabled="False" Content="Checkout" HorizontalAlignment="Center" VerticalAlignment="Center" Click="CheckoutButtonClicked" />
+```
+
+
+When you click the button, it triggers `CheckoutButtonClicked`, so you have the following function in **`MainPage.xaml.cs`**:
+
+```c#
+private void CheckoutButtonClicked(object sender, RoutedEventArgs e)
+{
+    try
+    {
+        // Perform the checkout processing
+        this.auditor.AuditOrder(this.order);  //Watch HERE:  Auditing!!
+        this.shipper.ShipOrder(this.order);   //Watch HERE:  Shipping!!
+        
+        //...
+    }
+    catch (Exception ex)
+    {
+        MessageDialog dlg = new MessageDialog(ex.Message, "Exception");
+        dlg.ShowAsync();
+    }
+}
+```
+
+
+
+
+
+Apparently, there should be a function do auditing and shipping a<u>t the same time</u>. Meanwhile, the parameter of `ShipOrder(Order order)` is same as the parameter of `AuditOrder(Order order)`.
+
+
+
+$\because$ the motions happen after checking out, $\therefore$ we can make a class called `CheckoutController`
+
+```c#
+public class CheckoutController
+{
+    //declare a delegate combining all the check out methods
+    public delegate void CheckoutDelegate(Order order);
+    //init the delegate as field
+    public CheckoutDelegate CheckoutProcessing = null;
+
+    public void StartCheckoutProcessing(Order order)
+    {
+        //Wrap the delegate method field inside a function
+        if (this.CheckoutProcessing != null)
+        {
+            this.CheckoutProcessing(order);
+        }
+    }
+}
+```
+
+Attention!:star::warning:[^6]
+
+After setting up the structure above, we can implement the `MainPage.xaml.cs`.
+
+```c#
+public MainPage()
+{
+    this.InitializeComponent();
+
+    this.auditor = new Auditor();
+    this.shipper = new Shipper();
+    this.checkoutController = new CheckoutController();
+    
+    //add the methods into the public delegate field
+    this.checkoutController.CheckoutProcessing += auditor.AuditOrder;
+    this.checkoutController.CheckoutProcessing += shipper.ShipOrder;
+}
+```
+
+Therefore, the `CheckoutButtonClicked` could be:
+
+```c#
+private void CheckoutButtonClicked(object sender, RoutedEventArgs e)
+{
+    try
+    {
+        // Perform the checkout processing with ONE delegate method!!
+        this.checkoutController.StartCheckoutProcessing(this.order);
+
+        //...
+    }
+    catch (Exception ex)
+    {
+        MessageDialog dlg = new MessageDialog(ex.Message, "Exception");
+        dlg.ShowAsync();
+    }
+}
+```
+
+
+
+
+
+## 20.3. Lambda expressions and delegates:star:
+
+Here comes an important question:
+
+> ​	what if you want to `delegate` a method with <u>different signature</u>?:star:
+
+```c#
+//the delegate method takes no parameters
+delegate void StopMachineDelegate();
+public StopMachineDelegate stopMachineDelegate;
+
+//What if some method changed its signature?
+public void StopFolding(int num);
+public void FinishWelding(double degree);
+public void PaintOff();
+```
+
+There are **2** solutions:
+
+- adapter
+- lambda `delegate`:star:
+
+
+
+:pushpin:**Adapter**
+
+One solution is to use [Adapter](https://github.com/XingxinHE/SoftwareDevelopment/tree/main/2_DesignPattern/DesignPatterns#41-adapter) which you simply wrap the method into a version with same signature.
+
+```c#
+void FinishFolding()
+{
+    //...
+    this.StopFolding(0);
+}
+```
+
+And then you add the wrapped version:
+
+```c#
+this.stopMachineDelegate += folder.FinishFolding;
+```
+
+
+
+:pushpin:**Lambda `delegate`**:star:
+
+This is super convenient! You just do like this:
+
+```c#
+this.stopMachineDelegate += ( () => folder.StopFolding(10) );
+```
+
+How is it?! This is incredible! Taking the sensor package I develop, the connect method are supper different.
+
+```c#
+//connect method of wenglor sensor
+public void WenglorConnect(string ip, string port, int timeout);
+
+//connect method of tcp client
+public void TcpConnect(string ipAndPort);
+```
+
+
+
+## 20.4. Notification by `event`
+
+:pushpin:**Why `event`?**
+
+Although `delegate` is super powerful, it still has to be called explicitly. Therefore, `event` is designed to be called automatically in certain condition. 
+
+The .NET Framework provides `event`, which you can use to <u>define and trap significant actions</u> and <u>arrange for a `delegate` to be called to handle the situation</u>.
+
+
+
+
+
+### 20.4.1. Recipe of `event`
+
+:pushpin:**The structure of `event` related stuffs**
+
+- **event source**.  The `event` variable is declared inside a class intended to act as an event source. An <u>event source</u> is usually a class that <u>monitors its environment</u> and <u>raises an `event` when something significant happens</u>.
+- **subscribers**.  An `event` <u>maintains a list of methods to call</u> when it is raised. These methods are sometimes referred to as *subscribers*.
+
+
+
+Analogy in the preceding machine example:
+
+- **event source** - `class TemperatureMonitor` which monitors the temperature of each machine.
+- **subscribers** - response to “machine overheating” `event` and take all the `ShutDown()` methods of different machines.
+
+
+
+:pushpin:**The general process using `event`**
+
+- :one:  declare an `event`
+- :two:  subscribe to that `event`  /  unsubscribe to that `event`
+- :three:  Raise an `event`
+
+
+
+
+
+### 20.4.2. Case Study of `event`
+
+
+
+
+
 
 
 # 26.MVVM in C#
@@ -4511,33 +4728,6 @@ A well-structured graphical app **<u>separates</u>** the design of the <u>user i
 <u>**the `view`**</u> represents the way in which the **data is displayed in the UI**
 
 <u>**the `ViewModel`**</u> contains the **logic that connects the two**, taking the user input and converting it into commands that perform business operations on the model, and also taking the data from the model and formatting it in the manner expected by the view.
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
 
 
 
@@ -8054,4 +8244,7 @@ A well-structured graphical app **<u>separates</u>** the design of the <u>user i
 
 [^3]: decouple, 解耦
 [^4]: invoke和call都被翻译成调用，但两者在语义上有巨大的区别。执行一个所有信息都已知的方法时，用call比较恰当。但在需要"唤出"某个东西来帮你调用一个信息不明的方法时，用invoke比较恰当。
+
+[^5]: audit指的是审计，例如不允许未成年人购买淫秽书籍影碟。
+[^6]: 好的编程习惯是把delegate包进一个public method里面，这样1.能让人调用的时候感觉不到啥异样，2.能在调用前确认非空
 
