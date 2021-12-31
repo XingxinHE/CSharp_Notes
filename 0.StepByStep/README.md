@@ -4783,6 +4783,113 @@ Therefore, the design can be documented as:
 
 
 
+# 23.Concurrency by `Task` and `Parallel`
+
+🎯**Overview**
+
+- Use the `Task` class to **<u>create and run parallel operations</u>** in an application
+- Use the `Parallel` class to <u>**parallelize**</u> some common programming **constructs**.
+- <u>Cancel</u> long-running <u>tasks</u> and <u>handle exceptions</u> raised by parallel operations.
+
+
+
+:pushpin:**Why perform multitasking by using parallel processing?**
+
+There are **2** primary reasons why you might want to perform <u>**multitasking**</u> in an application:
+
+- To improve responsiveness
+
+- To improve scalability
+
+
+
+:pushpin:**What should C# developer do?**
+
+To make the best use of multicore processors, you need to write your applications to <u>**take advantage of multitasking**</u>.[^7]
+
+
+
+## 23.1. Implementing multitasking in .NET
+
+:pushpin:**Definition**
+
+Multitasking is the ability to do more than one thing at the same time.
+
+
+
+:pushpin:**What should be considered to implement multitasking?**
+
+- **:star:  [My Job]**  How to <u>**divide an application into a set of concurrent operations**</u>? 
+- [C# 's Job]  How to arrange for a set of operations to execute concurrently, on multiple processors? 
+- [C# 's Job]  How to perform only as many concurrent operations as there are processors available? 
+- [C# 's Job]   If an operation is blocked (such as while waiting for I/O to complete), how to detect this and arrange for the processor to run a different operation rather than sit idle[^8]? 
+- [C# 's Job]   How to determine when concurrent operations have completed?
+
+For programmer, only the first job needs to be considered. Others have been already implemented in `System.Threading.Tasks`.
+
+
+
+:pushpin:**Disclaimer!!**
+
+The point about <u>**application design is fundamental**</u>. If an <u>application is not designed with multitasking</u> in mind, then it <u>doesn’t matter how many processor cores you throw at it</u>, it will not run any faster than it would on a single-core machine.
+
+
+
+### 23.1.1. `Task`, `Thread`, and `ThreadPool` Overview
+
+:pushpin:**What is `Task`?**
+
+`Task` is a class which is <u>**an abstraction of a concurrent operation**</u>. 
+
+:pushpin:**How to use `Task`?**
+
+Create a `Task` object to run a block of code. You can instantiate multiple `Task` objects and start them running in parallel if sufficient processors or processor cores are available. 
+
+:pushpin:**Relationship between `Task` and processor**
+
+ numbers of `Task` object $\neq$ number of processor
+
+a.k.a. You can create `Task` more than processor.
+
+
+
+:pushpin:**Why not `Thread`?**
+
+Because `Thread` is <u>**outdated**</u>!!  The program use the number of `Thread` you explicitly create, and the operating system will schedule <u>**only that number of threads**</u>. This may lead to: 
+
+- :one:  :x:overloading and poor response time  **when**  $n$ of `Thread` $\gt\gt$ $n$ of processors
+- :two:  :x:efficiency and poor throughput  **when**  $n$ of `Thread` $\gt\gt$ $n$ of processors
+
+
+
+:pushpin:**What is `ThreadPool`?**
+
+It was developed in C# 4.0 which is to enhance `Task`.
+
+
+
+:pushpin:**What is `WinRT`?**
+
+It is called Window Runtime, WinRT. It can take `Thread` and `ThreadPool` to optimize to better support `Task`.
+
+
+
+:pushpin:**Conclusion**:star:
+
+- [You] <u>divide or partition the code into tasks that can be run in parallel</u>. 
+
+- [WinRT] create the appropriate number of threads based on the processor architecture and workload of your computer, associating your tasks with these threads and arranging for them to be run efficiently.
+
+
+
+### 23.1.2. Create, Run, and Control `Task`
+
+
+
+
+
+# 24.Concurrency by `async`
+
 
 
 # 26.MVVM in C#
@@ -8329,4 +8436,7 @@ A well-structured graphical app **<u>separates</u>** the design of the <u>user i
 
 [^5]: audit指的是审计，例如不允许未成年人购买淫秽书籍影碟。
 [^6]: 好的编程习惯是把delegate包进一个public method里面，这样1.能让人调用的时候感觉不到啥异样，2.能在调用前确认非空
+
+[^7]: 写程序的时候就想好怎么利用多任务处理
+[^8]: A computer processor is described as **idle** when it is not being used by any program.
 
