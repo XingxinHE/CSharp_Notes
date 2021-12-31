@@ -4669,7 +4669,7 @@ The .NET Framework provides `event`, which you can use to <u>define and trap sig
 
 
 
-### 20.4.1. Recipe of `event`
+### 20.4.1. Basic of `event`
 
 :pushpin:**The structure of `event` related stuffs**
 
@@ -4693,9 +4693,91 @@ Analogy in the preceding machine example:
 
 
 
+> ​	declare `event`:
+
+```c#
+event delegateTypeName eventName;
+```
+
+`delegateTypeName` refers to the type of `delegate`. In short, you first have a `delegate`, then you have an `event` based on that `delegate`.
+
+`eventName` is the name of such event, like a name of a variable.
+
+```c#
+class TemperatureMonitor
+{
+    //declare delegate
+    public delegate void StopMachineryDelegate();
+    //declare event
+    public event StopMachineryDelegate MachineOverheadting;
+}
+```
+
+
+
+> ​	subscribe and unsubscribe to `event`:
+
+subscribe `+=`
+
+```c#
+TemperatureMonitor tempMonitor = new TemperatureMonitor();
+//...
+tempMonitor.MachineOverheating += (  () => {folder.StopFolding(10);} );
+tempMonitor.MachineOverheating += welder.FinishWelding;
+tempMonitor.MachineOverheating += painter.PaintOff;
+```
+
+unsubscribe `-=`
+
+```c#
+tempMonitor.MachineOverheating -= (  () => {folder.StopFolding(10);} );
+tempMonitor.MachineOverheating -= welder.FinishWelding;
+tempMonitor.MachineOverheating -= painter.PaintOff;
+```
+
+
+
+> ​	raise an `event`:
+
+<u>Raise an `event`</u> is the same as <u>calling a method</u>. When you raise an `event`, all the attached delegates are called in sequence.
+
+```c#
+class TemperatureMonitor
+{
+	public delegate void StopMachineryDelegate();
+	public event StopMachineryDelegate MachineOverheating;
+	//...
+    private void Notify()
+    {
+        //it is essential to if the event is null
+        if (this.MachineOverheating != null)
+        {
+        	this.MachineOverheating();
+        }
+    }
+    //...
+}
+```
+
+
+
+:pushpin:**Important Note of `event`**
+
+Events have a very useful built-in security feature. A **<u>`public`</u>** `event` (such as `MachineOverheating`) can be <u>**raised only by methods in the class**</u> that define it (the `TemperatureMonitor` `class`). Any attempt to raise the event outside the class results in a compiler error.
+
 
 
 ### 20.4.2. Case Study of `event`
+
+Continuing the practice in `delegate` of `CheckoutService`. The process is the following:
+
+<img src="img/image-20211231100306950.png" alt="image-20211231100306950" style="zoom: 80%;" />
+
+
+
+Therefore, the design can be documented as:
+
+![diagram_delegate_event](img/diagram_delegate_event.jpg)
 
 
 
