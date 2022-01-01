@@ -4781,6 +4781,40 @@ Therefore, the design can be documented as:
 
 
 
+## 20.5. `Action<T>` and `Func<T,TResult>` - supplement material
+
+:pushpin:**What is `Action<T>` exactly?**
+
+<u>Encapsulates a method</u> that has <u>a single parameter</u> and <u>does not return a value</u>.
+
+
+
+:pushpin:**Detail behind `Action<T>`**
+
+The code behind `Action<T>` is the following:
+
+```c#
+public delegate void Action<in T>(T obj);
+```
+
+- `T` 
+
+`T` is the type of the parameter of the method that this delegate encapsulates.
+
+- `obj`
+
+`obj` is the parameter of the method that this delegate encapsulates.
+
+- $\empty$
+
+Since `Action<T>` has no return.
+
+
+
+:pushpin:**Example of `Action<T>` delegate**
+
+
+
 
 
 # 23.Concurrency by `Task` and `Parallel`
