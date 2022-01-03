@@ -4783,6 +4783,10 @@ Therefore, the design can be documented as:
 
 ## 20.5. `Action<T>` and `Func<T,TResult>` - supplement material
 
+https://docs.microsoft.com/en-us/dotnet/api/system.action-1?view=net-6.0
+
+https://docs.microsoft.com/en-us/dotnet/api/system.func-2?view=net-6.0
+
 :pushpin:**What is `Action<T>` exactly?**
 
 <u>Encapsulates a method</u> that has <u>a single parameter</u> and <u>does not return a value</u>.
@@ -4813,7 +4817,7 @@ Since `Action<T>` has no return.
 
 :pushpin:**Example of `Action<T>` delegate**
 
-
+//TODO
 
 
 
@@ -4918,7 +4922,198 @@ It is called Window Runtime, WinRT. It can take `Thread` and `ThreadPool` to opt
 
 ### 23.1.2. Create, Run, and Control `Task`
 
+:pushpin: **Create `Task`**
 
+There are many ways to create `Task`, please refer to the [doc](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task?view=net-6.0).
+
+
+
+> ​	:one:  Initializes a new `Task` with <u>the specified action</u> and <u>state</u>.
+
+```c#
+Task(Action<Object>, Object)
+```
+
+`Action<Object>`, The delegate that represents the code to execute in the task.
+
+`Object`, An object representing data to be used by the action.
+
+
+
+Then the code would be:
+
+```c#
+private void doWorkWithObject(object 0)
+{
+    //some code here...
+}
+
+Action<object> action;
+action = doWorkWithObject;
+object parameterData = ...;
+Task task = new Task(action, parameterData);
+//...
+```
+
+
+
+
+
+> ​	:two: Initializes a new `Task` with the specified action.
+
+```c#
+Task (Action action);
+```
+
+`Action`, The delegate that represents the code to execute in the task.
+
+
+
+Then the code would be:
+
+```c#
+private void doWork()
+{
+    //some code here...
+}
+Task task = new Task(doWork);
+//...
+```
+
+
+
+
+
+:pushpin:**Run `Task`**
+
+Once the `Task` is created, you can run it like:
+
+```c#
+Task task = new Task(...);
+task.Start();
+```
+
+The `.Start()` method has several overload version, and you can specify [flags](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcreationoptions?view=net-6.0) that control optional behavior for the creation and execution of tasks.
+
+
+
+:pushpin:**Create and Run `Task` in 1 step**
+
+Since *create* and *run* are very common, you can use `Task.Run()` to combine both operations!
+
+```c#
+Task task = Task.Run( () => doWork() );
+```
+
+
+
+:pushpin:**Continue a `Task` after a finished `Task`**
+
+```c#
+//you have 2 methods want to operate
+private void doWork()
+{
+    //...
+}
+
+private void doMoreWork(Task task)//pay attention to the parameter here!!!
+{
+    //...
+}
+
+Task task = new Task(doWork);
+task.Start();
+Task newTask = task.ContinueWith(doMoreWork);
+//...
+```
+
+A few texts on explaining the `doMoreWork()` method: <u>**why**</u> does it take **<u>a `Task` instance for an input</u>**?:thinking:
+
+The scheduler passes into the method <u>**a reference to the task**</u> that completed. The value returned by `ContinueWith` is a reference to the new `Task` object. Therefore the connection between 2 紧紧相连的 tasks can be extracted by this way. See the example:
+
+```c#
+Task < string > t = Task.Run(() = > LongRunningOperation("Continuewith", 500));  
+t.ContinueWith(
+    (t1) = >   
+               {  
+                   if (t1.IsCompleted && !t1.IsFaulted && !t1.IsCanceled) UpdateUI(t1.Result);  
+               }
+			   );
+```
+
+
+
+:pushpin:**Options for `ContinueWith()`**
+
+There are [options](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcontinuationoptions?view=net-6.0) as `enum` for `ContinueWith`. There **3** pairs can be memorized together.
+
+
+
+`NotOnCanceled`
+
+> ​	the continuation should <u>run only if</u> the <u>previous action **completes**</u> and **<u>is not canceled</u>**
+
+`OnlyOnCanceled`
+
+> ​	the continuation should <u>run only if</u> the <u>previous action</u> is <u>**canceled**</u>
+
+
+
+`NotOnFaulted`
+
+> ​	the continuation should <u>run only if</u> the <u>previous action</u> <u>**completes**</u> and <u>**does not throw an unhandled exception**</u>
+
+`OnlyOnFaulted`
+
+> ​	the continuation should <u>run only if</u> the <u>previous action</u> **<u>throws an unhandled exception</u>**
+
+
+
+`NotOnRanToCompletion`
+
+> ​	the continuation should <u>run only if</u> the <u>previous action</u> **<u>does not complete[^9] successfully</u>**
+
+`OnlyOnRanToCompletion`
+
+> ​	the continuation should <u>run only if</u> the <u>previous action</u> **<u>completes successfully</u>**
+
+
+
+The example could be like:
+
+```c#
+Task task = new Task(doWork);
+task.ContinueWith(doMoreWork, TaskContinuationOptions.NotOnFaulted);
+task.Start();
+```
+
+
+
+:pushpin:**Control `Task` by `Wait()`**
+
+The fundamental <u>reason</u> to **control** a `Task` is that <u>**synchronizing tasks**</u> is <u>a common requirement</u> of applications that invoke operations in parallel. **`Wait()`** is one of the methods to <u>suspend execution of the current thread until the specified task completes.</u>
+
+```c#
+Task task = ...
+task.Start();
+//...
+task.Wait();  //Wait here until task is finished
+```
+
+You can also use `static` method to wait for a set of tasks.
+
+```c#
+Task.WaitAll(task1, task2);  //Wait task1 AND task2 complete
+Task.WaitAny(task1, task2);  //Wait task1 OR task2 complete
+```
+
+
+
+## 23.2. Case Study of `Task`
+
+:pushpin:**How to find CPU bottleneck?**
+
+Performance Explorer in Visual Studio(pro-version).
 
 
 
@@ -8473,4 +8668,5 @@ A well-structured graphical app **<u>separates</u>** the design of the <u>user i
 
 [^7]: 写程序的时候就想好怎么利用多任务处理
 [^8]: A computer processor is described as **idle** when it is not being used by any program.
+[^9]: not complete = be canceled OR throw an exception.
 
