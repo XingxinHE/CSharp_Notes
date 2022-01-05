@@ -5117,6 +5117,139 @@ Performance Explorer in Visual Studio(pro-version).
 
 
 
+:pushpin:**Code Analysis**
+
+There is a button for generating an image on the UWP.
+
+<div align="center">
+    <figure>
+        <img src="img/image-20220104225315281.png" style="width:50%" class="center">
+        <figcaption>Performance required optimization, 3066ms</figcaption>
+    </figure>
+</div>
+
+The code looks like:
+
+```c#
+private void plotButton_Click(object sender, RoutedEventArgs e)
+{
+    //prepare data etc...
+    
+    //Here is the real function for visualization
+    generateGraphData(data);
+    
+    //visualize the data to the window...
+}
+```
+
+Inside this button click, the essential method for generating graph data is:
+
+```c#
+private void generateGraphData(byte[] data)
+{
+    double a = pixelWidth / 2;
+    double b = a * a;
+    double c = pixelHeight / 2;
+    for (double x = 0; x < a; x++)
+    {
+        double s = x * x;
+        double p = Math.Sqrt(b - s);
+        for (double i = -p; i < p; i += 3)
+        {
+            double r = Math.Sqrt(s + i * i) / a;
+            double q = (r - 1) * Math.Sin(24 * r);
+            double y = i / 3 + (q * c);
+            plotXY(data, (int)(-x + (pixelWidth / 2)), (int)(y + (pixelHeight / 2)));
+            plotXY(data, (int)(x + (pixelWidth / 2)), (int)(y + (pixelHeight / 2)));
+        }
+    }
+}
+```
+
+We can see that **both 2 loops** <u>compute separately</u>.
+
+Hence, this method is the one we need to optimize into multi-threading method.
+
+
+
+:pushpin:**Optimization method 1 - Use `Task`**
+
+:one:  Modify the method for multitasking
+
+```c#
+//function before computes all at once
+private void generateGraphData(byte[] data);
+
+//function after modified
+private void generateGraphData(byte[] data, int partitionStart, int partitionEnd)
+{
+    //...
+
+    for (int x = partitionStart; x < partitionEnd; x++)
+    {
+        //...
+    }
+```
+
+:two:  Use `Task` to execute in multitasking
+
+```c#
+//before, compute at once
+generateGraphData(data);
+
+//(1-2)after, split the computation into 2
+Task first = Task.Run(() => generateGraphData(data, 0, pixelWidth / 4));
+Task second = Task.Run(() => generateGraphData(data, pixelWidth / 4, pixelWidth / 2));
+Task.WaitAll(first, second);
+
+//(2-2)after, split the computation into 4
+
+```
+
+<div align="center">
+    <figure>
+        <img src="img/image-20220104224455031.png" style="width:50%" class="center">
+        <figcaption>Performance - split into 2 tasks, 1888ms</figcaption>
+    </figure>
+    <figure>
+        <img src="img/image-20220104224757838.png" style="width:50%" class="center">
+        <figcaption>Performance - split into 4 tasks, 1097ms</figcaption>
+    </figure>
+</div>
+
+
+
+## 23.3. Use `Parallel` to abstract tasks
+
+:pushpin:**Benefit to use `Parallel`**
+
+Compared to `Task`, using `Parallel` does not require to redesign an application to accommodate the use of `Task` objects.
+
+
+
+:pushpin:**How does `Parallel` work?**
+
+- the `Parallel` class creates its own set of `Task` objects
+- it synchronizes these tasks automatically when they have completed.
+
+
+
+:pushpin:**`static` method in `Parallel`**
+
+> ​	`Parallel.For`
+
+
+
+> ​	`Parallel.ForEach<T>`
+
+
+
+> ​	`Parallel.Invoke`
+
+
+
+
+
 # 24.Concurrency by `async`
 
 
