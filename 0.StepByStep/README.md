@@ -5238,13 +5238,239 @@ Compared to `Task`, using `Parallel` does not require to redesign an application
 
 > ​	`Parallel.For`
 
+It is a method similar to simple `for`.There are various overload versions while its fundamental mechanism is very much the same. It demands **3** inputs:
+
+- start value
+- end value
+- a reference to a method
+
+```c#
+private static void performLoopProcessing(int num)
+{
+    Console.WriteLine($"Print {num}...");
+}
+static void Main()
+{
+    Parallel.For(0, 100, performLoopProcessing);
+}
+```
+
 
 
 > ​	`Parallel.ForEach<T>`
 
+`T` must fulfill `IEnumerable<T>` before using `Parallel.ForEach<T>`
+
+//TODO add `Parallel.ForEach<T>` code example
+
 
 
 > ​	`Parallel.Invoke`
+
+```c#
+private static void countTen()
+{
+    for (int i = 0; i < 10; i++)
+    {
+        Console.WriteLine($"Current: {i}...");
+    }
+}
+
+private static void countTenBackward()
+{
+    for (int i = 10; i > 0; i--)
+    {
+        Console.WriteLine($"Count: {i}...");
+    }
+}
+
+private static void printName()
+{
+    List<string> names = new List<string> {
+        "Paul", "John", "Debby", "Andrea", "Maria",
+        "Eason", "Vincent", "Lucy"};
+    foreach(string name in names)
+    {
+        Console.WriteLine(name); ;
+    }
+}
+
+static void Main()
+{
+    Parallel.Invoke(
+        countTen,
+        countTenBackward,
+        printName
+    );
+}
+```
+
+
+
+:pushpin:**Notes before using `Parallel`**:warning::star:
+
+- If you are not running CPU-bound code[^10], parallelizing it <u>might not improve performance</u> since operations like creating a task, running task on a separate thread would be greater than the cost of running this method directly.
+- Only use `Parallel.Invoke` for <u>**computationally intensive operations**</u>
+- the parallel operations should be <u>**independent**</u>
+
+
+
+## 23.4. Cancel `Task` and handle `Exception`
+
+:pushpin:**Why and when should we cancel a `Task`?**
+
+A <u>common requirement</u> of applications that <u>perform long-running operations</u> is the ability to stop those operations if necessary.
+
+
+
+:pushpin:**How to cancel?**
+
+Not brutally cancel it but use a <u>cooperative cancellation</u>[^11] strategy instead.
+
+
+
+### 23.4.1. Mechanics of cooperative cancellation
+
+:pushpin:**How does it work?**
+
+Cooperative cancellation is based on a **<u>cancellation token</u>** which is a structure representing a request to cancel one or more tasks.
+
+
+
+:pushpin:**Tip for using cancellation token**
+
+Should check for cancellation at least every `10 ms`, but no more frequently than every millisecond.
+
+
+
+:pushpin:**Status of a `Task`**
+
+There are **6** status of a `Task`.
+
+| Status            | Description                                                  |
+| ----------------- | ------------------------------------------------------------ |
+| `Created`         | `Task` is created but has <u>not yet been scheduled</u> to run |
+| `WaitingToRun`    | `Task` has been <u>scheduled</u> but has <u>not yet started to run</u> |
+| `Running`         | `Task` is currently <u>being executed</u> by a thread        |
+| `RanToCompletion` | `Task` <u>completed successfully</u> without any unhandled exceptions |
+| `Canceled`        | `Task` <br />:one:was canceled before it could start running<br />:two:acknowledged cancellation and completed without throwing an exception |
+| `Faulted`         | `Task` is terminated because of an exception.                |
+
+
+
+### 23.4.2. Simple Cancel `Task`
+
+:pushpin:**Workflow for cancellation token**
+
+- :one:create a `System.Threading.CancellationTokenSource` object
+- :two:query the `Token` property of this object
+- :three:pass `CancellationToken` *object* as a parameter to methods started by tasks
+- :four:if required cancel, calls the `Cancel` method of the `CancellationTokenSource` object
+- :five:sets the `IsCancellationRequested` property of the `CancellationToken` passed to all the tasks
+
+Intuitively, you can see that the `Token` is a employee and the `TokenSource` is its boss. Once the boss call `Cancel`, the employee will receive the `Cancel` from his/her phone. Then the employee cancels the method.
+
+
+
+:pushpin:**Example using cancellation**
+
+The following is a screenshot while you cancel the plotting.
+
+<img src="img/image-20220106003754634.png" alt="image-20220106003754634" style="zoom: 50%;" />
+
+
+
+```c#
+public sealed partial class MainPage : Page
+{
+    // ...
+    
+    //Token source as global field!
+    private CancellationTokenSource tokenSource = null;
+
+    public MainPage()
+    {
+        //...
+        this.InitializeComponent();
+    }
+
+    // Generate the data for the graph and display it in ASYNC mode
+    private async void plotButton_Click(object sender, RoutedEventArgs e)
+    {
+		//...
+        
+        //everytime click this button, init a new token source
+        this.tokenSource = new CancellationTokenSource();
+        //query the token
+        CancellationToken token = this.tokenSource.Token;
+
+        // Generate the data for the graph
+        Task first = Task.Run(() => generateGraphData(data, 0, pixelWidth / 4, token));
+        Task second = Task.Run(() => generateGraphData(data, pixelWidth / 4, pixelWidth / 2, token));
+
+        await first;
+        await second;
+        
+        //...
+    }
+
+    // Stop graph generation and display
+    private void cancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (this.tokenSource != null)
+        {
+            //once the cancel button click, the token source raise a cancel
+            tokenSource.Cancel();
+        }
+    }
+
+    // Complex function that generates the data for the graph
+    private void generateGraphData(byte[] data, int partitionStart, int partitionEnd, CancellationToken token)
+    {
+        int a = pixelWidth / 2;
+        int b = a * a;
+        int c = pixelHeight / 2;
+
+        for (int x = partitionStart; x < partitionEnd; x++)
+        {
+            //the token will raise the cancell
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+            //...
+        }
+    }
+
+    // Store the data for a given point in the graph in the array
+    private void plotXY(byte[] data, int x, int y)
+    {
+        //...
+    }
+}
+```
+
+
+
+### 23.4.3. Proper Cancel `Task`
+
+//TODO
+
+
+
+### 23.4.4. Cancel `Parallel.For` and `Parallel.ForEach<T>`
+
+//TODO
+
+
+
+### 23.4.5. Handle `AggregateException`
+
+
+
+## 23.5. Continuations with canceled and faulted `Task`
+
+
 
 
 
@@ -8802,4 +9028,7 @@ A well-structured graphical app **<u>separates</u>** the design of the <u>user i
 [^7]: 写程序的时候就想好怎么利用多任务处理
 [^8]: A computer processor is described as **idle** when it is not being used by any program.
 [^9]: not complete = be canceled OR throw an exception.
+
+[^10]: CPU-bound code意为CPU限制的代码
+[^11]: 协作式取消
 
