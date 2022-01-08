@@ -5043,6 +5043,45 @@ t.ContinueWith(
 
 
 
+:pushpin:**Proper Example of `ContinueWith()`**
+
+//TODO 加上我做钢结构焊接产品的代码，工艺的
+
+the following example is quite trivial.:star:
+
+```c#
+var task = Task.Run(
+    () =>
+    {
+        DateTime date = DateTime.Now;
+        //return Result of this task
+        return date.Hour > 17
+            ? "evening"
+            : date.Hour > 12
+                ? "afternoon"
+                : "morning";
+    });
+
+await task.ContinueWith(
+    
+    //this is the alias of last task
+    antecedent =>
+    
+    {
+        //use the result from last task
+        Console.WriteLine($"Good {antecedent.Result}!");
+        Console.WriteLine($"And how are you this fine {antecedent.Result}?");
+    }, 
+    //specify the continue option
+    TaskContinuationOptions.OnlyOnRanToCompletion);
+```
+
+
+
+
+
+
+
 :pushpin:**Options for `ContinueWith()`**
 
 There are [options](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcontinuationoptions?view=net-6.0) as `enum` for `ContinueWith`. There **3** pairs can be memorized together.
