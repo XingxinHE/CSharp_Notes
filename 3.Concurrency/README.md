@@ -126,7 +126,7 @@ Use **`Task.Delay()`** which returns a task that completes after the specified t
 
 
 
-> ​	:one:Use `Task.Delay()` to pause manually
+> ​	:one:Use `Task.Delay(TimeSpan)` to pause manually
 
 ```c#
 //Suppose I made a function called DelayResult
@@ -162,7 +162,7 @@ Start.
 
 
 
-> ​	:two:Use `Task.Delay()` to prevent flooding server with retries by increasing the delays
+> ​	:two:Use `Task.Delay(TimeSpan)` to prevent flooding server with retries by increasing the delays
 
 ```c#
 // Create a method will retry after 1 second, then after 2 seconds, then 4.
@@ -197,7 +197,7 @@ The preceding strategy refers to <u>exponential backoff</u>[^1] while in practic
 
 
 
-> ​	:three:Use `Task.Delay()` to implement a timeout with `CancellationTokenSource`
+> ​	:three:Use `Task.Delay(TimeSpan, CancellationToken)` to implement a timeout with `CancellationTokenSource`
 
 The strategy is to create **2** tasks, <u>1st</u> is the operation, <u>2nd</u> is the count-down cancellation, if the 1st doesn't manage to do so, 
 
@@ -252,7 +252,7 @@ The preceding is called "soft time-out":warning: which merely <u>return</u> `nul
 
 
 
-## 2.2.Return Completed Tasks
+## 2.2.Return Completed Task
 
 
 
@@ -285,6 +285,178 @@ The preceding is called "soft time-out":warning: which merely <u>return</u> `nul
 **:books:See Also**
 
 
+
+## 2.4.Wait Tasks to Complete
+
+**:page_with_curl:Problem**
+
+Need to wait for all `Task` to complete.
+
+
+
+**:hammer:Solution**
+
+Use **`Task.WhenAll()`** takes several tasks and <u>returns</u> a task that completes <u>when all of those tasks have completed</u>.
+
+
+
+> ​	:one:`Task.WhenAll(Task[])`
+>
+> ​     	<u>input</u>: several tasks 
+>
+> ​		 <u>return</u>: a task that completes when all of those tasks have completed
+
+```c#
+Task task1 = Task.Delay(TimeSpan.FromSeconds(1));
+Task task2 = Task.Delay(TimeSpan.FromSeconds(2));
+Task task3 = Task.Delay(TimeSpan.FromSeconds(1));
+
+await Task.WhenAll(task1, task2, task3);
+```
+
+
+
+> ​	:two:`Task.WhenAll<TResult>(Task<TResult>[])`
+>
+> ​		 <u>input</u>: same `<TResult>` type tasks
+>
+> ​		 <u>return</u>: an <u>**array**</u> containing <u>all the tasks result</u>
+
+```c#
+public static async void DoSomething()
+{
+    //Task.FromResult() is merely a method which returns
+    //a task with a TResult from the input
+    Task<int> task1 = Task.FromResult(20);
+    Task<int> task2 = Task.FromResult(30);
+    //Task.FromResult() is no difference from the following
+    Task<int> task3 = Task.Run(() =>
+                               {
+                                   int num = 10;
+                                   return num;
+                               });
+
+    //you can acquire all the result by one task
+    int[] result = await Task.WhenAll(task1, task2, task3);
+
+    foreach(var i in result)
+    {
+        Console.WriteLine(i);
+    }
+}
+```
+
+If run `DoSomething()`, the output will be:
+
+```
+10
+20
+30
+```
+
+
+
+> ​	:three:`Task.WhenAll(IEnumerable<Task>)`  :x: not recommended
+
+The author does not recommend this overload method. Instead, you can do it with **LINQ** inside the method like so:
+
+```c#
+async Task<string> DownloadAllAsync(HttpClient) client, IEnumerable<string> urls)
+{
+    // Define the action to do for each URL.
+    // GetStringAsync() returns Task<string>
+    var downloads = urls.Select(url => client.GetStringAsync(url));
+    
+    // !!!Note that no tasks have actually started yet!!!
+	// !!!because the sequence is not evaluated.!!!
+    
+    // Start all URLs downloading simultaneously.
+    Task<string>[] downloadTasks = downloads.ToArray();
+    //  Now the tasks have all started.
+    
+    // Asynchronously wait for all downloads to complete.
+    string[] htmlPage = await Task.WhenAll(downloadTasks);
+    
+    //  return ONE concrete string from asynchronously downloaded pages
+    return string.Concat(htmlPages);
+}
+```
+
+
+
+**:speech_balloon:Discussion**
+
+**<u>Question</u>**: As `Task.WhenAll()` handles every tasks, what should it do when encounters `Exception`?
+
+The **<u>answer</u>** is: It’s usually sufficient to respond to <u>only the first error</u> that was thrown.
+
+Suppose you have 2 `Task`:
+
+```c#
+// the following 2 Task merely are created to throw exception
+async Task ThrowNotImplementedExceptionAsync()
+{
+    throw new NotImplementedException();
+}
+
+async Task ThrowInvalidOperationExceptionAsync()
+{
+    throw new InvalidOperationException();
+}
+```
+
+> ​	:one:Respond to 1st error (recommend, sufficient):ok::heavy_check_mark:
+
+```c#
+async Task ObserveOneExceptionAsync()
+{
+    var task1 = ThrowNotImplementedExceptionAsync();
+    var task2 = ThrowInvalidOperationExceptionAsync();
+    
+    try
+    {
+        await Task.WhenAll(task1, task2);
+    }
+    catch(Exception ex)
+    {
+        //ex is either NotImplementedException or InvalidOperationException
+    }
+}
+```
+
+> ​	:two:Aggregate exceptions (OK):ok:
+
+```c#
+async Task ObserverAllExceptionAsync()
+{
+    var task1 = ThrowNotImplementedExceptionAsync();
+    var task2 = ThrowInvalidOperationExceptionAsync();
+    
+    Task allTasks = Task.WhenAll(task1, task2);
+    try
+    {
+        await allTasks;
+    }
+    catch
+    {
+        AggregateException allExceptions = allTasks.Exception;
+    }
+}
+```
+
+
+
+
+
+
+
+**:books:See Also**
+
+What is `Task.FromResult()` exactly?
+
+https://ianvink.wordpress.com/2018/04/06/c-using-task-fromresult-to-wrap-a-value-when-there-is-no-task/
+
+https://stackoverflow.com/questions/19568280/what-is-the-use-for-task-fromresulttresult-in-c-sharp
 
 
 
