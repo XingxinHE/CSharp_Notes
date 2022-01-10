@@ -254,35 +254,201 @@ The preceding is called "soft time-out":warning: which merely <u>return</u> `nul
 
 ## 2.2.Return Completed Task
 
-
-
-
-
 **:page_with_curl:Problem**
 
+The following situations you might need to return a completed task.
 
-
-
+- the signature of the method is `async`, while the implementation or inner method is *synchronous*.
+- the `interface` is `async`, while the implementation or inner method is *synchronous*.
+- unit testing asynchronous code for an `async` interface.
 
 
 
 **:hammer:Solution**
 
+Use:
+
+- :one:`Task<T>` for those methods with the specified return value
+- :two:`Task.CompletedTask` property for `void` method
+- :three:`Task.FromException(Exception)` for return an exception
+- :four:`Task.FromCanceled` to return canceled task
 
 
 
+> ​	`Task.FromResult<TResult>(TResult)`
+
+```c#
+//Suppose you have an interface like so
+interface IMyAsyncInterface
+{
+    Task<int> GetValueAsync();
+}
+
+//A class implement
+class MySynchronousImplementation : IMyAsyncInterface
+{
+    public Task<int> GetValueAsync()
+    {
+        //here is some synchronous logic
+        int myNum = 28;
+        ...
+        return Task.FromResult(myNum);
+    }
+}
+```
+
+
+
+> ​	`Task.CompletedTask` Property
+
+```c#
+//Suppose you have an interface like so
+interface IMyAsyncInterface
+{
+    Task DoSomethingAsync();
+}
+
+class MySynchronousImplementation : IMyAsyncInterface
+{
+    public Task DoSomethingAsync()
+    {
+        //here is some synchronous logic
+        ...
+        return Task.CompletedTask;
+    }
+}
+```
+
+
+
+> ​	`Task.FromException(Exception)`
+
+```c#
+class MySynchronousImplementation : IMyAsyncInterface
+{
+    public Task DoSomethingAsync()
+    {
+    	try
+        {
+            //synchronous logic here
+            DoSomethingSynchronously();
+            return Task.CompletedTask;
+    	}
+        catch (Exception ex)
+        {
+            //If synchronous failed, return task with exception
+        	return Task.FromException(ex);
+        }
+    }
+}
+```
+
+
+
+> ​	`Task.FromCanceled(CancellationToken)`
+
+```c#
+Task<int> GetValueAsync(CancellationToken ct)
+{
+    if(ct.IsCancellationRequested)
+    {
+        return Task.FromCanceled<int>(ct);
+    }
+    
+    //if it is not canceled
+    return Task.FromResult(13);
+}
+```
 
 
 
 **:speech_balloon:Discussion**
 
+> ​	Conclusion and Summary
 
+<img src="img/image-20220110220021624.png" alt="image-20220110220021624" style="zoom:80%;" />
+
+`Task.FromResult`, `Task.FromException`, and `Task.FromCanceled` are all **<u>helper methods</u>** and <u>**shortcuts**</u> for the general-purpose `TaskCompletionSource<T>`.
+
+
+
+> ​	Singleton for a frequently used value
+
+```c#
+//this is the singleton of a task which merely returns a value(0)
+private static readonly Task<int> zeroTask = Task.FromResult(0);
+Task<int> GetValueAsync()
+{
+	return zeroTask;
+}
+```
 
 
 
 
 
 **:books:See Also**
+
+
+
+
+
+## 2.3. Report Progress
+
+**:page_with_curl:Problem**
+
+Report progress while an operation is executing.
+
+
+
+**:hammer:Solution**
+
+Use `IProgress<T>` and `Progress<T>`
+
+```c#
+//implement a method can report progress
+async Task MyMethodAsync(IProgress<double> progress = null)
+{
+    bool done = false;
+    double percentComplete = 0;
+    while(!done)
+    {
+        ...
+        progress?.Report(percentComplete);
+    }
+}
+
+//call the function and listen its progress
+async Task CallMyMethodAsync()
+{
+    var progress = new Progress<double>();
+    progress.ProgressChanged += (senser, args) =>
+    {
+        ...
+    };
+    await MyMethodAsync(progress);
+}
+```
+
+
+
+//TODO add an example in WPF
+
+
+
+**:speech_balloon:Discussion**
+
+$\because$  `IProgress<T>.Report` method is usually <u>**asynchronous**</u>
+
+$\therefore$  `MyMethodAsync` may execute ahead of report
+
+$\therefore$  it is safer to use **value-type** of `<T>`.
+
+
+
+**:books:See Also**
+
+
 
 
 
