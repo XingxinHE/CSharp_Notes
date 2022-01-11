@@ -452,7 +452,7 @@ $\therefore$  it is safer to use **value-type** of `<T>`.
 
 
 
-## 2.4.Wait Tasks to Complete
+## 2.4.Wait All Tasks to Complete
 
 **:page_with_curl:Problem**
 
@@ -612,10 +612,6 @@ async Task ObserverAllExceptionAsync()
 
 
 
-
-
-
-
 **:books:See Also**
 
 What is `Task.FromResult()` exactly?
@@ -623,6 +619,172 @@ What is `Task.FromResult()` exactly?
 https://ianvink.wordpress.com/2018/04/06/c-using-task-fromresult-to-wrap-a-value-when-there-is-no-task/
 
 https://stackoverflow.com/questions/19568280/what-is-the-use-for-task-fromresulttresult-in-c-sharp
+
+
+
+## 2.5.Wait Any Task to Complete
+
+**:page_with_curl:Problem**
+
+Suppose you have several task, you only want to <u>focus on the first task which responds</u>.
+
+
+
+**:hammer:Solution**
+
+Use `Task.WhenAny()`
+
+
+
+The following example is in the domain of <u>web programming</u> which <u>returns</u> the length of data at <u>the first URL responded</u>.
+
+```c#
+async Task<int> FirstRespondingUrlAsync(HttpClient client, string urlA, string urlB)
+{
+    // Start both downloads concurrently
+    Task<byte[]> downloadTaskA = client.GetByteArrayAsync(urlA);
+    Task<byte[]> downloadTaskB = client.GetByteArrayAsync(urlB);
+    
+    // Wait for either of the tasks to complete.
+    Task<byte[]> completedTask = await Task.WhenAny(downloadTaskA, downloadTaskB);
+    
+    // Return the length of the data retrieved from that URL.
+    byte[] data = await completedTask;
+    return data.Length;
+}
+```
+
+
+
+**:speech_balloon:Discussion**
+
+Suppose `downloadTaskA` and `downloadTaskB` are "inner" task while `completedTask` is "outer" task. 
+
+- the exception in "inner task" will not propagate to the "outer task".
+- when the first "inner" task complete, and the rest are not cancelled, they will be abandoned.
+
+
+
+**:books:See Also**
+
+
+
+## 2.6. Process Task Once Complete
+
+**:page_with_curl:Problem**
+
+You want to process a task right away once it complete.
+
+
+
+For example:
+
+```c#
+//you have a method which merely delay a while a returna value
+async Task<int> DelayAndReturnAsync(int value)
+{
+	await Task.Delay(TimeSpan.FromSeconds(value));
+	return value;
+}
+
+//currently this method print "2", "3", "1" in order
+async Task ProcessTasksAsync()
+{
+    //createa a sequence of tasks
+    Task<int> taskA = DelayAndReturnAsync(2);
+    Task<int> taskB = DelayAndReturnAsync(3);
+    Task<int> taskC = DelayAndReturnAsync(1);
+    Task<int>[] tasks = new[]{taskA, taskB, taskC};
+    
+    //await each task in order
+    foreach(Task<int> task in tasks)
+    {
+        var result = await task;
+        Trace.WriteLine(result);
+    }
+}
+
+//So how should you design the pattern to respond to the complete task asap?
+```
+
+
+
+**:hammer:Solution**
+
+> ​		:one:  process the task one at a time
+
+```c#
+//create a method to process
+async Task AwaitAndProcessAsync(Task<int< task)
+{
+    int result = await task;
+    Trace.WriteLine(result);
+}
+//This method now print "1", "2", "3"
+async Task ProcessTaskAsync()
+{
+    //... no difference in the beginning
+    Task<int>[] tasks = new[] {taskA, taskB, taskC};
+    
+    //combine LINQ with async method
+    IEnumerable<Task> taskQuery = 
+        from t in tasks select AwaitAndProcessAsync(t);
+    Task[] processingTasks = taskQuery.ToArray();
+    
+    //await all processing to complete
+    await Task.WhenAll(processingTasks);
+}
+```
+
+> ​		:two:  process concurrently
+
+```c#
+//This method now print "1", "2", "3"
+async Task ProcessTaskAsync()
+{
+    //... no difference in the beginning
+    Task<int>[] tasks = new[] {taskA, taskB, taskC};
+    
+    //combine LINQ with async method
+    Task[] processingTasks = tasks.Select(async t => 
+                 {
+                     var result = await t;
+                     Trace.WriteLine(result);
+                 }).ToArray();
+    
+    //await all processing to complete
+    await Task.WhenAll(processingTasks);
+}
+```
+
+> ​	:three:  process concurrently and thread-safe, by [Nito.AsyncEx](https://github.com/StephenCleary/AsyncEx)
+
+The `.OrderByCompletion()` is super intuitive which means order the task by completion. Therefore it will always print the 1st value.
+
+```c#
+async Task ProcessTaskAsync()
+{
+    //... no difference in the beginning
+    Task<int>[] tasks = new[] {taskA, taskB, taskC};
+    
+    // Await each one as they complete.
+    foreach (Task<int> task in tasks.OrderByCompletion())
+    {
+        int result = await task;
+        Trace.WriteLine(result);
+    }
+}
+```
+
+
+
+**:speech_balloon:Discussion**
+
+$\empty$
+
+
+
+**:books:See Also**
 
 
 
