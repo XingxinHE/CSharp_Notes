@@ -788,7 +788,41 @@ $\empty$
 
 
 
+## 2.8. Handle Exception from async Task Method
 
+**:page_with_curl:Problem**
+
+Handling exception is of tremendous importance.
+
+
+
+**:hammer:Solution**
+
+Use `try-catch` block to handle exception for method whose return type is `Task`.
+
+```c#
+async Task ThrowExceptionAsync()
+{
+    await Task.Delay(TimeSpan.FromSecond(1));
+    
+}
+```
+
+
+
+
+
+
+
+**:speech_balloon:Discussion**
+
+
+
+
+
+
+
+**:books:See Also**
 
 # 3.Asynchronous Streams
 
