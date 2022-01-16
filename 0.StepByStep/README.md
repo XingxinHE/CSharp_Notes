@@ -5478,6 +5478,8 @@ public sealed partial class MainPage : Page
                 return;
             }
             //...
+            plotXY(...);
+            plotXY(...);
         }
     }
 
@@ -5493,7 +5495,83 @@ public sealed partial class MainPage : Page
 
 ### 23.4.3. Proper Cancel `Task`
 
-//TODO
+The proper way to cancel the `Task` should place the `token` as a parameter in `Task` as well. The code should look like this:
+
+```c#
+public sealed partial class MainPage : Page
+{
+    // ...
+    
+    private CancellationTokenSource tokenSource = null;
+
+    public MainPage()
+    {
+        //...
+        this.InitializeComponent();
+    }
+
+    private async void plotButton_Click(object sender, RoutedEventArgs e)
+    {
+		//...
+        
+        this.tokenSource = new CancellationTokenSource();
+        CancellationToken token = this.tokenSource.Token;
+
+        // add the token inside the Task!!
+        Task first = Task.Run(() => generateGraphData(data, 0, pixelWidth / 4, token), token);
+        Task second = Task.Run(() => generateGraphData(data, pixelWidth / 4, pixelWidth / 2, token), token);
+
+        //  use try-catch block to handle cancel exception
+        try
+        {
+            await first;
+        	await second;
+        }
+        catch(OperationCanceledException oce)
+        {
+            duration.Text = oce.Message;
+        }
+        
+        
+        //...
+    }
+
+    private void cancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (this.tokenSource != null)
+        {
+            tokenSource.Cancel();
+        }
+    }
+
+    private void generateGraphData(byte[] data, int partitionStart, int partitionEnd, CancellationToken token)
+    {
+        int a = pixelWidth / 2;
+        int b = a * a;
+        int c = pixelHeight / 2;
+
+        for (int x = partitionStart; x < partitionEnd; x++)
+        {
+            //Proper way cancel
+            token.ThrowIfCancellationRequested();
+            //if (token.IsCancellationRequested)
+            //{
+                //return;
+            //}
+            //...
+            plotXY(...);
+            plotXY(...);
+        }
+    }
+
+    private void plotXY(byte[] data, int x, int y)
+    {
+        //...
+    }
+}
+```
+
+
 
 
 
@@ -5505,9 +5583,45 @@ public sealed partial class MainPage : Page
 
 ### 23.4.5. Handle `AggregateException`
 
+<u>Exception handling</u> is an <u>**important**</u> element in any commercial application. In complex application, the `Task` regularly has to wait for multiple tasks to complete. Therefore, there will be `AggregateException` in one place.
+
+The following is an example to show how to handle exception
+
+```c#
+// first you need to have a function to handle aggregate exception
+private bool handleException(Exception e)
+{
+    if (e is DivideByZeroException)
+    {
+        displayErrorMessage("Division by zero occurred");
+        return true;
+    }
+    if (e is Index)
+}
+```
+
+
+
 
 
 ## 23.5. Continuations with canceled and faulted `Task`
+
+You can continue a task under a specific status.
+
+```c#
+Task task = new Task(doWork);
+task.ContinueWith(doCancellationWork, TaskContinuationOptions.OnlyOnCanceled);
+task.Start();
+...
+private void doWork()
+{
+    //..
+}
+private void doCancellationWork(Task task)
+{
+    //..if doWork is cancelled, the program will execute here...
+}
+```
 
 
 
@@ -5516,6 +5630,206 @@ public sealed partial class MainPage : Page
 
 
 # 24.Concurrency by `async`
+
+:pushpin:**Asynchronicity and scalability**
+
+
+
+## 24.1.Implement Asynchronous method
+
+:pushpin:**What is Asynchronous method?**
+
+An <u>*asynchronous*</u> method is one that <u>does not block the current thread</u> on which it starts to run.
+
+
+
+:pushpin:**What happened after invoking an asynchronous method?**
+
+Once invokes, the method will <u>return control to the calling environment</u> and to <u>perform its work on a separate thread</u>.
+
+
+
+:pushpin:**What should you use?**
+
+`await` and `async`
+
+
+
+### 24.1.1.The problem:page_with_curl:
+
+Suppose you have a method called `slowMethod` which is invoked by a UI event, e.g. left mouse click. Meanwhile, the <u>**methods have to do it one after another**</u>.
+
+```c#
+private void slowMethod()
+{
+    doFirstLongRunningOperation();
+    doSecondLongRunningOperation();
+    doThirdLongRunningOperation();
+    message.Text = "Processing Completed";
+}
+private void doFirstLongRunningOperation()
+{
+	...
+}
+private void doSecondLongRunningOperation()
+{
+	...
+}
+private void doThirdLongRunningOperation()
+{
+	...
+}
+
+```
+
+The preceding problem is that the <u>UI thread(main thread) will be frozen</u> until the 3rd method completed.
+
+
+
+> ​	:one:Implement method with `Task`, :x:
+
+```c#
+private void slowMethod()
+{
+    Task task = new Task(doFirstLongRunningOperation);
+    task.ContinueWith(doSecondLongRunningOperation);
+    task.ContinueWith(doThirdLongRunningOperation);
+    task.Start();
+    message.Text = "Processing Completed"; // this method executes right after task.Start()
+}
+private void doFirstLongRunningOperation()
+{
+	...
+}
+private void doSecondLongRunningOperation(Task t)
+{
+	...
+}
+private void doThirdLongRunningOperation(Task t)
+{
+	...
+}
+```
+
+The preceding problem is that the `message.Text` <u>will not wait for the `task` end:cry:</u>. It pops up the message right after the `task.Start();`.
+
+
+
+> ​	:two:Implement with `Task` and `Wait`, :x:
+
+```c#
+private void slowMethod()
+{
+    Task task = new Task(doFirstLongRunningOperation);
+    task.ContinueWith(doSecondLongRunningOperation);
+    task.ContinueWith(doThirdLongRunningOperation);
+    task.Start();
+    task.Wait();  //Block again!!
+    message.Text = "Processing Completed";
+}
+```
+
+The preceding problem is that the thread still waits for the `task.Wait()` which is *meaningless*. The <u>UI thread will block the interface</u> again.
+
+
+
+> ​	:three:Implement with `Task` and define continuation:x:
+
+```c#
+private void slowMethod()
+{
+    Task task = new Task(doFirstLongRunningOperation);
+    task.ContinueWith(doSecondLongRunningOperation);
+    task.ContinueWith(doThirdLongRunningOperation);
+    task.ContinueWith((t) => message.Text = "Processing Complete");  //execute in another thread
+    task.Start();
+}
+```
+
+The preceding problem is "<u>The application called an interface that was marshaled for a different thread</u>".
+
+What does it mean?:thinking:
+
+In C#, **only the main thread(UI thread) has the right to modify UI**. Other threads don't have the right.
+
+
+
+> ​	:four:Implement with `Task`, define continuation, and use `Dispatcher`.  :ok::no_mouth:
+
+```c#
+private void slowMethod()
+{
+    Task task = new Task(doFirstLongRunningOperation);
+    task.ContinueWith(doSecondLongRunningOperation);
+    task.ContinueWith(doThirdLongRunningOperation);
+    task.ContinueWith((t) => this.Dispatcher.RunAsync(
+    CoreDispatcherPriority.Normal,
+    () => message.Text = "Processing Complete"));
+    task.Start();
+}
+```
+
+The `Dispatcher` object is **<u>a component of the user interface infrastructure</u>**, and you can send it requests to perform work on the user interface thread by calling its `RunAsync` method. Although this works, but it is messy and hard to maintain the code.
+
+
+
+### 24.1.2.The Solution:hammer:
+
+The keywords `async` and `await` are to tackle such problem and you don't have to concern to use `Dispatcher`.
+
+```c#
+private async void slowMethod()
+{
+    await doFirstLongRunningOperation();
+    await doSecondLongRunningOperation();
+    await doThirdLongRunningOperation();
+    message.Text = "Processing Complete";
+}
+//the method returns a Task!
+private Task doFirstLongRunningOperation()
+{
+    Task t = Task.Run(() => { /* original code goes here */ });
+    return t;
+}
+private Task doSecondLongRunningOperation()
+{
+    Task t = Task.Run(() => { /* original code goes here */ });
+    return t;
+}
+private Task doThirdLongRunningOperation()
+{
+    Task t = Task.Run(() => { /* original code goes here */ });
+    return t;
+}
+```
+
+There are few things worth discussed.
+
+> ​	:pushpin:what should be the operand of `await`?
+
+The thing right next to `await` is called operand, e.g. `doFirstLongRunningOperation` is the operand of `await`. The **operand must be a `Task`**. A.k.a. The return type of the method is `Task`.
+
+
+
+> ​	:pushpin:what is the mechanism behind?
+
+It is very similar to using `Dispatcher`.
+
+`async` :
+
+​	does - :heavy_check_mark:  specify that the code in the method can be divided into one or more continuations.
+
+​	does not - :x:  signify that a method runs asynchronously on a separate thread
+
+
+
+
+
+
+
+
+
+
 
 
 

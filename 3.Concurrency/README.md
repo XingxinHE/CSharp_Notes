@@ -788,7 +788,46 @@ $\empty$
 
 
 
+
+## 2.7.Avoiding Context for Continuations
+
+//TODO - I don't understand what is context...
+
+**:page_with_curl:Problem**
+
+
+
+
+
+
+
+**:hammer:Solution**
+
+
+
+
+
+
+
+**:speech_balloon:Discussion**
+
+
+
+
+
+
+
+**:books:See Also**
+
+
+
+
+
+
+
+
 ## 2.8. Handle Exception from async Task Method
+
 
 **:page_with_curl:Problem**
 
