@@ -715,7 +715,7 @@ async Task ProcessTasksAsync()
 
 ```c#
 //create a method to process
-async Task AwaitAndProcessAsync(Task<int< task)
+async Task AwaitAndProcessAsync(Task<int> task)
 {
     int result = await task;
     Trace.WriteLine(result);
@@ -839,13 +839,72 @@ Handling exception is of tremendous importance.
 
 Use `try-catch` block to handle exception for method whose return type is `Task`.
 
+Suppose you have a method merely `throw` exception:
+
 ```c#
 async Task ThrowExceptionAsync()
 {
     await Task.Delay(TimeSpan.FromSecond(1));
-    
+    throw new InvalidOperationException("Test");
 }
 ```
+
+You can:
+
+> ​	:one:  Declare a `Task` wrapped the `async` method and then `await`
+
+```c#
+async Task TestAsync()
+{
+    Task task = ThrowExceptionAsync(); 
+    try
+    {
+        await task;
+    }
+    catch(InvalidOperationException iEx)
+    {
+    }
+}
+```
+
+> ​	:two:  `await` the method directly
+
+```c#
+async Task TestAsync()
+{
+    try
+    {
+        await ThrowExceptionAsync();
+    }
+    catch(InvalidOperationException iEx)
+    {
+    }
+}
+```
+
+
+
+**:speech_balloon:Discussion**
+
+The exception will propagate from method to task and from task to await.
+
+
+
+**:books:See Also**
+
+
+
+## 2.9. Handle Exceptions from async void Methods
+
+**:page_with_curl:Problem**
+
+When you have to handle `async void` method.
+
+:warning:!! The author does
+
+
+
+**:hammer:Solution**
 
 
 
@@ -863,9 +922,107 @@ async Task ThrowExceptionAsync()
 
 **:books:See Also**
 
+
+
+
+
+**:page_with_curl:Problem**
+
+
+
+
+
+
+
+**:hammer:Solution**
+
+
+
+
+
+
+
+**:speech_balloon:Discussion**
+
+
+
+
+
+
+
+**:books:See Also**
+
+
+
+
+
+**:page_with_curl:Problem**
+
+
+
+
+
+
+
+**:hammer:Solution**
+
+
+
+
+
+
+
+**:speech_balloon:Discussion**
+
+
+
+
+
+
+
+**:books:See Also**
+
+
+
+
+
+
+
+**:page_with_curl:Problem**
+
+
+
+
+
+
+
+**:hammer:Solution**
+
+
+
+
+
+
+
+**:speech_balloon:Discussion**
+
+
+
+
+
+
+
+**:books:See Also**
+
+
+
+
+
+
+
+
+
 # 3.Asynchronous Streams
-
-
 
 **:page_with_curl:Problem**
 
