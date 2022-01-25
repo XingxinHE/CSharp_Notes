@@ -5655,7 +5655,9 @@ Once invokes, the method will <u>return control to the calling environment</u> a
 
 
 
-### 24.1.1.The problem:page_with_curl:
+### 24.1.1. Problem:page_with_curl: & Solution:hammer:
+
+<h4>The Problem</h4>
 
 Suppose you have a method called `slowMethod` which is invoked by a UI event, e.g. left mouse click. Meanwhile, the <u>**methods have to do it one after another**</u>.
 
@@ -5773,9 +5775,38 @@ The `Dispatcher` object is **<u>a component of the user interface infrastructure
 
 
 
-### 24.1.2.The Solution:hammer:
+<h4>The Solution</h4>
 
 The keywords `async` and `await` are to tackle such problem and you don't have to concern to use `Dispatcher`.
+
+
+
+There are few things worth discussed.
+
+> ​	:pushpin:what should be the operand of `await`?
+
+The thing right next to `await` is called operand, e.g. `doFirstLongRunningOperation` is the operand of `await`. The **operand must be a `Task`**. A.k.a. The return type of the method is `Task`.
+
+
+
+> ​	:pushpin:what is the mechanism behind?
+
+It is very similar to using `Dispatcher`.
+
+`async` :
+
+​	does - :heavy_check_mark:  specify that the code in the method can be divided into one or more continuations.
+
+​	does not - :x:  signify that a method runs asynchronously on a separate thread
+
+`await`:
+
+​	does - :heavy_check_mark:  specifies when the C# compiler can <u>split the code into a continuation</u>. The right hand side of `await` is an awaitable
+object is a type that provides the `GetAwaiter` method.
+
+
+
+> ​	:hammer:**Solution 1**
 
 ```c#
 private async void slowMethod()
@@ -5803,33 +5834,355 @@ private Task doThirdLongRunningOperation()
 }
 ```
 
-There are few things worth discussed.
-
-> ​	:pushpin:what should be the operand of `await`?
-
-The thing right next to `await` is called operand, e.g. `doFirstLongRunningOperation` is the operand of `await`. The **operand must be a `Task`**. A.k.a. The return type of the method is `Task`.
 
 
+> ​	:hammer:**Solution 2**
 
-> ​	:pushpin:what is the mechanism behind?
+The preceding solution has **1** constraint. What if I want to split one long running operation into few parallelable task?
 
-It is very similar to using `Dispatcher`.
+```c#
+private Task doFirstLongRunningOperation()
+{
+    Task task1 = Task.Run(() => { /* Task 1 code goes here */ });
+    Task task2 = Task.Run(() => { /* Task 2 code goes here */ });
+    
+    return ...;  //which task should I return?
+}
+```
 
-`async` :
+The solution is to make the method `async` as well.
 
-​	does - :heavy_check_mark:  specify that the code in the method can be divided into one or more continuations.
+```c#
+private async Task doFirstLongRunningOperation()
+{
+    Task task1 = Task.Run(() => { /* Task 1 code goes here */ });
+    Task task2 = Task.Run(() => { /* Task 2 code goes here */ });
+    
+    await task1;
+    await task2;
+}
+```
 
-​	does not - :x:  signify that a method runs asynchronously on a separate thread
+In the main code should look like this:
+
+```c#
+private async void slowMethod()
+{
+    await doFirstLongRunningOperation();
+    await doSecondLongRunningOperation();
+    await doThirdLongRunningOperation();
+    message.Text = "Processing Complete";
+}
+//the method returns a Task!
+private async Task doFirstLongRunningOperation()
+{
+    Task task1 = Task.Run(() => { /* Task 1 code goes here */ });
+    Task task2 = Task.Run(() => { /* Task 2 code goes here */ });
+    
+    await task1;
+    await task2;
+}
+private async Task doSecondLongRunningOperation()
+{
+    Task task1 = Task.Run(() => { /* Task 1 code goes here */ });
+    Task task2 = Task.Run(() => { /* Task 2 code goes here */ });
+    
+    await task1;
+    await task2;
+}
+private async Task doThirdLongRunningOperation()
+{
+    Task task1 = Task.Run(() => { /* Task 1 code goes here */ });
+    Task task2 = Task.Run(() => { /* Task 2 code goes here */ });
+    
+    await task1;
+    await task2;
+}
+```
+
+
+
+### 24.1.2. `async` methods return values
+
+This refers to `Task<TResult>.Result`
+
+Suppose you have a Task:
+
+```c#
+Task<int> calculateValueTask = Task.Run(() => calculateValue(...));
+
+private int calculateValue(...)
+{
+    int someValue;
+    // Perform calculation and populate someValue
+    ...
+    return someValue;
+}
+```
+
+There are **2** ways you can run this method and get its value:
+
+> ​	**Solution 1:hammer:**         Will block until the task complete:x:
+
+```c#
+int calculateData = calculateValueTask.Result;
+```
+
+
+
+> ​	**Solution 2:hammer:**    :heavy_check_mark:
+
+```c#
+int calculateData = await calculateValueTask;
+```
+
+
+
+:pushpin:**What is the difference?**
+
+Using `Result` would block until the task had completed. 
+
+Using `await` does the opposite - it *unwraps* a `Task<T>` to a `T` value. It won't block the thread!
+
+
+
+### 24.1.3. `async` method gotchas:warning::star:
+
+:one: `async` does NOT 100% means method runs asynchronously :x:
+
+
+
+:two: `async` does mean the method contains statements that <u>**may**</u> run asynchronously.
+
+
+
+:three: `await` indicates a method should be run by a separate task. The calling code is suspended until the method call completes.
+
+<img src="img/image-20220125114741165.png" alt="image-20220125114741165" style="zoom:50%;" />
+
+
+
+:four: `await` is NOT `Wait`!:warning: The former would not block, the latter would.
+
+
+
+:five: By default, the code that resumes execution after an `await` operator attempts to obtain the **<u>original thread</u>**.
+
+Use `ConfigureAwait(false)` to specify code can be <u>resumed on any available thread</u>.
+
+`ConfigureAwait(true)` is default.
+
+The following is a <u>**bad**</u> example:x::
+
+```c#
+//This method
+private async void slowMethod()
+{
+    await doFirstLongRunningOperation().ConfigureAwait(false);  //call back at any other thread
+    await doSecondLongRunningOperation().ConfigureAwait(false); //call back at any other thread
+    await doThirdLongRunningOperation().ConfigureAwait(false);  //call back at any other thread
+    
+    //this step must run in Main Thread(UI Thread)
+    message.Text = "Processing Complete";
+}
+```
+
+
+
+:six:**Careless** use of asynchronous methods!!:warning:
+
+```c#
+//suppose you have an async task
+private async Task<string> generateResult()
+{
+    string result;
+    ...
+    result = ...
+    return result;
+}
+```
+
+:x:Wrong:
+
+```c#
+//suppose you have a method related to UI operation
+private async void myMethod()
+{
+    var data = generateResult();  //you didn't await here
+    ...
+    message.Text = $"result: {data.Result}";  //this will block the thread
+}
+```
+
+:ok:
+
+```c#
+//suppose you have a method related to UI operation
+private async void myMethod()
+{
+    var data = generateResult();  //you didn't await here
+    ...
+    message.Text = $"result: {await data}";  //this will block the thread
+}
+```
+
+:heavy_check_mark:my preference
+
+```c#
+//suppose you have a method related to UI operation
+private async void myMethod()
+{
+    var data = await generateResult();  //you didn't await here
+    ...
+    message.Text = $"result: {data}";  //this will block the thread
+}
+```
+
+
+
+### 24.1.4. `async` methods and the `WinRT` APIs
+
+The designer of Windows 8 and later versions wanted to ensure the application as responsive as possible. So they decided any operations might take over 50ms have to implement they `async` API.
+
+
+
+There are several methods can be called asynchronously.
+
+:pushpin:**Display Message**
+
+Displays the message and waits for the user to click the Close button.
+
+```c#
+using Windows.UI.Popups;
+...
+MessageDialog dlg = new MessageDialog("Message to user");
+await dlg.ShowAsync();  //wait for user to close
+```
+
+ 
+
+:pushpin:**Select File**
+
+Display the files in the user’s Documents folder and wait while the user selects a single file from this list
+
+```c#
+using Windows.Storage;
+using Windows.Storage.Pickers;
+...
+FileOpenPicker fp = new FileOpenPicker();
+fp.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+fp.ViewMode = PickerViewMode.List;
+fp.FileTypeFilter.Add("*");
+StorageFile file = await fp.PickSingleFileAsync();  //wait for user browsing
+```
+
+
+
+:pushpin:**Open a File**
+
+Open a file in an asynchronous way:
+
+```c#
+var fileStream = await file.OpenAsync(FileAccessMode.Read);
+```
+
+ 
+
+:pushpin:**Render Pixels on Screen**
+
+The pixels can be seen as stream.
+
+```c#
+Stream pixelStream = graphBitmap.PixelBuffer.AsStream();
+pixelStream.Seek(0, SeekOrigin.Begin);
+pixelStream.Write(data, 0, data.Length);
+...
+await pixelStream.WriteAsync(data, 0, data.Length);
+...
+```
 
 
 
 
 
+### 24.1.5. Memory allocation with `ValueTask`
+
+:pushpin:**Some Resources on `ValueTask`**
+
+[Value Task Doc](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=net-6.0)
+
+[.NET Blog Understanding the Whys, Whats, and Whens of ValueTask](https://devblogs.microsoft.com/dotnet/understanding-the-whys-whats-and-whens-of-valuetask/)
 
 
 
+:pushpin:**Case Study**
+
+Please have a look on the following method:
+
+```c#
+public async Task<int> FindValueAsync(string key)
+{
+    //1. attempt to find it locally
+    bool foundLocally = GetCachedValue(key, out int result);
+    if (foundLocally)
+    	return result;
+    //2. if not, then try to do a long operation searching
+    result = await RetrieveValue(key); // possibly takes a long time
+	//3. add it to local Cache for next time
+    AddItemToLocalCache(key, result);
+    return result;
+}
+```
 
 
+
+> ​	:bulb:**Pattern: `Cache-Aside`**
+
+The preceding method uses [`Cache-Aside` pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/cache-aside) which <u>**load data on demand into a cache from a data store**</u>. This can <u>improve performance</u> and also helps to maintain consistency between data held in the cache and data in the underlying data store.
+
+
+
+> ​	:chart_with_upwards_trend:**Analysis on this Method**
+
+In most cases, the work will be <u>performed synchronously</u> (it finds the data in cache). The data is an integer, but it is returned wrapped in a `Task<int>` object. Compared to directly return an `int`, the former requires much **more time and memory allocation**. 
+
+| Return Type | Operation                                                    | Memory   |
+| ----------- | ------------------------------------------------------------ | -------- |
+| `Task<int>` | :one:Create obj<br>:two:Populate obj<br>:three:Retrieve the data | On Steap |
+| `int`       | return directly                                              | On Stack |
+
+
+
+> ​	:hammer:**Solution**
+
+Use `ValueTask` which **marshals** the return value as a <u>value type on stack</u> rather than <u>reference type on heap</u>.
+
+```c#
+//change the return type to ValueTask<T>
+public async ValueTask<int> FindValueAsync(string key)
+{
+    bool foundLocally = GetCachedValue(key, out int result);
+    if (foundLocally)
+    	return result;
+    result = await RetrieveValue(key); // possibly takes a long time
+    AddItemToLocalCache(key, result);
+    return result;
+}
+```
+
+
+
+:pushpin:**Conclusion**
+
+Return `ValueTask` only if the vast majority of the calls to an `async` method are <u>**likely**</u> to be <u>performed synchronously</u>. a.k.a. Most of the time, the call will **return before the `await` operator**. Otherwise, too much `async` operation inside a `ValueTask` can decrease the efficiency.
+
+
+
+## 24.2. PLINQ to parallelize declarative data access:star::star:
+
+Use`.AsParallel()`
+
+ 
 
 
 
