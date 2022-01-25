@@ -6180,9 +6180,258 @@ Return `ValueTask` only if the vast majority of the calls to an `async` method a
 
 ## 24.2. PLINQ to parallelize declarative data access:star::star:
 
-Use`.AsParallel()`
+Use`.AsParallel()`! The following are examples to perform **PLINQ**.
 
- 
+###  24.2.1. Learn PLINQ by example
+
+:pushpin:**Example 1**
+
+The first example is to filter numbers which are over 100.
+
+> ​	Suppose you have an array called `numbers`
+
+```c#
+int[] numbers = new int[NUM];
+Random random = new Random(999);
+
+for (int i = 0; i < NUM; i++)
+{
+    numbers[i] = random.Next(200);
+}
+```
+
+> ​	You have a pseudo test method
+
+In reality, the query methods always take time. Therefore, here we used `Thread.SpinWait()` to execute "no operation" instruction for a period of time.
+
+```c#
+public static bool TestIfTrue(bool expr)
+{
+    Thread.SpinWait(1000);
+    return expr;
+}
+```
+
+> ​	Normal LINQ - old school
+
+```c#
+//Create a LINQ query
+var over100Query = from num in numbers
+                   where TestIfTrue(num > 100)
+                   select num;
+
+//The query actually runs here(time consuming)
+List<int> over100 = new List<int>(over100Query);
+```
+
+> ​	Normal LINQ - new school
+
+```c#
+//Declare and run in one sentence
+List<int> over100 = numbers.Where(num => TestIfTrue(num > 100))
+                           .Select(num => num)
+                           .ToList();
+```
+
+> ​	PLINQ - old school:smile:
+
+```c#
+//Create a LINQ query with Parallel!!
+var over100Query = from num in numbers.AsParallel()
+                   where TestIfTrue(num > 100)
+                   select num;
+
+//The query actually runs here(parallel!!)
+List<int> over100 = new List<int>(over100Query);
+```
+
+> ​	PLINQ - new school:smile:
+
+```c#
+List<int> over100 = numbers.AsParallel()
+    .Where(num => TestIfTrue(num > 100))
+    .Select(num => num)
+    .ToList();
+```
+
+
+
+:pushpin:**Example 2**
+
+The second example is to create <u>customer order info</u> with 2 different sources, :one:<u>customers</u> and :two:<u>orders</u>.
+
+> ​	Customers
+
+A piece of customer info can be split by `,`  into 6 parts which contain:
+
+- Customer ID
+- Customer's company
+- Address
+- City
+- Country or region
+- Postal code.
+
+```c#
+//A pseudo in memory data representing customers info
+public class CustomersInMemory
+{
+    public static string[] Customers = 
+    {
+        "ALFKI,Alfreds Futterkiste,Obere Str. 57,Berlin,Germany,12209",
+        "ANTON,Antonio Moreno Taquería,Mataderos  2312,México D.F.,Mexico,05023",
+        "BERGS,Berglunds snabbköp,Berguvsvägen  8,Luleå,Sweden,S-958 22",
+        "BLAUS,Blauer See Delikatessen,Forsterstr. 57,Mannheim,Germany,68306",
+        ...
+        "WHITC,White Clover Markets,305 - 14th Ave. S. Suite 3B,Seattle,USA,98128",
+        "WILMK,Wilman Kala,Keskuskatu 45,Helsinki,Finland,21240",
+        "WOLZA,Wolski  Zajazd,ul. Filtrowa 68,Warszawa,Poland,01-012"
+    };
+}
+```
+
+> ​	Order
+
+A piece of order info can be split by `,`  into 2 parts which contain:
+
+- Order ID
+- Customer ID
+- Date of the order
+
+```c#
+//A pseudo in memory data representing order info
+public class OrdersInMemory
+{
+    public static string[] Orders = 
+    {
+        "10248,VINET,Jul  4 1996 12:00AM",                                    
+        "10249,TOMSP,Jul  5 1996 12:00AM",                                    
+        "10250,HANAR,Jul  8 1996 12:00AM", 
+        "11074,SIMOB,May  6 1998 12:00AM",
+        ...
+        "11075,RICSU,May  6 1998 12:00AM",                                    
+        "11076,BONAP,May  6 1998 12:00AM",                                    
+        "11077,RATTC,May  6 1998 12:00AM"
+    }
+}
+```
+
+> ​	Customer Order Info
+
+Now, we need to create a <u>Customer-Order Info</u> by pairing the <u>customer info</u> and <u>order info</u> with their related key.
+
+```c#
+//The new data structure looks something like this
+public class CustomerOrderInfo
+{
+    public string CustomerID { get; set; }
+    public string CompanyName { get; set; } 
+    public int OrderID { get; set; }
+    public DateTime OrderDate { get; set; }
+}
+```
+
+> ​	LINQ - Old School
+
+```c#
+var customerOrderInfoQuery = from c in CustomersInMemory.Customers
+                             join o in OrdersInMemory.Orders
+                             on c.Split(',')[0] equals o.Split(',')[1]
+                             select new CustomerOrderInfo
+                            {
+                                CustomerID = c.Split(',')[0],
+                                CompanyName = c.Split(',')[1],
+                                OrderID = Convert.ToInt32(o.Split(',')[0]),
+                                OrderDate = Convert.ToDateTime(o.Split(',')[2],
+                                            new CultureInfo("en-US"))
+                            };
+List<CustomerOrderInfo> customerOrderInfo = new List<CustomerOrderInfo>(customerOrderInfoQuery);
+```
+
+> ​	LINQ - New School
+
+```c#
+//declare and create the query in one sentence
+var customerOrderInfo = CustomersInMemory.Customers.Join(
+    OrdersInMemory.Orders,
+    c => c.Split(',')[0],
+    o => o.Split(',')[1],
+    (c, o) => new CustomerOrderInfo
+    {
+        CustomerID = c.Split(',')[0],
+        CompanyName = c.Split(',')[1],
+        OrderID = Convert.ToInt32(o.Split(',')[0]),
+        OrderDate = Convert.ToDateTime(o.Split(',')[2],
+                                       new CultureInfo("en-US"))
+    }
+).ToList();
+```
+
+> ​	PLINQ - old school:smile:
+
+```c#
+var customerOrderInfoQuery = from c in CustomersInMemory.Customers.AsParallel()
+                             join o in OrdersInMemory.Orders.AsParallel()
+                             on c.Split(',')[0] equals o.Split(',')[1]
+                             select new CustomerOrderInfo
+                            {
+                                CustomerID = c.Split(',')[0],
+                                CompanyName = c.Split(',')[1],
+                                OrderID = Convert.ToInt32(o.Split(',')[0]),
+                                OrderDate = Convert.ToDateTime(o.Split(',')[2],
+                                            new CultureInfo("en-US"))
+                            };
+List<CustomerOrderInfo> customerOrderInfo = new List<CustomerOrderInfo>(customerOrderInfoQuery);
+```
+
+> ​	PLINQ - new school:smile:
+
+```c#
+var customerOrderInfo = CustomersInMemory.Customers.AsParallel().Join(
+    OrdersInMemory.Orders.AsParallel(),
+    c => c.Split(',')[0],
+    o => o.Split(',')[1],
+    (c, o) => new CustomerOrderInfo
+    {
+        CustomerID = c.Split(',')[0],
+        CompanyName = c.Split(',')[1],
+        OrderID = Convert.ToInt32(o.Split(',')[0]),
+        OrderDate = Convert.ToDateTime(o.Split(',')[2],
+                                       new CultureInfo("en-US"))
+    }
+).ToList();
+```
+
+
+
+> ​	Some Thought:thinking:
+
+[2022/01/26]I used to code in the new school style. But recently I think... the old school is quite straight forward and relevant to English...
+
+
+
+### 24.2.2. Canceling a PLINQ query
+
+Very easy. Just take `.WithCancellation()`
+
+```c#
+using CancellationTokenSource cts = new();
+int[] results = null;
+try
+{
+    results =
+        (from num in source.AsParallel().WithCancellation(cts.Token)
+         where num % 3 == 0
+         orderby num descending
+         select num).ToArray();
+}
+catch{}
+```
+
+
+
+## 24.3. Synchronizing concurrent access to data
+
+
 
 
 
