@@ -5581,6 +5581,44 @@ public sealed partial class MainPage : Page
 
 
 
+An Example using `Parallel.For` with `Rhino.Geometry`:
+
+```c#
+/// <summary>
+/// Orient points from Sensor space to Rhino space
+/// </summary>
+/// <param name="scanPoints">points in sensor space</param>
+/// <param name="ToolTCP">the tcp of tool, e.g. sensor</param>
+/// <param name="FlangeTCP">the tcp of flange</param>
+/// <returns>true for success, false for failed</returns>
+public static bool ScanPointsToRhino(List<Point3d> scanPoints, Plane ToolTCP, Plane FlangeTCP)
+{
+    try
+    {
+        int step = scanPoints.Count;
+        Transform xFormToolToFlange = Transform.PlaneToPlane(Plane.WorldXY, ToolTCP);
+        Transform xFormFlangeToRhino = Transform.PlaneToPlane(Plane.WorldXY, FlangeTCP);
+		//index is the index for parallel looping
+        Parallel.For(0, step, index =>
+                     {
+                         Point3d pt = scanPoints[index];
+                         pt.Transform(xFormToolToFlange);
+                         pt.Transform(xFormFlangeToRhino);
+                         scanPoints[index] = pt;
+                     });
+    }
+    catch (Exception)
+    {
+        return false;
+    }
+    return true;
+}
+```
+
+
+
+
+
 ### 23.4.5. Handle `AggregateException`
 
 <u>Exception handling</u> is an <u>**important**</u> element in any commercial application. In complex application, the `Task` regularly has to wait for multiple tasks to complete. Therefore, there will be `AggregateException` in one place.

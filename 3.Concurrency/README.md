@@ -900,15 +900,37 @@ The exception will propagate from method to task and from task to await.
 
 When you have to handle `async void` method.
 
-:warning:!! The author does
+:warning:!! In general, the author does not recommend method `return` `void`.
 
 
 
 **:hammer:Solution**
 
+> ​	:one:The method has to be a `void` method, e.g. `ICommand`
+>
+> ​	Then you can wrap a overload method inside that method:heavy_check_mark:
+
+```c#
+sealed class MyAsyncCommand : ICommand
+{
+    //The method implement ICommand interface
+    async void ICommand.Execute(object parameter)
+    {
+        await Execute(parameter);
+    }
+    //The method actually does the job
+    public async Task Execute(object parameter)
+    {
+        //...Asynchronous command implementation goes here!
+    }
+    
+    //..Other members (CanExecute, etc.)
+}
+```
 
 
 
+> ​	:two:
 
 
 
@@ -1023,6 +1045,12 @@ When you have to handle `async void` method.
 
 
 # 3.Asynchronous Streams
+
+:pushpin: **Asynchronous Streams and `Task<T>`**
+
+
+
+
 
 **:page_with_curl:Problem**
 
