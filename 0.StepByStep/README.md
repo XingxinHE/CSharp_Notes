@@ -3591,6 +3591,409 @@ finally
 
 
 
+# 7.Class and objects
+
+**Overview:dart:**:
+
+- `public`, `protected`, `private` to control the accessibility of members
+- Create objects by using the `new` keyword to invoke a constructor
+- Write constructor
+- Create method and data can be shared among all instances of a class by `static`
+- Create anonymous class
+
+
+
+## 7.1.Class and classification
+
+:pushpin:**What is Class?**
+
+Class is the root word of the term classification. When you design a class, you <u>**systematically arrange information and behavior**</u> into a meaningful entity.
+
+
+
+:pushpin:**What is an entity?**
+
+Entity can be expressed in the following ways:
+
+- represent a **<u>specific</u>** item such as a customer
+- represent something <u>**abstract**</u>, such as a transaction
+
+
+
+## 7.2. Encapsulation
+
+:pushpin:**What is Encapsulation?**
+
+Encapsulation is an <u>**important**</u> principle <u>when defining classes</u>. 
+
+
+
+:pushpin:**Key Idea of Encapsulation**
+
+The idea is that a program that uses a class should not have to account for how that class actually works internally; the program simply creates an instance of a class and calls the methods of that class.
+
+e.g. You use `Console.WriteLine` as it is. And you don't care how it implements inside.
+
+```c#
+Consolw.WriteLine("Hello World!");
+```
+
+
+
+:pushpin:**Objective of Encapsulation**
+
+- **Combine** data and methods within a class.   (how to **<u>define</u>** a class)
+- **Control** the accessibility of the data and methods.  (how to <u>**use**</u> a class)
+
+
+
+## 7.3. Define and Use a Class
+
+:pushpin:**What is the difference between class and object?**
+
+class - the <u>definition</u> of a type, e.g. the cookie cutter
+
+object - an <u>instance</u> of that type, e.g. the cookie
+
+
+
+:pushpin:**What is "field"?**
+
+You can see "field" as a global variable inside a class which can be read/write by methods of this class.
+
+
+
+:pushpin:**Example to define and use**
+
+You can define a class like this:
+
+```c#
+class Circle
+{
+    //field
+    int radius;
+    
+    //constructor - how you define "cookie cutter"
+    public Circle(int r)
+    {
+        this.radius = r;
+    }
+    
+    //method
+    double ComputeArea()
+    {
+        return Math.PI * radius * radius;
+    }
+}
+```
+
+You can use it like this:
+
+```c#
+Circle c = new Circle(10);
+int area = c.ComputeArea();
+```
+
+
+
+## 7.4. Control Accessibility
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+
+
+:pushpin:****
+
+
+
+
+
+:pushpin:****
+
+
+
 
 
 # 14.Garbage collection and resource management
@@ -6469,7 +6872,336 @@ catch{}
 
 ## 24.3. Synchronizing concurrent access to data
 
+:pushpin:**What is the risk during concurrent process?**
 
+If not doing correct, concurrent process might <u>corrupt the data</u> during overlapping operation.
+
+
+
+:pushpin:**Corrupt Data Example**
+
+:x:
+
+```c#
+static void ParallelTest()
+{
+    int[] data = new int[NUMELEMENTS];
+    int j = 0;  //variable j is outside of the Parallel.For scope
+    Parallel.For(0, NUMELEMENTS, (i) =>
+                 {
+                    j = i;
+                     doAdditionalProcessing();
+                     data[i] = j;
+                     doMoreAdditionalProcessing();
+                 });
+    for (int i = 0; i < NUMELEMENTS; i++)
+    {
+        Console.WriteLine($"Element {i} has value {data[i]}");
+    }
+}
+```
+
+The preceding method simply records the current loop index into a <u>shared variable</u> `j`, and store back the `j` value to current index of the array.
+
+This is WRONG!!! **Try NOT to use shared variable in concurrent process!!!:warning:**
+
+
+
+### 24.3.1. `lock` data
+
+If you really need to use shared data in concurrent operation, then `lock`is one of the choice.
+
+:pushpin:**What is `lock`?**
+
+You can use `lock` keyword to guarantee exclusive access[^12] to resources.
+
+
+
+:pushpin:**`lock` example**
+
+```c#
+//you can use any reference type as a lock
+//in convention, just use object is enough
+object myLockObject = new object();
+
+//...
+
+lock(myLockObject)
+{
+    // Code that requires exclusive access to a shared resource
+    //..
+}
+```
+
+
+
+:pushpin:**How does `lock` work?**
+
+- :one: the `lock` statement attempts to obtain a mutual-exclusion lock
+- :two: once the 1st entered item have the lock, other threads will be blocked outside of the lock and wait
+- :three: 1st entered item finished the job and left... the lock is open for another item
+
+<img src="img/image-20220127093833347.png" alt="image-20220127093833347" style="zoom: 67%;" />
+
+
+
+### 24.3.2. Synchronization primitives
+
+Mutual exclusion lock is one of the locking techniques. In the following, we will introduce more techniques.
+
+[Overview of synchronization primitives](https://docs.microsoft.com/en-us/dotnet/standard/threading/overview-of-synchronization-primitives?redirectedfrom=MSDN)
+
+[Synchronizing data for multithreading](https://docs.microsoft.com/en-us/dotnet/standard/threading/synchronizing-data-for-multithreading)
+
+:pushpin:**Different function of locking techniques**
+
+- :one:a single task has **sole access** to a resource, (<u>simple exclusion lock</u>)
+- :two:multiple tasks **access a resource simultaneously** with controlled manner, (<u>semaphores</u>)
+- :three:share **read-only access to a resource simultaneously** while guaranteeing **exclusive access to modify the resource**, (<u>reader/writer locks</u>)
+
+| Locking Techniques    | Sole Access Read   | Sole Access Write  | Simultaneous Access Read       | Simultaneous Access Write      |
+| --------------------- | ------------------ | ------------------ | ------------------------------ | ------------------------------ |
+| simple exclusion lock | :heavy_check_mark: | :heavy_check_mark: | :x:                            | :x:                            |
+| semaphores            | :x:                | :x:                | :heavy_check_mark:(controlled) | :heavy_check_mark:(controlled) |
+| reader/writer locks   | :x:                | :heavy_check_mark: | :heavy_check_mark:             | :x:                            |
+
+
+
+:pushpin:**`ManualResetEventSlim` Class**:star:
+
+> ​	Fun Fact
+
+`ManualResetEventSlim` is the light weight version of `ManualResetEvent` and that's why call it "Slim".
+
+> ​	Function
+
+`ManualResetEventSlim` provides functionality by which <u>one or more tasks can wait for an event</u>.
+
+> ​	How to use it?
+
+An object of `ManualResetEventSlim` can be 1 of 2 states: **signaled** (true) and **unsignaled** (false). 
+
+You can use **`Set()`** to change `unsignaled` to `signal`.
+
+You can use **`Reset()`** to change `signaled` to `unsignaled`.
+
+It is super similar to PLC connection!!:star:
+
+> ​	Example
+
+```c#
+class Example
+{
+    //instance of ManualResetEventSlim
+    static ManualResetEventSlim mreGotSignal;
+    //input from user
+    static string input = null;
+
+    //create a method started by thred 2
+    public static void GetUserInput()
+    {
+        Console.WriteLine("Waiting user's input...");
+        input = Console.ReadLine();
+        mreGotSignal?.Set();  //if got input, set the flag true
+        Console.WriteLine($"Received user's input and the flag of mreGotSignal is {mreGotSignal.IsSet}");
+    }
+
+    static void Main()
+    {
+        //init the mre instance to be false at first
+        mreGotSignal = new ManualResetEventSlim(false);
+        while (true)
+        {
+            Console.WriteLine("Start listening input...");
+
+            //running thread 2
+            Task.Run(GetUserInput);
+
+            Console.WriteLine("Main thread waiting mreGotSignal...");
+            mreGotSignal?.Wait();  //wait here for the signal from thread 2
+
+            Console.WriteLine($"Main thread signaled, received data: {input}");
+            Console.WriteLine("Rest flag for next round...");
+            mreGotSignal?.Reset();
+        }
+    }
+}
+```
+
+
+
+
+
+:pushpin:**`SemaphoreSlim` Class**
+
+> ​	Function
+
+Represents a lightweight alternative to [Semaphore](https://docs.microsoft.com/en-us/dotnet/api/system.threading.semaphore?view=net-6.0) that <u>**limits the number of threads**</u> that can <u>access a resource</u> or pool of resources concurrently.
+
+> ​	How to use it?
+
+Init `Semaphore` with the number of resources in the pool.  `public SemaphoreSlim(int initialCount, int maxCount)`
+
+- when access the resource, invoke the `Wait()`, the gate reduce
+- when quit accessing, invoke `Release()`, the gate increase
+
+> ​	Example
+
+```c#
+class Example
+{
+    private static SemaphoreSlim semaphore;
+    private static int padding;
+
+    static void Main()
+    {
+        //Create the semaphore
+        //It means the max gates is 3, but right now the gate is 0
+        semaphore = new SemaphoreSlim(0, 3);
+        Console.WriteLine("{0} tasks can enter the semaphore.",
+                            semaphore.CurrentCount);
+        Task[] tasks = new Task[5];
+
+        //Create and start 5 numbered tasks
+        for (int i = 0; i < 5; i++)
+        {
+            tasks[i] = Task.Run(() =>
+            {
+                //Each task begins by requesting the semaphore
+                Console.WriteLine("Task {0} begins and waits for the semaphore.",
+                                Task.CurrentId);
+                int semaphoreCount;
+                
+                semaphore.Wait();
+                //the code below will wait to start until semaphore is signaled
+                
+                try
+                {
+                    Interlocked.Add(ref padding, 100);
+                    Console.WriteLine("Task {0} enters the semaphore.", Task.CurrentId);
+
+                    //The task sleeps for 1+ sec
+                    Thread.Sleep(1000 + padding);
+                }
+                finally
+                {
+                    semaphoreCount = semaphore.Release();
+                }
+                Console.WriteLine("Task {0} releases the semaphore; previous count: {1}.",
+                                Task.CurrentId, semaphore.CurrentCount);
+            });
+        }
+
+        // Wait for half a second, to allow all the tasks to start and block.
+        Thread.Sleep(500);
+
+        // (Open the gate) set the semaphore count to its maximum value.
+        Console.Write("Main thread calls Release(3) --> ");
+        semaphore.Release(3);
+        Console.WriteLine("{0} tasks can enter the semaphore.",
+                            semaphore.CurrentCount);
+
+
+        // Main thread waits for the tasks to complete.
+        Task.WaitAll(tasks);
+
+        Console.WriteLine("Main thread exits.");
+    }
+}
+```
+
+
+
+:pushpin:**`CountdownEvent` Class**
+
+> ​	Function
+
+Represents a synchronization primitive that is signaled when its count reaches zero. You can think of the `CountdownEvent` class as a cross between **<u>the inverse</u>** of  `SemaphoreSlim` and `ManualResetEventSlim`.
+
+> ​	Comparison
+
+Why "the inverse"? Because `CountdownEvent` blocks Task when value $>0$ , while `SemaphoreSlim` and `ManualResetEventSlim` blocks Task when value $\leq0$.
+
+> ​	Example
+
+```c#
+class Example
+{
+    const int N = 10000;
+    static async Task Main()
+    {
+        //Init a queue and a CountdownEvent
+        ConcurrentQueue<int> queue = new ConcurrentQueue<int>(Enumerable.Range(0, N));
+        CountdownEvent cdE = new CountdownEvent(N);  //initial count = 10000
+
+        //This is the logic for all queue consumers
+        Action consumer = () =>
+        {
+            int local;
+            while (queue.TryDequeue(out local))
+            {
+                cdE.Signal();
+            }
+        };
+
+        //Now empty the queue with a couple of asynchronous tasks
+        Task t1 = Task.Factory.StartNew(consumer);
+        Task t2 = Task.Factory.StartNew(consumer);
+
+        //Wait here for queue to empty by waiting on cdE
+        cdE.Wait();  //will return when cdE count reaches 0
+
+        Console.WriteLine("Done empty queue. InitialCount={0}, CurrentCount={1}, IsSet={2}",
+            cdE.InitialCount, cdE.CurrentCount, cdE.IsSet);
+
+        //Proper form is to wait for the tasks to complete, even though you know
+        //their work is done already.
+        await Task.WhenAll(t1, t2);
+
+        //Resetting will cause the CountdownEvent to unset, and reset both InitialCount
+        //and CurrentCount to the specified value
+        cdE.Reset(10);
+
+        // AddCount will affect the CurrentCount, but not the InitialCount
+        cdE.AddCount(2);
+
+        Console.WriteLine("After Reset(10), AddCount(2): InitialCount={0}, CurrentCount={1}, IsSet={2}",
+            cdE.InitialCount, cdE.CurrentCount, cdE.IsSet);
+
+        // Now try waiting with cancellation
+        CancellationTokenSource cts = new CancellationTokenSource();
+        cts.Cancel(); // cancels the CancellationTokenSource
+        try
+        {
+            cdE.Wait(cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("cde.Wait(preCanceledToken) threw OCE, as expected");
+        }
+        finally
+        {
+            cts.Dispose();
+        }
+        // It's good to release a CountdownEvent when you're done with it.
+        cdE.Dispose();
+    }
+}
+```
+
+
+
+
+
+### 24.3.3. Cancel synchronization
+
+
+
+### 24.3.4. Concurrent collection classes
+
+
+
+### 24.3.5. Case study of `System.Collections.Concurrent`
 
 
 
@@ -10024,4 +10756,7 @@ A well-structured graphical app **<u>separates</u>** the design of the <u>user i
 
 [^10]: CPU-bound code意为CPU限制的代码
 [^11]: 协作式取消
+
+[^12]: exclusive access 独占访问
+[^13]: mutual-exclusion lock互斥锁
 
