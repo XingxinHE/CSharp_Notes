@@ -7191,17 +7191,322 @@ class Example
 
 
 
+:pushpin:**`ReaderWriterLockSlim` Class**:star:
+
+> ​	Function
+
+Represents a lock that is used to manage access to a resource, allowing multiple threads for reading or exclusive access for writing.
+
+> ​	How to use it?
+
+When a `Task` needs to <u>**read**</u> something, :one: `EnterReadLock()`, after finished, :two:`ExitReadLock()`
+
+When a `Task` needs to **<u>write</u>** something, :one: `EnterWriteLock()`, after finished, :two:`ExitWriteLock()`
+
+> ​	Example
+
+The following example includes simple methods to <u>add</u> to the cache, <u>delete</u> from the cache, and <u>read</u> from the cache. To demonstrate <u>time-outs</u>, the example includes a method that adds to the cache only if it can do so within a specified time-out.
+
+```c#
+public class SynchronizedCache
+{
+    //a private field - readerWriterSlim instance
+    private ReaderWriterLockSlim _cacheLock = new ReaderWriterLockSlim();
+    //a dictionary to be operated
+    private Dictionary<int, string> _innerCache = new Dictionary<int, string>();
+
+    //different status modifying dictionary
+    public enum AddOrUpdateStatus
+    {
+        Added,
+        Updated,
+        Unchanged
+    };
+
+    public int Count
+    { get { return _innerCache.Count;} }
+
+    //read function
+    public string Read(int key)
+    {
+        _cacheLock.EnterReadLock();
+        try
+        {
+            return _innerCache[key];
+        }
+        finally
+        {
+            _cacheLock.ExitReadLock();
+        }
+    }
+
+    //add function
+    public void Add(int key, string value)
+    {
+        _cacheLock.EnterWriteLock();
+        try
+        {
+            _innerCache.Add(key, value);
+        }
+        finally
+        {
+            _cacheLock.ExitWriteLock();
+        }
+    }
+
+    //fancy add function, exit with timeout
+    public bool AddWithTimeout(int key, string value, int timeout)
+    {
+        if (_cacheLock.TryEnterWriteLock(timeout))
+        {
+            try
+            {
+                _innerCache.Add(key, value);
+            }
+            finally
+            {
+                _cacheLock.ExitWriteLock();
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //fancy add function, if the "add" is really add or update or unchanged
+    public AddOrUpdateStatus AddOrUpdate(int key, string value)
+    {
+        _cacheLock.EnterUpgradeableReadLock();
+        try
+        {
+            string result = null;
+            if (_innerCache.TryGetValue(key, out result))
+            {
+                if (result == value)
+                {
+                    return AddOrUpdateStatus.Unchanged;
+                }
+                else
+                {
+                    _cacheLock.EnterWriteLock();
+                    try
+                    {
+                        _innerCache[key] = value;
+                    }
+                    finally
+                    {
+                        _cacheLock.ExitWriteLock();
+                    }
+                    return AddOrUpdateStatus.Updated;
+                }
+            }
+            else
+            {
+                _cacheLock.EnterWriteLock();
+                try
+                {
+                    _innerCache.Add(key, value);
+                }
+                finally
+                {
+                    _cacheLock.ExitWriteLock();
+                }
+                return AddOrUpdateStatus.Added;
+            }
+        }
+        finally
+        {
+            _cacheLock.ExitUpgradeableReadLock();
+        }
+    }
+
+    //delete function
+    public void Delete(int key)
+    {
+        _cacheLock.EnterWriteLock();
+        try
+        {
+            _innerCache.Remove(key);
+        }
+        finally
+        {
+            _cacheLock.ExitWriteLock();
+        }
+    }
+
+    //deconstructor
+    ~SynchronizedCache()
+    {
+        if (_cacheLock != null) _cacheLock.Dispose();
+    }
+
+}
+```
+
+Now, we use the preceding class to code:
+
+```c#
+static void Main()
+{
+    var sc = new SynchronizedCache();
+    var tasks = new List<Task>();
+    int itemWritten = 0;
+
+    //Execute a writer
+    tasks.Add(Task.Run(() =>
+    {
+        String[] vegetables = { "broccoli", "cauliflower",
+                                                    "carrot", "sorrel", "baby turnip",
+                                                    "beet", "brussel sprout",
+                                                    "cabbage", "plantain",
+                                                    "spinach", "grape leaves",
+                                                    "lime leaves", "corn",
+                                                    "radish", "cucumber",
+                                                    "raddichio", "lima beans" };
+        for (int i = 0; i < vegetables.Length; i++)
+        {
+            sc.Add(i, vegetables[i]);
+        }
+
+        itemWritten = vegetables.Length;
+        Console.WriteLine("Task {0} wrote {1} items\n",
+            Task.CurrentId, itemWritten);
+    }));
+
+    // Execute two readers,
+    // the first reader to read from first to last item in dict
+    // the second reader from last to first item in dict
+    for (int i = 0; i < 2; i++)
+    {
+        //there are 2 loop. 0 for ascending, 1 for descending
+        bool desc = (i == 1);
+        tasks.Add(Task.Run(() =>
+        {
+            int start, last, step, items;
+            do
+            {
+                string output = string.Empty;
+                items = sc.Count;
+                if (!desc)
+                {
+                    start = 0;
+                    step = 1;
+                    last = items;
+                }
+                else
+                {
+                    start = items;
+                    step = -1;
+                    last = 0;
+                }
+
+                for (int index = start; desc ? index > last : index < last; index += step)
+                {
+                    output += String.Format("[{0}] ", sc.Read(index));
+                }
+
+                Console.WriteLine("Task {0} read {1} items: {2}\n",
+                                    Task.CurrentId, items, output);
+
+            } while (items < itemWritten | itemWritten == 0);
+        }));
+    }
+
+    //Execute a read/update task
+    tasks.Add(Task.Run(() =>
+    {
+        Thread.Sleep(100);
+        for (int i = 0; i < sc.Count; i++)
+        {
+            string value = sc.Read(i);
+            if (value == "cucumber")
+            {
+                if (sc.AddOrUpdate(i, "green been")!=SynchronizedCache.AddOrUpdateStatus.Unchanged)
+                {
+                    Console.WriteLine("Changed 'cucumber' to 'green bean'");
+                }
+            }
+        }
+    }));
+
+    //Wait for all tasks to complete
+    Task.WaitAll(tasks.ToArray());
+
+    //Display the final content of the cache
+    Console.WriteLine();
+    Console.WriteLine("Values in SynchronizedCache: ");
+    for (int i = 0; i < sc.Count; i++)
+    {
+        Console.WriteLine("  {0}: {1}",i, sc.Read(i));
+    }
+}
+```
+
+
+
+:pushpin:**`Barrier` Class**
+
+//TODO
+
+
+
 
 
 ### 24.3.3. Cancel synchronization
+
+The `ManualResetEventSlim`, `SemaphoreSlim`, `CountdownEvent`, and `Barrier` classes all support cancellation.
+
+```c#
+CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+CancellationToken cancellationToken = cancellationTokenSource.Token;
+...
+// Semaphore that protects a pool of 3 resources
+SemaphoreSlim semaphoreSlim = new SemaphoreSlim(3);
+...
+// Wait on the semaphore, and catch the OperationCanceledException if
+// another thread calls Cancel on cancellationTokenSource
+try
+{
+	semaphoreSlim.Wait(cancellationToken);
+} 
+catch (OperationCanceledException oce)
+{
+	...
+}
+```
 
 
 
 ### 24.3.4. Concurrent collection classes
 
+:pushpin:**When should you use?**
+
+If you consider synchronization primitives are <u>not scalable enough</u> and this <u>manual process is potentially prone</u>, you can use `System.Collections.Concurrent` which is a small set of <u>**thread-safe**</u> collection classes and interfaces.
+
+:pushpin:**Notes before use**
+
+Adding thread safety to the methods in a collection class imposes <u>additional run-time overhead</u>, so these classes **are not as fast as the regular collection classes**.:warning: So use it when you really need it.
+
+:pushpin:**What are they?**
+
+- `ConcurrentBag<T>`
+  - description: a general-purpose class for holding an unordered collection of items
+  - function: `Add`, `TryTake`, `TryPeek`
+- `ConcurrentDictionary<TKey, TValue>`
+  - description: a thread-safe version of the generic `Dictionary<TKey, TValue>`
+  - function: `TryAdd`, `ContainsKey`, `TryGetValue`, `TryRemove`
+- `ConcurrentQueue<T>`
+  - description: a thread-safe version of the generic `Queue<T>` class
+  - function: `Enqueue`, `TryDequeue`, and `TryPeek`
+- `ConcurrentStack<T>`
+  - description: a thread-safe implementation of the generic `Stack<T>`
+  - function: `Push`, `TryPop`, and `TryPeek`
 
 
-### 24.3.5. Case study of `System.Collections.Concurrent`
+
+
 
 
 
