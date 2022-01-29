@@ -3698,51 +3698,131 @@ int area = c.ComputeArea();
 
 ## 7.4. Control Accessibility
 
-
-
-:pushpin:****
-
+Use of `public`, `protected`, and `private`, etc.
 
 
 
+:pushpin:**Summary Table**
 
-:pushpin:****
-
-
-
-
-
-:pushpin:****
-
-
-
+| Caller's location                     | `public`           | `protected internal` | `protected`        | `internal`         | `private protected` | `private`          |
+| ------------------------------------- | ------------------ | -------------------- | ------------------ | ------------------ | ------------------- | ------------------ |
+| Within the class                      | :heavy_check_mark: | :heavy_check_mark:   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  | :heavy_check_mark: |
+| Derived class(same assembly)          | :heavy_check_mark: | :heavy_check_mark:   | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:  | :x:                |
+| Non-derived class(same assembly)      | :heavy_check_mark: | :heavy_check_mark:   | :x:                | :heavy_check_mark: | :x:                 | :x:                |
+| Derived class(different assembly)     | :heavy_check_mark: | :heavy_check_mark:   | :heavy_check_mark: | :x:                | :x:                 | :x:                |
+| Non-derived class(different assembly) | :heavy_check_mark: | :x:                  | :x:                | :x:                | :x:                 | :x:                |
 
 
 
+:pushpin:**Good Practice on Accessibility**
 
-:pushpin:****
+Always <u>**explicitly declare**</u> the access modifier!
 
+e.g.
 
-
-
-
-:pushpin:****
-
-
-
-
-
-
-
-:pushpin:****
-
-
-
+```c#
+class Circle
+{
+    //private field, cannot access outside of this class
+    private int radius;
+    public double Area()
+    {
+        return Math.PI * radius * radius;
+    }
+}
+```
 
 
-:pushpin:****
+
+:pushpin:**Great Practice on field**
+
+The fields in a class are <u>**automatically initialized**</u> to **0**, **false**, or **null**, depending on their type. Nonetheless, it is still good practice to <u>provide an explicit means of initializing fields</u>.:star:
 
 
+
+:pushpin:**Naming Convention on Accessibility**
+
+- `public` identifier, begin with capital letter. e.g. `PascalCase`
+- `private` identifier
+  - begin with `_` and lower case. e.g. `_camelCase`
+  - begin with lower case, e.g. `camelCase`
+
+
+
+### 7.4.1. Constructor 101
+
+:pushpin:**What is a constructor?**
+
+- *fml.*, A constructor is a special method that runs automatically when you create an instance of a class.
+- *infml.*, A constructor is a cookie cutter.
+
+When you use `new` keyword:
+
+- the code invokes the constructor method
+- the runtime must grab a piece of <u>memory</u> from the operating system
+- <u>fill</u> it with the <u>fields</u> defined by the class
+- invoke a constructor to perform any <u>initialization</u> required.
+
+
+
+:pushpin:**Example of a Constructor**
+
+implement a constructor, initialize the value of radius
+
+```c#
+class Circle
+{
+    private int radius;
+    
+    // constructor
+    public Circle(int r)
+    {
+    	radius = r;
+    }
+    public double Area()
+    {
+    	return Math.PI * radius * radius;
+    }
+}
+```
+
+use it
+
+```c#
+Circle c = new Circle(13);
+double areaOfCircle = c.Area();
+```
+
+
+
+### 7.4.2. Overloading constructors
+
+:pushpin:**default constructor and overloading constructors**
+
+By default, C# will create a <u>**default constructor(no input parameter)**</u> for you even though you don't declare it.
+
+While you have overloading constructors just like overloading methods. Once you declare your constructor, the C# no more create a default for you!
+
+```c#
+class Circle
+{
+    private int radius;
+    
+    public Circle() // default constructor
+    {
+    	radius = 0;
+    }
+    public Circle(int initialRadius) // overloaded constructor
+    {
+    	radius = initialRadius;
+    }
+    
+    public double Area()
+    {
+    	return Math.PI * radius * radius;
+    }
+}
+```
 
 
 
