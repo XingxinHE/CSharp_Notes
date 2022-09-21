@@ -1265,7 +1265,7 @@ var customerDavid = new Customer
 
 ​				It aims to **deconstruct the integer to binary value**(`1/0` and `true/false`) which is very **flexible**!
 
-:pushpin:Fun fact: What the heck is integer, binary, hex, etc?
+📌Fun fact: What the heck is integer, binary, hex, etc?
 
 ​				We use `decimal system十进制` in our daily life, e.g. "I am `26` years old." In the following context, the `hex`, `binary` are all another form, so to speak, of `decimal system`. Nothing special, that is it. `hexadecimal 十六进制` is 16-base. `binary` is 2-base.
 
@@ -1448,7 +1448,7 @@ public interface IComparer<in T>
 
 
 
-:pushpin: A note on `T`. Here the `T` is literal symbol of `Generic`. What really does represent `Generic` is `< >`. See the following example:
+📌 A note on `T`. Here the `T` is literal symbol of `Generic`. What really does represent `Generic` is `< >`. See the following example:
 
 ```c#
 public class Tree<T>
@@ -1663,7 +1663,7 @@ delegate void myDelegate();
 
 20.2 Create an instance of a delegate with initialization
 
-> ​	:pushpin: Big picture: why do we need `delegate`? 
+> ​	📌 Big picture: why do we need `delegate`? 
 >
 > ​			because sometime we don't know which method we should use. Imagine **delegate is a variable of method** rather than value.
 
@@ -1911,7 +1911,7 @@ Console.WriteLine($"Int value after conversion: tempInt == {tempInt}");
 
 23.1. Create a task and run it
 
-:pushpin: use the `Task` class and suppose there is a void method
+📌 use the `Task` class and suppose there is a void method
 
 ```c#
 private void doWork() 
@@ -2044,12 +2044,12 @@ private void generateGraphData(..., CancellationToken token)
 
 ### 1.Welcome to C#
 
-:pushpin:**Essential elements in a program**
+📌**Essential elements in a program**
 
 - all executable codes must be defined inside a method, and methods must be inside `class` and `struct`.
 - `Main` is the entry of a program and must be `static`.
 
-:pushpin: **Using namespace**
+📌 **Using namespace**
 
 In short, it can prevent duplicated method or class names. For example
 
@@ -2068,7 +2068,7 @@ CGM.Basics.Circle;
 
 
 
-:pushpin:What is the difference between **syntax** and **semantic**?
+📌What is the difference between **syntax** and **semantic**?
 
 **Syntax** refers to **grammar**, while **semantics** refers to **meaning**.
 
@@ -2076,7 +2076,7 @@ CGM.Basics.Circle;
 
 #### 2.2 Identifiers
 
-:pushpin:What is **identifier**?
+📌What is **identifier**?
 
 (*fml.*) Identifiers are the names that you use to identify the elements in your programs, such as namespaces, classes, methods, and variables.
 
@@ -2084,14 +2084,14 @@ CGM.Basics.Circle;
 
 
 
-:pushpin:**Rules** of identifier
+📌**Rules** of identifier
 
 - ONLY :one:letters (uppercase and lowercase), :two:digits, and :three:underscore characters
 - MUST start with :one:underscore or :two:letters
 
 
 
-:pushpin:**Examples** of identifiers
+📌**Examples** of identifiers
 
 `result`✅
 
@@ -2109,7 +2109,7 @@ CGM.Basics.Circle;
 
 
 
-:pushpin:What are **keywords**?
+📌What are **keywords**?
 
 C# language reserves 77 identifiers as **keywords** for its own use. In short, you can't use the following *identifiers* as their name of method, class, namespace, variables, etc.
 
@@ -2121,13 +2121,13 @@ https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/
 
 #### 2.3 Variables
 
-:pushpin:What is **variable**?
+📌What is **variable**?
 
 A variable is a box in the **computer’s memory** that holds **temporary information**.
 
 
 
-:pushpin:**Naming Convention** :star:
+📌**Naming Convention** :star:
 
 Rules:
 
@@ -2150,7 +2150,7 @@ Reason behind:
 
 
 
-:pushpin:**Declare a variable**
+📌**Declare a variable**
 
 Declare in the following way.
 
@@ -2159,7 +2159,7 @@ type variableName;
 int age;
 ```
 
-:pushpin:**Assign** value
+📌**Assign** value
 
 After declaration, you are allowed to assign value to variable by assign operator `=`   :
 
@@ -2175,7 +2175,7 @@ int age = 28;
 
 
 
-:pushpin:**Specify Value Type**
+📌**Specify Value Type**
 
 In short, a number can be represented in few data types due to its **precision**. Taking the number `28` as example:
 
@@ -2191,19 +2191,19 @@ Since C# is a strong-typed language, this does matter!!
 
 
 
-:pushpin:What is **literal**? :star:
+📌What is **literal**? :star:
 
 The **literal** is the value you typed as code including numbers and strings. It literally means the value itself. For example, `28` literally is `28`. `Jason` is literally `Jason`.
 
 
 
-:pushpin:Why does **`M` stands for decimal**?
+📌Why does **`M` stands for decimal**?
 
 Because `D` has been used by `double`. While in Finance Industry, they deal with money and decimal quite often... Therefore `M` stands for money and `decimal`.
 
 
 
-:pushpin:Does the **precision really matter**? :star:
+📌Does the **precision really matter**? :star:
 
 Yes! It surely does! You may think `double` and `float` is quite close in daily math. But, for example, in rocket science, using different *precision* may **lead to truncating data, causing errors in calculations**, and causes your space probe :rocket: to completely miss Mars and to head off to the deeper depths of the solar system:milky_way: instead!
 
@@ -2226,7 +2226,7 @@ They are:
 
 
 
-:pushpin:What is **definite assignment rule**?
+📌What is **definite assignment rule**?
 
 It is a **MUST** to assign a value to a variable before to use it. The following is wrong:
 
@@ -2237,7 +2237,7 @@ Console.WriteLine(age);  //Error!!
 
 
 
-:pushpin:**Special Meaning of `''` and `""`** 
+📌**Special Meaning of `''` and `""`** 
 
 The single quotation mark `‘`  delimits character `char`. 
 
@@ -2263,7 +2263,7 @@ The output:
 
 
 
-:pushpin:**literal value `'0'` is `int 48`**
+📌**literal value `'0'` is `int 48`**
 
 In C#, the character `'0'` is actually equal to `int i = 48`. Therefore they can do arithmetic operation.
 
@@ -2284,7 +2284,7 @@ Therefore, `'0'` has an integer value. Same with `1,2,3,4,5,...`
 
 
 
-:pushpin:**Display** primitive data type value
+📌**Display** primitive data type value
 
 To display the value *literally*, you can use `ToString()` method. It is a MUST method that all variable have and it could output the value in `string` format. e.g. :
 
@@ -2298,7 +2298,7 @@ Console.WriteLine(message);
 
 #### 2.5 Arithmetic Operators
 
-:pushpin:**What are they?**
+📌**What are they?**
 
 `+`, `-` ,`*`, `/`
 
@@ -2306,7 +2306,7 @@ Although they are called *arithmetic* operators, they are also able to do other 
 
 
 
-:pushpin:What are **operands & operators**?
+📌What are **operands & operators**?
 
 operand: 操作数/运算子, e.g. 750,20
 
@@ -2318,7 +2318,7 @@ operator: 操作符, e.g. `*`
 
 
 
-:pushpin:**`+` for concatenation** and **`$` for string interpolation**
+📌**`+` for concatenation** and **`$` for string interpolation**
 
 `+` in string interpolation:
 
@@ -2335,7 +2335,7 @@ string message = $"Hello to {name}!";
 
 
 
-:pushpin:**`NaN` and Infinity**
+📌**`NaN` and Infinity**
 
 ```c#
 5 / 0         //this will be infinity
@@ -2346,7 +2346,7 @@ string message = $"Hello to {name}!";
 
 
 
-:pushpin:What is **controlling precedence**?
+📌What is **controlling precedence**?
 
 ```
 2 + 3*4
@@ -2356,13 +2356,13 @@ The `3*4` will run first and then `2+12`
 
 
 
-:pushpin:What is **associativity**?
+📌What is **associativity**?
 
 It is the direction (left or right) in which the operands of an operator are evaluated.
 
 
 
-:pushpin: Different associativity
+📌 Different associativity
 
 e.g. For arithmetic operation, it is from left to right. :arrow_forward:
 
@@ -2396,13 +2396,13 @@ int myInt3 = 10;
 
 #### 2.6 Incrementing and Decrementing
 
-:pushpin:What is **unary operator**?
+📌What is **unary operator**?
 
 Those operators with **ONE** operand. e.g. `++`, `--`
 
 
 
-:pushpin:What is **prefix and postfix**?
+📌What is **prefix and postfix**?
 
 ```c#
 count++;  //postfix
@@ -2413,7 +2413,7 @@ count--;  //postfix
 
 
 
-:pushpin:What is the **difference** between **prefix and postfix**?
+📌What is the **difference** between **prefix and postfix**?
 
 `var++` return first then increment.
 
@@ -2437,7 +2437,7 @@ In `++var` , `++`  appear first , so increment first, then return.
 
 #### 2.7 Implicitly typed variable
 
-:pushpin:**`var`**
+📌**`var`**
 
 What is so-called *implicit* is that "suggested though not directly expressed". Therefore, `var` is a keyword which ask compiler to detect what is the type of this variable. Of course, the type must be defined already!
 
@@ -2458,7 +2458,7 @@ var myNumber;  //ERROR!!
 
 
 
-:pushpin: **Why `var` is useful**?
+📌 **Why `var` is useful**?
 
 From my programming experience, the straight-forward benefit is that you can type less code.
 
@@ -2475,7 +2475,7 @@ var ptTwo = pts[1];  //less code
 
 #### 3.1. Create Method
 
-:pushpin:**`return` at the end of method**
+📌**`return` at the end of method**
 
 The `return` keyword is at the end of the method which return the return type of a method.
 
@@ -2497,7 +2497,7 @@ void sayHello()
 
 
 
-:pushpin:**expression-bodied method**
+📌**expression-bodied method**
 
 Such design of programming language is called **syntactic sugar** which simplify the code and improve readability.
 
@@ -2508,7 +2508,7 @@ void sayHello() => Console.WriteLine("Hello world!");
 
 
 
-:pushpin:**return multiple values**
+📌**return multiple values**
 
 This is only supported by VS 2017 and above which you have to install **`System.ValueTuple`**
 
@@ -2526,19 +2526,19 @@ private (int, int) divide(int lhs, int rhs)
 
 #### 3.2. Scope
 
-:pushpin:**What is the lifetime of a variable?**:star::star::star:
+📌**What is the lifetime of a variable?**:star::star::star:
 
 The born of a variable **starts from where it is declared** and it **ends after the method is finished**.
 
 
 
-:pushpin:**What is a scope?**
+📌**What is a scope?**
 
 The scope of a variable is simply **the region of the program in which that variable is usable**. (inside the bracket`{}`)
 
 
 
-:pushpin:**local variable**
+📌**local variable**
 
 The variable inside the bracket`{}` of a method is **local variable**.
 
@@ -2572,7 +2572,7 @@ void yourHello()
 
 
 
-:pushpin:**field(global variable)**
+📌**field(global variable)**
 
 In C#, they name the global variable as **field**. ("字段" in Chinese)
 
@@ -2590,7 +2590,7 @@ class Example
 
 
 
-:pushpin:**overloaded method**
+📌**overloaded method**
 
 In short, a method with:
 
@@ -2611,7 +2611,7 @@ But the parameters can't be different.
 
 
 
-:pushpin:**Refactoring code**:star::star::star:
+📌**Refactoring code**:star::star::star:
 
 This is holly important and useful!! Suppose you have an average method which does:
 
@@ -2660,11 +2660,11 @@ private static double OperationSum(double[] numbers)
 
 #### 3.3. Nested Method
 
-:pushpin:**Why should we use Nested Method?**
+📌**Why should we use Nested Method?**
 
 Big Picture:star::  For those help methods which are called only by one main method, must be encapsulated.
 
-:pushpin:**Example**
+📌**Example**
 
 Suppose a function is:
 
@@ -2715,7 +2715,7 @@ long calculateFactorial(string input)
 
 #### 3.4 Optional and Named Parameters
 
-:pushpin:**What is Optional Parameter?**
+📌**What is Optional Parameter?**
 
 In short, the parameter defined inside the bracket`()` has default value.
 
@@ -2735,7 +2735,7 @@ void ransac(numbers, "super");
 
 
 
-:pushpin:**What is Named Parameter?**
+📌**What is Named Parameter?**
 
 In short, it explicitly assigns the variables.
 
@@ -2748,7 +2748,7 @@ If the arguments are explicitly assigned, they can be in arbitrary position.
 
 
 
-:pushpin:**Dangerous and Bad Habit**:rotating_light:
+📌**Dangerous and Bad Habit**:rotating_light:
 
 The following one can be tricky!
 
@@ -2773,13 +2773,13 @@ The compiler does not know whether to use which method since the beginning of th
 
 #### 4.1. Declare `bool` Variable
 
-:pushpin:**Romantic interpretation of Boolean**
+📌**Romantic interpretation of Boolean**
 
 In the world of C# programming (unlike in the real world), **everything is** **black** or **white**, **right** or **wrong**, **true** or **false**.
 
 
 
-:pushpin:**`true`, `false`**
+📌**`true`, `false`**
 
 ```c#
 bool areYouReady;
@@ -2792,7 +2792,7 @@ Console.WriteLine(areYouReady);
 
 #### 4.2. Use `bool` Variable
 
-:pushpin:**equality operator**
+📌**equality operator**
 
 They are `==`, `!=`.
 
@@ -2803,7 +2803,7 @@ They are `==`, `!=`.
 
 
 
-:pushpin:**relational operator**
+📌**relational operator**
 
 | Operator | Meaning                  | Example     | Output  |
 | -------- | ------------------------ | ----------- | ------- |
@@ -2814,7 +2814,7 @@ They are `==`, `!=`.
 
 
 
-:pushpin:**conditional logic operator**
+📌**conditional logic operator**
 
 `&&` , logic **AND**
 
@@ -2822,7 +2822,7 @@ They are `==`, `!=`.
 
 
 
-:pushpin:**Bad habit using logic operator**:rotating_light:
+📌**Bad habit using logic operator**:rotating_light:
 
 > ​	❌ Error:
 
@@ -2846,7 +2846,7 @@ bool flag = (num>=0)&&(num<=100);
 
 
 
-:pushpin:**Short-circuiting**:star:
+📌**Short-circuiting**:star:
 
 This is very useful for boosting the performance of the codes:rocket::
 
@@ -2866,7 +2866,7 @@ Apparently, putting the easier codes on the left is more efficient as they will 
 
 
 
-:pushpin:**operator precedence and associativity**:star:
+📌**operator precedence and associativity**:star:
 
 > ​	The operators higher up in the table take precedence over operators lower down:
 
@@ -2876,7 +2876,7 @@ https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/
 
 #### 4.3. `if-else` Statement
 
-:pushpin:**sample of `if`**
+📌**sample of `if`**
 
 ```c#
 if(flag)
@@ -2895,7 +2895,7 @@ else
 
 
 
-:pushpin:**good and bad examples**
+📌**good and bad examples**
 
 > ​	❌Error:
 
@@ -2933,7 +2933,7 @@ if(flag==true)
 
 #### 4.4. `switch` Statement
 
-:pushpin:**When should we use `switch`?**
+📌**When should we use `switch`?**
 
 Use it when you have *multiple* and *parallel* conditions.
 
@@ -2963,14 +2963,14 @@ switch (day)
 
 
 
-:pushpin:**Rules Using `switch`**
+📌**Rules Using `switch`**
 
 - `case` must be unique.
 - every `case` should be ended with `break`
 
 
 
-:pushpin:**What is fall-through?**
+📌**What is fall-through?**
 
 ```c#
 switch(flag)
@@ -2997,7 +2997,7 @@ In short, it combines conditions with same behaviors.
 
 #### 5.1. Compound Assignment Operator
 
-:pushpin:**What is it?**
+📌**What is it?**
 
 ```c#
 int num = 13;
@@ -3005,7 +3005,7 @@ num = num + 28;  //this is not
 num += 28;  //this is compound
 ```
 
-:pushpin:**Recommend**
+📌**Recommend**
 
 | Don't:no_mouth:         | Yes!:smile:        |
 | ----------------------- | ------------------ |
@@ -3020,7 +3020,7 @@ num += 28;  //this is compound
 
 #### 5.2. `while` loop
 
-:pushpin:**`while` loop in abstract**
+📌**`while` loop in abstract**
 
 ```
 initialization
@@ -3031,7 +3031,7 @@ while(Boolean expression)
 }
 ```
 
-:pushpin:**sentinel variable哨兵变量**
+📌**sentinel variable哨兵变量**
 
 The variable to end the `while` loop.
 
@@ -3048,7 +3048,7 @@ while(i < 10)
 
 #### 5.3. `for` loop
 
-:pushpin:**`for` loop in abstract**
+📌**`for` loop in abstract**
 
 ```
 for(initialization; Boolean expression; update sentinel variable)
@@ -3059,7 +3059,7 @@ for(initialization; Boolean expression; update sentinel variable)
 
 
 
-:pushpin:**`for` loop in real**
+📌**`for` loop in real**
 
 ```c#
 for(int i = 0; i < 10; i++)
@@ -3070,7 +3070,7 @@ for(int i = 0; i < 10; i++)
 
 
 
-:pushpin:**Multiple variable `for` loop**:star:
+📌**Multiple variable `for` loop**:star:
 
 ```c#
 for (int i = 0, j=10; i < j; i++, j--)
@@ -3091,7 +3091,7 @@ i val:4, j val:6
 
 
 
-:pushpin:**`for` loop can do more!**:star::star::star:
+📌**`for` loop can do more!**:star::star::star:
 
 ```c#
 for(string line = reader.ReadLine(); line!=null; line=reader.ReadLine())
@@ -3102,7 +3102,7 @@ for(string line = reader.ReadLine(); line!=null; line=reader.ReadLine())
 
 
 
-:pushpin:**Variable in `for` loop is local variable**
+📌**Variable in `for` loop is local variable**
 
 ```c#
 for (int i = 0; i < 5; i++)
@@ -3134,7 +3134,7 @@ Yell 16!
 
 #### 5.4. `do` statement
 
-:pushpin:**`do` in abstract**
+📌**`do` in abstract**
 
 ```
 do
@@ -3145,7 +3145,7 @@ do
 
 
 
-:pushpin:**`do` in real**
+📌**`do` in real**
 
 ```c#
 int i = 0;
@@ -3158,13 +3158,13 @@ do
 
 
 
-:pushpin:**difference between `do-while` and `while`**
+📌**difference between `do-while` and `while`**
 
 In short, `do-while` has to **do it at least once** before iterating!
 
 
 
-:pushpin:**`break` and `continue`**
+📌**`break` and `continue`**
 
 Same with it in Python,
 
@@ -3175,11 +3175,11 @@ Same with it in Python,
 
 ### 6.Errors and exceptions
 
-:pushpin:**Handling errors in old days**
+📌**Handling errors in old days**
 
 In the old days, programmers make a GLOBAL variable. When the method is called, the program is asked to check the GLOBAL variable to see if it is successful.
 
-:pushpin:**What C# does?**
+📌**What C# does?**
 
 C# use `exception` to handle error in a more robust way.
 
@@ -3187,7 +3187,7 @@ C# use `exception` to handle error in a more robust way.
 
 #### 6.1. `try-catch` exception
 
-:pushpin:**`try-catch` block**
+📌**`try-catch` block**
 
 ```c#
 try
@@ -3202,7 +3202,7 @@ catch (Exception ex)
 
 
 
-:pushpin:**unhandled exception**
+📌**unhandled exception**
 
 The catch mechanism is cascading back(由内向外遍历). If the certain type of exception was still not catch, then it will be **unhandled exception**.
 
@@ -3223,7 +3223,7 @@ Because the `catch` block only handles `FormatException`, the number exceeds the
 
 
 
-:pushpin:**multiple `catch` handler**
+📌**multiple `catch` handler**
 
 C# supports multiple handlers in light of different exception.
 
@@ -3248,7 +3248,7 @@ With these pattern, the preceding code will not only handle `FormatException` bu
 
 
 
-:pushpin:**catch multiple exception all in once**
+📌**catch multiple exception all in once**
 
 C# provides a robust solution for handling exception which is defined very carefully with an **inheritance hierarchies**(异常用继承层次结构组织). The following is an example:
 
@@ -3269,7 +3269,7 @@ catch (Exception ex)
 
 
 
-:pushpin:**The order execute the `catch` block**
+📌**The order execute the `catch` block**
 
 Taking the following as an example:
 
@@ -3292,7 +3292,7 @@ If the code throw both `FormatException` and `OverflowException`, the program wi
 
 
 
-:pushpin:**A great practice ordering the `Exception`**
+📌**A great practice ordering the `Exception`**
 
 With preceding demonstration, a general good practice is to handle the **specific exception in the head** and **general exception at the tail**.
 
@@ -3315,7 +3315,7 @@ catch(Exception ex)
 
 
 
-:pushpin:**filtering exception**
+📌**filtering exception**
 
 Although the exception is catch, while you only want to process those errors you are interested. You can:
 
@@ -3332,7 +3332,7 @@ catch(Exception ex) when (errorType == 4)
 
 
 
-:pushpin:**Propagating Exception**
+📌**Propagating Exception**
 
 The propagating exception is nothing else but decide when to handle the exception in which scope.
 
@@ -3389,7 +3389,7 @@ catch
 
 #### 6.2. `checked` and `unchecked` for integer operation
 
-:pushpin:**integer may overflow silently**
+📌**integer may overflow silently**
 
 > ​	You CAN'T notice it is overflowed with `try-catch`
 
@@ -3409,13 +3409,13 @@ There is no errors in console but with `-2147483648` as result. That's because *
 
 
 
-:pushpin:**Why doesn't C# check overflow?**
+📌**Why doesn't C# check overflow?**
 
 Because!! Arithmetic operation are everywhere in the program and it is SO BAD for performance if checks every arithmetic operation.
 
 
 
-:pushpin:**How should we catch `OverflowException`?**
+📌**How should we catch `OverflowException`?**
 
 There are **2** methods:
 
@@ -3429,7 +3429,7 @@ Use the `checked` and `unchecked` keywords to turn on and off integer arithmetic
 
 
 
-:pushpin:**`checked` and `unchecked` statement**
+📌**`checked` and `unchecked` statement**
 
 ```c#
 int max = int.MaxValue;
@@ -3453,7 +3453,7 @@ Unhandled Exception: System.OverflowException: Arithmetic operation resulted in 
 
 
 
-:pushpin:**`checked` and `unchecked` expression**
+📌**`checked` and `unchecked` expression**
 
 ```c#
 int maxUnchecked = unchecked(int.MaxValue+1);  //NO ERROR
@@ -3462,7 +3462,7 @@ int maxChecked = checked(int.MaxValue+1);      //ERROR!!!
 
 
 
-:pushpin:**NOT support floating-point**
+📌**NOT support floating-point**
 
 You cannot use the `checked` and `unchecked` keywords to control floating-point (noninteger) arithmetic. The `checked` and `unchecked` keywords apply only to integer arithmetic using data types such as `int` and `long`.
 
@@ -3472,7 +3472,7 @@ You cannot use the `checked` and `unchecked` keywords to control floating-point 
 
 There are many `Exception` that can be throw. Just search and throw!
 
-:pushpin:**`throw` statement**
+📌**`throw` statement**
 
 ```c#
 if(day==1)
@@ -3497,7 +3497,7 @@ else
 
 
 
-:pushpin:**`throw` expression** :star:
+📌**`throw` expression** :star:
 
 Suppose:
 
@@ -3525,13 +3525,13 @@ This is more elegant!!
 
 #### 6.4. `finally` block
 
-:pushpin:**What does it do?**
+📌**What does it do?**
 
 A `finally` block to **ensure** that critical **code always runs**, **even if an exception occurs**.
 
 
 
-:pushpin:**Example - Dispose file** :star:
+📌**Example - Dispose file** :star:
 
 This is very handy dealing with accessing a file. Because you have to make sure `Dispose` statement always executes at the end even if an exception occurs. Otherwise the file is occupied.
 
@@ -3562,7 +3562,7 @@ finally
 
 ## 7.1.Class and classification
 
-:pushpin:**What is an entity?**
+📌**What is an entity?**
 
 Entity can be expressed in the following ways:
 
@@ -3579,13 +3579,13 @@ Entity can be expressed in the following ways:
 
 
 
-:pushpin:**What is "field"?**
+📌**What is "field"?**
 
 You can see "field" as a global variable inside a class which can be read/write by methods of this class.
 
 
 
-:pushpin:**Example to define and use**
+📌**Example to define and use**
 
 You can define a class like this:
 
@@ -3624,7 +3624,7 @@ Use of `public`, `protected`, and `private`, etc.
 
 
 
-:pushpin:**Summary Table**
+📌**Summary Table**
 
 | Caller's location                     | `public`           | `protected internal` | `protected`        | `internal`         | `private protected` | `private`          |
 | ------------------------------------- | ------------------ | -------------------- | ------------------ | ------------------ | ------------------- | ------------------ |
@@ -3636,7 +3636,7 @@ Use of `public`, `protected`, and `private`, etc.
 
 
 
-:pushpin:**Good Practice on Accessibility**
+📌**Good Practice on Accessibility**
 
 Always <u>**explicitly declare**</u> the access modifier!
 
@@ -3656,13 +3656,13 @@ class Circle
 
 
 
-:pushpin:**Great Practice on field**
+📌**Great Practice on field**
 
 The fields in a class are <u>**automatically initialized**</u> to **0**, **false**, or **null**, depending on their type. Nonetheless, it is still good practice to <u>provide an explicit means of initializing fields</u>.:star:
 
 
 
-:pushpin:**Naming Convention on Accessibility**
+📌**Naming Convention on Accessibility**
 
 - `public` identifier, begin with capital letter. e.g. `PascalCase`
 - `private` identifier
@@ -3673,7 +3673,7 @@ The fields in a class are <u>**automatically initialized**</u> to **0**, **false
 
 ### 7.4.1. Constructor 101
 
-:pushpin:**What is a constructor?**
+📌**What is a constructor?**
 
 - *fml.*, A constructor is a special method that runs automatically when you create an instance of a class.
 - *infml.*, A constructor is a cookie cutter.
@@ -3687,7 +3687,7 @@ When you use `new` keyword:
 
 
 
-:pushpin:**Example of a Constructor**
+📌**Example of a Constructor**
 
 implement a constructor, initialize the value of radius
 
@@ -3719,7 +3719,7 @@ double areaOfCircle = c.Area();
 
 ### 7.4.2. Overloading constructors
 
-:pushpin:**default constructor and overloading constructors**
+📌**default constructor and overloading constructors**
 
 By default, C# will create a <u>**default constructor(no input parameter)**</u> for you even though you don't declare it.
 
@@ -3750,13 +3750,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3764,13 +3764,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3778,13 +3778,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3792,13 +3792,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3806,13 +3806,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3820,13 +3820,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3834,13 +3834,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3848,13 +3848,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3862,13 +3862,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3876,13 +3876,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3890,13 +3890,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3904,13 +3904,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3918,13 +3918,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3932,13 +3932,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3946,13 +3946,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3960,25 +3960,25 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -3986,13 +3986,13 @@ class Circle
 
 
 
-:pushpin:****
+📌****
 
 
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -4014,7 +4014,7 @@ class Circle
 
 ## 14.1. The lifetime of an object
 
-:pushpin:**What is garbage collection?**
+📌**What is garbage collection?**
 
 Like object creation, object destruction is a **<u>two-phase</u>** process. The phases of destruction mirror the phases of creation:
 1. The **<u>common language runtime (CLR)</u>** perform tidying up by a destructor you write.
@@ -4031,7 +4031,7 @@ The process of destroying an object and returning memory to the heap is known as
 
 ### 14.1.1. Writing destructor
 
-:pushpin:**When should you use destructor?**
+📌**When should you use destructor?**
 
 The CLR will automatically clear up any managed resources that an object uses, so **in many of these cases, writing a destructor is unnecessary**. Therefore you could use destructor in the following circumstances:
 
@@ -4040,7 +4040,7 @@ The CLR will automatically clear up any managed resources that an object uses, s
 
 
 
-:pushpin:**Syntax of destructor**
+📌**Syntax of destructor**
 
 `~`
 
@@ -4063,7 +4063,7 @@ Note: this is simply an example, and don't follow preceding pattern for opening 
 
 
 
-:pushpin:**Constraint of destructor**
+📌**Constraint of destructor**
 
 :one:Destructors apply only to reference types. You can't apply to value type like `struct`.
 
@@ -4106,13 +4106,13 @@ It still due to the fact that only CLR can access destructor.
 
 ### 14.1.2. Why use the garbage collector?
 
-:pushpin:**Tell me why?**
+📌**Tell me why?**
 
 In short, **<u>managing object lifetimes is complex</u>**, and therefore the designers of C# decided to prevent your code from taking on this responsibility.
 
 
 
-:pushpin:**Difference between C# and C++**
+📌**Difference between C# and C++**
 
 |                                  | C#               | C++                |
 | -------------------------------- | ---------------- | ------------------ |
@@ -4121,7 +4121,7 @@ In short, **<u>managing object lifetimes is complex</u>**, and therefore the des
 
 
 
-:pushpin:**What Garbage Collector promise?**
+📌**What Garbage Collector promise?**
 
 Few things it promises:
 
@@ -4133,7 +4133,7 @@ Few things it promises:
 
 
 
-:pushpin:**What is a GREAT practice using Garbage Collector?**
+📌**What is a GREAT practice using Garbage Collector?**
 
 $\because$ Garbage collection is an **<u>expensive process</u>**.
 
@@ -4187,7 +4187,7 @@ This topic is out of the scope of this book. Please refer to the following link:
 
 ### 14.2.1. Disposal Method
 
-:pushpin:**Example Code**
+📌**Example Code**
 
 ```c#
 TextReader reader = new StreamReader(filename);
@@ -4203,7 +4203,7 @@ The main purpose of the preceding code is to **read a text file line by line** a
 
 
 
-:pushpin:**Serious Problem!**:warning:
+📌**Serious Problem!**:warning:
 
 It’s **not safe from exceptions**. If the call to the block`{}` throws an exception, the call to `Close()` **will not happen**; it will be bypassed. It may **<u>run out of file handles</u>** and be **<u>unable to open any more files</u>**.❌
 
@@ -4231,7 +4231,7 @@ finally
 
 
 
-:pushpin:**Constraint of `try-finally` logic**
+📌**Constraint of `try-finally` logic**
 
 :one:  Can't handle multiple resources.  e.g. If **1** `try-finally` block refers to **1** file. Multiple resources means nested `try-finally` blocks!
 
@@ -4282,7 +4282,7 @@ finally
 
 ### 14.2.3. `using` statement and `IDisposable` interface:star:
 
-:pushpin:**Different meanings of `using`**:rotating_light:
+📌**Different meanings of `using`**:rotating_light:
 
 `using` in this section refers to `using ` **statement**.
 
@@ -4290,7 +4290,7 @@ finally
 
 
 
-:pushpin:**Why `using` is good?**
+📌**Why `using` is good?**
 
 :one:  It provides **a clean mechanism** for controlling the lifetimes of resources.
 
@@ -4298,7 +4298,7 @@ finally
 
 
 
-:pushpin:**Example**
+📌**Example**
 
 Pseudo code:
 
@@ -4325,7 +4325,7 @@ using (TextReader reader = new StreamReader(filename))
 
 
 
-:pushpin:**Prerequisite of `using`**
+📌**Prerequisite of `using`**
 
 The variable inside `using` statement **MUST** be of a type that **implements** the `IDisposable` interface. The `IDisposable` interface contains just one method, `Dispose()`.
 
@@ -4343,7 +4343,7 @@ The purpose of the `Dispose()` method is to **free** any **resources used by an 
 
 
 
-:pushpin:**Benefits of `using` statement**
+📌**Benefits of `using` statement**
 
 :one:Scalability when disposing multiple resources. 
 
@@ -4357,7 +4357,7 @@ The purpose of the `Dispose()` method is to **free** any **resources used by an 
 
 ### 14.2.4. `Dispose()` in a destructor:star::star::star:
 
-:pushpin:**What is the context writing `Dispose()` in destructor?**
+📌**What is the context writing `Dispose()` in destructor?**
 
 When you are writing your own class, there are 2 options to manage resources:
 
@@ -4368,7 +4368,7 @@ Therefore, the best practice is do **both**.
 
 
 
-:pushpin:**Great practice of implementing `Dispose()`**
+📌**Great practice of implementing `Dispose()`**
 
 The following is the best practice of implementing `IDisposable` and `Dispose()`.
 
@@ -4468,7 +4468,7 @@ The overload version of `protected virtual void Dispose(bool disposing)` has **2
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -4476,7 +4476,7 @@ The overload version of `protected virtual void Dispose(bool disposing)` has **2
 
 
 
-:pushpin:****
+📌****
 
 
 
@@ -4494,7 +4494,7 @@ The overload version of `protected virtual void Dispose(bool disposing)` has **2
 
 
 
-:pushpin:**Why delegate?**
+📌**Why delegate?**
 
 You need to <u>avoid introducing dependencies</u> that might restrict the use of your class. **Delegates** provide the ideal solution, which fully **decouple**[^3] the <u>application logic in your methods</u> from the <u>applications that invoke them</u>.
 
@@ -4502,13 +4502,13 @@ You need to <u>avoid introducing dependencies</u> that might restrict the use of
 
 ## 20.1. Understanding delegates
 
-:pushpin:**Definition of `delegate`**
+📌**Definition of `delegate`**
 
 A `delegate` is a **<u>reference</u>** to a method.
 
 
 
-:pushpin:**A smell of `delegate`**
+📌**A smell of `delegate`**
 
 (what the following method does or how the Processor class is defined is immaterial for this discussion, please focus on the idea of `delegate`)
 
@@ -4571,7 +4571,7 @@ Few things to be noticed:
 
 ## 20.2. Example of using `delegate`
 
-:pushpin:**`delegate` in the .NET Framework class library**
+📌**`delegate` in the .NET Framework class library**
 
 We will introduce **2** delegates type, which are:
 
@@ -4627,7 +4627,7 @@ An `Action` delegate is used to **<u>reference a method that performs an action<
 
 
 
-:pushpin:**`delegate` in the automated factory scenario **
+📌**`delegate` in the automated factory scenario **
 
 Suppose you have **3** machines, and each machine has its own way to **shut down**.
 
@@ -4889,7 +4889,7 @@ static void Main(string[] args)
 
 
 
-:pushpin:**`delegate`in UWP**
+📌**`delegate`in UWP**
 
 Suppose you have the following business logic, you start checking out, then trigger shipping and auditing[^5] at the same time.
 
@@ -5022,7 +5022,7 @@ There are **2** solutions:
 
 
 
-:pushpin:**Adapter**
+📌**Adapter**
 
 One solution is to use [Adapter](https://github.com/XingxinHE/SoftwareDevelopment/tree/main/2_DesignPattern/DesignPatterns#41-adapter) which you simply wrap the method into a version with same signature.
 
@@ -5042,7 +5042,7 @@ this.stopMachineDelegate += folder.FinishFolding;
 
 
 
-:pushpin:**Lambda `delegate`**:star:
+📌**Lambda `delegate`**:star:
 
 This is super convenient! You just do like this:
 
@@ -5064,7 +5064,7 @@ public void TcpConnect(string ipAndPort);
 
 ## 20.4. Notification by `event`
 
-:pushpin:**Why `event`?**
+📌**Why `event`?**
 
 Although `delegate` is super powerful, it still has to be called explicitly. Therefore, `event` is designed to be called automatically in certain condition. 
 
@@ -5076,7 +5076,7 @@ The .NET Framework provides `event`, which you can use to <u>define and trap sig
 
 ### 20.4.1. Basic of `event`
 
-:pushpin:**The structure of `event` related stuffs**
+📌**The structure of `event` related stuffs**
 
 - **event source**.  The `event` variable is declared inside a class intended to act as an event source. An <u>event source</u> is usually a class that <u>monitors its environment</u> and <u>raises an `event` when something significant happens</u>.
 - **subscribers**.  An `event` <u>maintains a list of methods to call</u> when it is raised. These methods are sometimes referred to as *subscribers*.
@@ -5090,7 +5090,7 @@ Analogy in the preceding machine example:
 
 
 
-:pushpin:**The general process using `event`**
+📌**The general process using `event`**
 
 - :one:  declare an `event`
 - :two:  subscribe to that `event`  /  unsubscribe to that `event`
@@ -5166,7 +5166,7 @@ class TemperatureMonitor
 
 
 
-:pushpin:**Important Note of `event`**
+📌**Important Note of `event`**
 
 Events have a very useful built-in security feature. A **<u>`public`</u>** `event` (such as `MachineOverheating`) can be <u>**raised only by methods in the class**</u> that define it (the `TemperatureMonitor` `class`). Any attempt to raise the event outside the class results in a compiler error.
 
@@ -5192,13 +5192,13 @@ https://docs.microsoft.com/en-us/dotnet/api/system.action-1?view=net-6.0
 
 https://docs.microsoft.com/en-us/dotnet/api/system.func-2?view=net-6.0
 
-:pushpin:**What is `Action<T>` exactly?**
+📌**What is `Action<T>` exactly?**
 
 <u>Encapsulates a method</u> that has <u>a single parameter</u> and <u>does not return a value</u>.
 
 
 
-:pushpin:**Detail behind `Action<T>`**
+📌**Detail behind `Action<T>`**
 
 The code behind `Action<T>` is the following:
 
@@ -5220,7 +5220,7 @@ Since `Action<T>` has no return.
 
 
 
-:pushpin:**Example of `Action<T>` delegate**
+📌**Example of `Action<T>` delegate**
 
 //TODO
 
@@ -5236,7 +5236,7 @@ Since `Action<T>` has no return.
 
 
 
-:pushpin:**Why perform multitasking by using parallel processing?**
+📌**Why perform multitasking by using parallel processing?**
 
 There are **2** primary reasons why you might want to perform <u>**multitasking**</u> in an application:
 
@@ -5246,7 +5246,7 @@ There are **2** primary reasons why you might want to perform <u>**multitasking*
 
 
 
-:pushpin:**What should C# developer do?**
+📌**What should C# developer do?**
 
 To make the best use of multicore processors, you need to write your applications to <u>**take advantage of multitasking**</u>.[^7]
 
@@ -5254,13 +5254,13 @@ To make the best use of multicore processors, you need to write your application
 
 ## 23.1. Implementing multitasking in .NET
 
-:pushpin:**Definition**
+📌**Definition**
 
 Multitasking is the ability to do more than one thing at the same time.
 
 
 
-:pushpin:**What should be considered to implement multitasking?**
+📌**What should be considered to implement multitasking?**
 
 - **:star:  [My Job]**  How to <u>**divide an application into a set of concurrent operations**</u>? 
 - [C# 's Job]  How to arrange for a set of operations to execute concurrently, on multiple processors? 
@@ -5272,7 +5272,7 @@ For programmer, only the first job needs to be considered. Others have been alre
 
 
 
-:pushpin:**Disclaimer!!**
+📌**Disclaimer!!**
 
 The point about <u>**application design is fundamental**</u>. If an <u>application is not designed with multitasking</u> in mind, then it <u>doesn’t matter how many processor cores you throw at it</u>, it will not run any faster than it would on a single-core machine.
 
@@ -5280,15 +5280,15 @@ The point about <u>**application design is fundamental**</u>. If an <u>applicati
 
 ### 23.1.1. `Task`, `Thread`, and `ThreadPool` Overview
 
-:pushpin:**What is `Task`?**
+📌**What is `Task`?**
 
 `Task` is a class which is <u>**an abstraction of a concurrent operation**</u>. 
 
-:pushpin:**How to use `Task`?**
+📌**How to use `Task`?**
 
 Create a `Task` object to run a block of code. You can instantiate multiple `Task` objects and start them running in parallel if sufficient processors or processor cores are available. 
 
-:pushpin:**Relationship between `Task` and processor**
+📌**Relationship between `Task` and processor**
 
  numbers of `Task` object $\neq$ number of processor
 
@@ -5296,7 +5296,7 @@ a.k.a. You can create `Task` more than processor.
 
 
 
-:pushpin:**Why not `Thread`?**
+📌**Why not `Thread`?**
 
 Because `Thread` is <u>**outdated**</u>!!  The program use the number of `Thread` you explicitly create, and the operating system will schedule <u>**only that number of threads**</u>. This may lead to: 
 
@@ -5305,19 +5305,19 @@ Because `Thread` is <u>**outdated**</u>!!  The program use the number of `Thread
 
 
 
-:pushpin:**What is `ThreadPool`?**
+📌**What is `ThreadPool`?**
 
 It was developed in C# 4.0 which is to enhance `Task`.
 
 
 
-:pushpin:**What is `WinRT`?**
+📌**What is `WinRT`?**
 
 It is called Window Runtime, WinRT. It can take `Thread` and `ThreadPool` to optimize to better support `Task`.
 
 
 
-:pushpin:**Conclusion**:star:
+📌**Conclusion**:star:
 
 - [You] <u>divide or partition the code into tasks that can be run in parallel</u>. 
 
@@ -5327,7 +5327,7 @@ It is called Window Runtime, WinRT. It can take `Thread` and `ThreadPool` to opt
 
 ### 23.1.2. Create, Run, and Control `Task`
 
-:pushpin: **Create `Task`**
+📌 **Create `Task`**
 
 There are many ways to create `Task`, please refer to the [doc](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task?view=net-6.0).
 
@@ -5389,7 +5389,7 @@ Task task = new Task(doWork);
 
 
 
-:pushpin:**Run `Task`**
+📌**Run `Task`**
 
 Once the `Task` is created, you can run it like:
 
@@ -5402,7 +5402,7 @@ The `.Start()` method has several overload version, and you can specify [flags](
 
 
 
-:pushpin:**Create and Run `Task` in 1 step**
+📌**Create and Run `Task` in 1 step**
 
 Since *create* and *run* are very common, you can use `Task.Run()` to combine both operations!
 
@@ -5412,7 +5412,7 @@ Task task = Task.Run( () => doWork() );
 
 
 
-:pushpin:**Continue a `Task` after a finished `Task`**
+📌**Continue a `Task` after a finished `Task`**
 
 ```c#
 //you have 2 methods want to operate
@@ -5448,7 +5448,7 @@ t.ContinueWith(
 
 
 
-:pushpin:**Proper Example of `ContinueWith()`**
+📌**Proper Example of `ContinueWith()`**
 
 //TODO 加上我做钢结构焊接产品的代码，工艺的
 
@@ -5487,7 +5487,7 @@ await task.ContinueWith(
 
 
 
-:pushpin:**Options for `ContinueWith()`**
+📌**Options for `ContinueWith()`**
 
 There are [options](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskcontinuationoptions?view=net-6.0) as `enum` for `ContinueWith`. There **3** pairs can be memorized together.
 
@@ -5533,7 +5533,7 @@ task.Start();
 
 
 
-:pushpin:**Control `Task` by `Wait()`**
+📌**Control `Task` by `Wait()`**
 
 The fundamental <u>reason</u> to **control** a `Task` is that <u>**synchronizing tasks**</u> is <u>a common requirement</u> of applications that invoke operations in parallel. **`Wait()`** is one of the methods to <u>suspend execution of the current thread until the specified task completes.</u>
 
@@ -5555,13 +5555,13 @@ Task.WaitAny(task1, task2);  //Wait task1 OR task2 complete
 
 ## 23.2. Case Study of `Task`
 
-:pushpin:**How to find CPU bottleneck?**
+📌**How to find CPU bottleneck?**
 
 Performance Explorer in Visual Studio(pro-version).
 
 
 
-:pushpin:**Code Analysis**
+📌**Code Analysis**
 
 There is a button for generating an image on the UWP.
 
@@ -5616,7 +5616,7 @@ Hence, this method is the one we need to optimize into multi-threading method.
 
 
 
-:pushpin:**Optimization method 1 - Use `Task`**
+📌**Optimization method 1 - Use `Task`**
 
 :one:  Modify the method for multitasking
 
@@ -5665,20 +5665,20 @@ Task.WaitAll(first, second);
 
 ## 23.3. Use `Parallel` to abstract tasks
 
-:pushpin:**Benefit to use `Parallel`**
+📌**Benefit to use `Parallel`**
 
 Compared to `Task`, using `Parallel` does not require to redesign an application to accommodate the use of `Task` objects.
 
 
 
-:pushpin:**How does `Parallel` work?**
+📌**How does `Parallel` work?**
 
 - the `Parallel` class creates its own set of `Task` objects
 - it synchronizes these tasks automatically when they have completed.
 
 
 
-:pushpin:**`static` method in `Parallel`**
+📌**`static` method in `Parallel`**
 
 > ​	`Parallel.For`
 
@@ -5751,7 +5751,7 @@ static void Main()
 
 
 
-:pushpin:**Notes before using `Parallel`**:warning::star:
+📌**Notes before using `Parallel`**:warning::star:
 
 - If you are not running CPU-bound code[^10], parallelizing it <u>might not improve performance</u> since operations like creating a task, running task on a separate thread would be greater than the cost of running this method directly.
 - Only use `Parallel.Invoke` for <u>**computationally intensive operations**</u>
@@ -5761,13 +5761,13 @@ static void Main()
 
 ## 23.4. Cancel `Task` and handle `Exception`
 
-:pushpin:**Why and when should we cancel a `Task`?**
+📌**Why and when should we cancel a `Task`?**
 
 A <u>common requirement</u> of applications that <u>perform long-running operations</u> is the ability to stop those operations if necessary.
 
 
 
-:pushpin:**How to cancel?**
+📌**How to cancel?**
 
 Not brutally cancel it but use a <u>cooperative cancellation</u>[^11] strategy instead.
 
@@ -5775,19 +5775,19 @@ Not brutally cancel it but use a <u>cooperative cancellation</u>[^11] strategy i
 
 ### 23.4.1. Mechanics of cooperative cancellation
 
-:pushpin:**How does it work?**
+📌**How does it work?**
 
 Cooperative cancellation is based on a **<u>cancellation token</u>** which is a structure representing a request to cancel one or more tasks.
 
 
 
-:pushpin:**Tip for using cancellation token**
+📌**Tip for using cancellation token**
 
 Should check for cancellation at least every `10 ms`, but no more frequently than every millisecond.
 
 
 
-:pushpin:**Status of a `Task`**
+📌**Status of a `Task`**
 
 There are **6** status of a `Task`.
 
@@ -5804,7 +5804,7 @@ There are **6** status of a `Task`.
 
 ### 23.4.2. Simple Cancel `Task`
 
-:pushpin:**Workflow for cancellation token**
+📌**Workflow for cancellation token**
 
 - :one:create a `System.Threading.CancellationTokenSource` object
 - :two:query the `Token` property of this object
@@ -5816,7 +5816,7 @@ Intuitively, you can see that the `Token` is a employee and the `TokenSource` is
 
 
 
-:pushpin:**Example using cancellation**
+📌**Example using cancellation**
 
 The following is a screenshot while you cancel the plotting.
 
@@ -6074,25 +6074,25 @@ private void doCancellationWork(Task task)
 
 # 24.Concurrency by `async`
 
-:pushpin:**Asynchronicity and scalability**
+📌**Asynchronicity and scalability**
 
 
 
 ## 24.1.Implement Asynchronous method
 
-:pushpin:**What is Asynchronous method?**
+📌**What is Asynchronous method?**
 
 An <u>*asynchronous*</u> method is one that <u>does not block the current thread</u> on which it starts to run.
 
 
 
-:pushpin:**What happened after invoking an asynchronous method?**
+📌**What happened after invoking an asynchronous method?**
 
 Once invokes, the method will <u>return control to the calling environment</u> and to <u>perform its work on a separate thread</u>.
 
 
 
-:pushpin:**What should you use?**
+📌**What should you use?**
 
 `await` and `async`
 
@@ -6226,13 +6226,13 @@ The keywords `async` and `await` are to tackle such problem and you don't have t
 
 There are few things worth discussed.
 
-> ​	:pushpin:what should be the operand of `await`?
+> ​	📌what should be the operand of `await`?
 
 The thing right next to `await` is called operand, e.g. `doFirstLongRunningOperation` is the operand of `await`. The **operand must be a `Task`**. A.k.a. The return type of the method is `Task`.
 
 
 
-> ​	:pushpin:what is the mechanism behind?
+> ​	📌what is the mechanism behind?
 
 It is very similar to using `Dispatcher`.
 
@@ -6381,7 +6381,7 @@ int calculateData = await calculateValueTask;
 
 
 
-:pushpin:**What is the difference?**
+📌**What is the difference?**
 
 Using `Result` would block until the task had completed. 
 
@@ -6491,7 +6491,7 @@ The designer of Windows 8 and later versions wanted to ensure the application as
 
 There are several methods can be called asynchronously.
 
-:pushpin:**Display Message**
+📌**Display Message**
 
 Displays the message and waits for the user to click the Close button.
 
@@ -6504,7 +6504,7 @@ await dlg.ShowAsync();  //wait for user to close
 
  
 
-:pushpin:**Select File**
+📌**Select File**
 
 Display the files in the user’s Documents folder and wait while the user selects a single file from this list
 
@@ -6521,7 +6521,7 @@ StorageFile file = await fp.PickSingleFileAsync();  //wait for user browsing
 
 
 
-:pushpin:**Open a File**
+📌**Open a File**
 
 Open a file in an asynchronous way:
 
@@ -6531,7 +6531,7 @@ var fileStream = await file.OpenAsync(FileAccessMode.Read);
 
  
 
-:pushpin:**Render Pixels on Screen**
+📌**Render Pixels on Screen**
 
 The pixels can be seen as stream.
 
@@ -6550,7 +6550,7 @@ await pixelStream.WriteAsync(data, 0, data.Length);
 
 ### 24.1.5. Memory allocation with `ValueTask`
 
-:pushpin:**Some Resources on `ValueTask`**
+📌**Some Resources on `ValueTask`**
 
 [Value Task Doc](https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.valuetask-1?view=net-6.0)
 
@@ -6558,7 +6558,7 @@ await pixelStream.WriteAsync(data, 0, data.Length);
 
 
 
-:pushpin:**Case Study**
+📌**Case Study**
 
 Please have a look on the following method:
 
@@ -6615,7 +6615,7 @@ public async ValueTask<int> FindValueAsync(string key)
 
 
 
-:pushpin:**Conclusion**
+📌**Conclusion**
 
 Return `ValueTask` only if the vast majority of the calls to an `async` method are <u>**likely**</u> to be <u>performed synchronously</u>. a.k.a. Most of the time, the call will **return before the `await` operator**. Otherwise, too much `async` operation inside a `ValueTask` can decrease the efficiency.
 
@@ -6627,7 +6627,7 @@ Use`.AsParallel()`! The following are examples to perform **PLINQ**.
 
 ###  24.2.1. Learn PLINQ by example
 
-:pushpin:**Example 1**
+📌**Example 1**
 
 The first example is to filter numbers which are over 100.
 
@@ -6699,7 +6699,7 @@ List<int> over100 = numbers.AsParallel()
 
 
 
-:pushpin:**Example 2**
+📌**Example 2**
 
 The second example is to create <u>customer order info</u> with 2 different sources, :one:<u>customers</u> and :two:<u>orders</u>.
 
@@ -6874,13 +6874,13 @@ catch{}
 
 ## 24.3. Synchronizing concurrent access to data
 
-:pushpin:**What is the risk during concurrent process?**
+📌**What is the risk during concurrent process?**
 
 If not doing correct, concurrent process might <u>corrupt the data</u> during overlapping operation.
 
 
 
-:pushpin:**Corrupt Data Example**
+📌**Corrupt Data Example**
 
 ❌
 
@@ -6913,13 +6913,13 @@ This is WRONG!!! **Try NOT to use shared variable in concurrent process!!!:warni
 
 If you really need to use shared data in concurrent operation, then `lock`is one of the choice.
 
-:pushpin:**What is `lock`?**
+📌**What is `lock`?**
 
 You can use `lock` keyword to guarantee exclusive access[^12] to resources.
 
 
 
-:pushpin:**`lock` example**
+📌**`lock` example**
 
 ```c#
 //you can use any reference type as a lock
@@ -6937,7 +6937,7 @@ lock(myLockObject)
 
 
 
-:pushpin:**How does `lock` work?**
+📌**How does `lock` work?**
 
 - :one: the `lock` statement attempts to obtain a mutual-exclusion lock
 - :two: once the 1st entered item have the lock, other threads will be blocked outside of the lock and wait
@@ -6955,7 +6955,7 @@ Mutual exclusion lock is one of the locking techniques. In the following, we wil
 
 [Synchronizing data for multithreading](https://docs.microsoft.com/en-us/dotnet/standard/threading/synchronizing-data-for-multithreading)
 
-:pushpin:**Different function of locking techniques**
+📌**Different function of locking techniques**
 
 - :one:a single task has **sole access** to a resource, (<u>simple exclusion lock</u>)
 - :two:multiple tasks **access a resource simultaneously** with controlled manner, (<u>semaphores</u>)
@@ -6969,7 +6969,7 @@ Mutual exclusion lock is one of the locking techniques. In the following, we wil
 
 
 
-:pushpin:**`ManualResetEventSlim` Class**:star:
+📌**`ManualResetEventSlim` Class**:star:
 
 > ​	Fun Fact
 
@@ -7034,7 +7034,7 @@ class Example
 
 
 
-:pushpin:**`SemaphoreSlim` Class**
+📌**`SemaphoreSlim` Class**
 
 > ​	Function
 
@@ -7114,7 +7114,7 @@ class Example
 
 
 
-:pushpin:**`CountdownEvent` Class**
+📌**`CountdownEvent` Class**
 
 > ​	Function
 
@@ -7193,7 +7193,7 @@ class Example
 
 
 
-:pushpin:**`ReaderWriterLockSlim` Class**:star:
+📌**`ReaderWriterLockSlim` Class**:star:
 
 > ​	Function
 
@@ -7448,7 +7448,7 @@ static void Main()
 
 
 
-:pushpin:**`Barrier` Class**
+📌**`Barrier` Class**
 
 //TODO
 
@@ -7483,15 +7483,15 @@ catch (OperationCanceledException oce)
 
 ### 24.3.4. Concurrent collection classes
 
-:pushpin:**When should you use?**
+📌**When should you use?**
 
 If you consider synchronization primitives are <u>not scalable enough</u> and this <u>manual process is potentially prone</u>, you can use `System.Collections.Concurrent` which is a small set of <u>**thread-safe**</u> collection classes and interfaces.
 
-:pushpin:**Notes before use**
+📌**Notes before use**
 
 Adding thread safety to the methods in a collection class imposes <u>additional run-time overhead</u>, so these classes **are not as fast as the regular collection classes**.:warning: So use it when you really need it.
 
-:pushpin:**What are they?**
+📌**What are they?**
 
 - `ConcurrentBag<T>`
   - description: a general-purpose class for holding an unordered collection of items
