@@ -2066,44 +2066,11 @@ CGM.Basics.Circle;
 
 #### 2.1 Basic Knowledge
 
-:pushpin:What are **Statements**?
-
-A statement is a **command** that **performs an action**.
-
-
-
-:pushpin:What are **methods**?
-
-A method is a named **sequence of statements**.
-
-A method is also called function in other programming languages.
-
-
-
-:pushpin:What is **syntax**?
-
-A well-defined set of **rules** describing the **format** and **construction** of statements.
-
-
-
-:pushpin:What is **semantic**?
-
-The specification of **what statements do** is collectively known as semantics.
-
 
 
 :pushpin:What is the difference between **syntax** and **semantic**?
 
 **Syntax** refers to **grammar**, while **semantics** refers to **meaning**.
-
-
-
-:pushpin:What is **free format**?
-
-A space character or a new line, is not significant except as a separator.
-
-- python: not with free format ❌
-- C#: with free format ✅
 
 
 
