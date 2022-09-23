@@ -2074,57 +2074,7 @@ CGM.Basics.Circle;
 
 
 
-#### 2.2 Identifiers
-
-📌What is **identifier**?
-
-(*fml.*) Identifiers are the names that you use to identify the elements in your programs, such as namespaces, classes, methods, and variables.
-
-(*infml.*) Identifiers are literally the composition of English character, numbers, and symbols.
-
-
-
-📌**Rules** of identifier
-
-- ONLY :one:letters (uppercase and lowercase), :two:digits, and :three:underscore characters
-- MUST start with :one:underscore or :two:letters
-
-
-
-📌**Examples** of identifiers
-
-`result`✅
-
-`_score`✅
-
-`footballTeam`✅
-
-`plan9`✅
-
-`result%`❌
-
-`footballTeam$`❌
-
-`9plan`❌
-
-
-
-📌What are **keywords**?
-
-C# language reserves 77 identifiers as **keywords** for its own use. In short, you can't use the following *identifiers* as their name of method, class, namespace, variables, etc.
-
-e.g. `while`, `if`, `else`, etc. See the following full list.
-
-https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/
-
-
-
 #### 2.3 Variables
-
-📌What is **variable**?
-
-A variable is a box in the **computer’s memory** that holds **temporary information**.
-
 
 
 📌**Naming Convention** :star:
@@ -2615,7 +2565,7 @@ But the parameters can't be different.
 
 This is holly important and useful!! Suppose you have an average method which does:
 
-- :one:sum up all the numbers
+- 1️⃣sum up all the numbers
 - :two:take the average
 
 ```c#
@@ -4065,7 +4015,7 @@ Note: this is simply an example, and don't follow preceding pattern for opening 
 
 📌**Constraint of destructor**
 
-:one:Destructors apply only to reference types. You can't apply to value type like `struct`.
+1️⃣Destructors apply only to reference types. You can't apply to value type like `struct`.
 
 ❌
 
@@ -4125,7 +4075,7 @@ In short, **<u>managing object lifetimes is complex</u>**, and therefore the des
 
 Few things it promises:
 
-:one:  **<u>Every object will be destroyed</u>**, and its destructor will be run. When a program ends, all outstanding objects will be destroyed. 
+1️⃣  **<u>Every object will be destroyed</u>**, and its destructor will be run. When a program ends, all outstanding objects will be destroyed. 
 
 :two:  **<u>Every object will be destroyed exactly once</u>**. 
 
@@ -4153,7 +4103,7 @@ This topic is out of the scope of this book. Please refer to the following link:
 
 ### 14.1.4. Tips for using Garbage Collector
 
-:one: Try to **AVOID using destructors** except when you really need them—use them only to reclaim unmanaged resources.
+1️⃣ Try to **AVOID using destructors** except when you really need them—use them only to reclaim unmanaged resources.
 
 :two:  Be very **careful** when you write a destructor.
 
@@ -4233,7 +4183,7 @@ finally
 
 📌**Constraint of `try-finally` logic**
 
-:one:  Can't handle multiple resources.  e.g. If **1** `try-finally` block refers to **1** file. Multiple resources means nested `try-finally` blocks!
+1️⃣  Can't handle multiple resources.  e.g. If **1** `try-finally` block refers to **1** file. Multiple resources means nested `try-finally` blocks!
 
 ❌
 
@@ -4292,7 +4242,7 @@ finally
 
 📌**Why `using` is good?**
 
-:one:  It provides **a clean mechanism** for controlling the lifetimes of resources.
+1️⃣  It provides **a clean mechanism** for controlling the lifetimes of resources.
 
 :two:  Object **only exists inside** the `using` statement block and it will be destroyed out of the block.
 
@@ -4345,7 +4295,7 @@ The purpose of the `Dispose()` method is to **free** any **resources used by an 
 
 📌**Benefits of `using` statement**
 
-:one:Scalability when disposing multiple resources. 
+1️⃣Scalability when disposing multiple resources. 
 
 :two:Compatible with the program code. 
 
@@ -4361,7 +4311,7 @@ The purpose of the `Dispose()` method is to **free** any **resources used by an 
 
 When you are writing your own class, there are 2 options to manage resources:
 
-- :one: Write the **destructor** by your own.
+- 1️⃣ Write the **destructor** by your own.
 - :two: Implement `IDisposable` interface, so that you can take `using` to manage your instances.
 
 Therefore, the best practice is do **both**.
@@ -4434,7 +4384,7 @@ class Example : IDisposable
 
 There are **2** `Dispose` method with different signature. The difference can be elaborated in the following:
 
-> ​	:one:
+> ​	1️⃣
 
 ```c#
 public virtual void Dispose();
@@ -4558,7 +4508,7 @@ class Dog
 
 Few things to be noticed:
 
-- :one:  **No parentheses and parameters after the method name**, even if the method has. This is just an **<u>assignment</u>** statement.
+- 1️⃣  **No parentheses and parameters after the method name**, even if the method has. This is just an **<u>assignment</u>** statement.
 
 - :two:  A `delegate` is **similar** to a <u>function pointer</u> in C++. The difference is that `delegate` is **type-safe**!! a.k.a. 
   - You can make a `delegate` refer ONLY to a method that **<u>matches</u>** **the signature of the `delegate`**
@@ -5089,7 +5039,7 @@ Analogy in the preceding machine example:
 
 📌**The general process using `event`**
 
-- :one:  declare an `event`
+- 1️⃣  declare an `event`
 - :two:  subscribe to that `event`  /  unsubscribe to that `event`
 - :three:  Raise an `event`
 
@@ -5297,7 +5247,7 @@ a.k.a. You can create `Task` more than processor.
 
 Because `Thread` is <u>**outdated**</u>!!  The program use the number of `Thread` you explicitly create, and the operating system will schedule <u>**only that number of threads**</u>. This may lead to: 
 
-- :one:  ❌overloading and poor response time  **when**  $n$ of `Thread` $\gt\gt$ $n$ of processors
+- 1️⃣  ❌overloading and poor response time  **when**  $n$ of `Thread` $\gt\gt$ $n$ of processors
 - :two:  ❌efficiency and poor throughput  **when**  $n$ of `Thread` $\gt\gt$ $n$ of processors
 
 
@@ -5330,7 +5280,7 @@ There are many ways to create `Task`, please refer to the [doc](https://docs.mic
 
 
 
-> ​	:one:  Initializes a new `Task` with <u>the specified action</u> and <u>state</u>.
+> ​	1️⃣  Initializes a new `Task` with <u>the specified action</u> and <u>state</u>.
 
 ```c#
 Task(Action<Object>, Object)
@@ -5615,7 +5565,7 @@ Hence, this method is the one we need to optimize into multi-threading method.
 
 📌**Optimization method 1 - Use `Task`**
 
-:one:  Modify the method for multitasking
+1️⃣  Modify the method for multitasking
 
 ```c#
 //function before computes all at once
@@ -5794,7 +5744,7 @@ There are **6** status of a `Task`.
 | `WaitingToRun`    | `Task` has been <u>scheduled</u> but has <u>not yet started to run</u> |
 | `Running`         | `Task` is currently <u>being executed</u> by a thread        |
 | `RanToCompletion` | `Task` <u>completed successfully</u> without any unhandled exceptions |
-| `Canceled`        | `Task` <br />:one:was canceled before it could start running<br />:two:acknowledged cancellation and completed without throwing an exception |
+| `Canceled`        | `Task` <br />1️⃣was canceled before it could start running<br />:two:acknowledged cancellation and completed without throwing an exception |
 | `Faulted`         | `Task` is terminated because of an exception.                |
 
 
@@ -5803,7 +5753,7 @@ There are **6** status of a `Task`.
 
 📌**Workflow for cancellation token**
 
-- :one:create a `System.Threading.CancellationTokenSource` object
+- 1️⃣create a `System.Threading.CancellationTokenSource` object
 - :two:query the `Token` property of this object
 - :three:pass `CancellationToken` *object* as a parameter to methods started by tasks
 - :four:if required cancel, calls the `Cancel` method of the `CancellationTokenSource` object
@@ -6128,7 +6078,7 @@ The preceding problem is that the <u>UI thread(main thread) will be frozen</u> u
 
 
 
-> ​	:one:Implement method with `Task`, ❌
+> ​	1️⃣Implement method with `Task`, ❌
 
 ```c#
 private void slowMethod()
@@ -6388,7 +6338,7 @@ Using `await` does the opposite - it *unwraps* a `Task<T>` to a `T` value. It wo
 
 ### 24.1.3. `async` method gotchas:warning::star:
 
-:one: `async` does NOT 100% means method runs asynchronously ❌
+1️⃣ `async` does NOT 100% means method runs asynchronously ❌
 
 
 
@@ -6588,7 +6538,7 @@ In most cases, the work will be <u>performed synchronously</u> (it finds the dat
 
 | Return Type | Operation                                                    | Memory   |
 | ----------- | ------------------------------------------------------------ | -------- |
-| `Task<int>` | :one:Create obj<br>:two:Populate obj<br>:three:Retrieve the data | On Steap |
+| `Task<int>` | 1️⃣Create obj<br>:two:Populate obj<br>:three:Retrieve the data | On Steap |
 | `int`       | return directly                                              | On Stack |
 
 
@@ -6698,7 +6648,7 @@ List<int> over100 = numbers.AsParallel()
 
 📌**Example 2**
 
-The second example is to create <u>customer order info</u> with 2 different sources, :one:<u>customers</u> and :two:<u>orders</u>.
+The second example is to create <u>customer order info</u> with 2 different sources, 1️⃣<u>customers</u> and :two:<u>orders</u>.
 
 > ​	Customers
 
@@ -6936,7 +6886,7 @@ lock(myLockObject)
 
 📌**How does `lock` work?**
 
-- :one: the `lock` statement attempts to obtain a mutual-exclusion lock
+- 1️⃣ the `lock` statement attempts to obtain a mutual-exclusion lock
 - :two: once the 1st entered item have the lock, other threads will be blocked outside of the lock and wait
 - :three: 1st entered item finished the job and left... the lock is open for another item
 
@@ -6954,7 +6904,7 @@ Mutual exclusion lock is one of the locking techniques. In the following, we wil
 
 📌**Different function of locking techniques**
 
-- :one:a single task has **sole access** to a resource, (<u>simple exclusion lock</u>)
+- 1️⃣a single task has **sole access** to a resource, (<u>simple exclusion lock</u>)
 - :two:multiple tasks **access a resource simultaneously** with controlled manner, (<u>semaphores</u>)
 - :three:share **read-only access to a resource simultaneously** while guaranteeing **exclusive access to modify the resource**, (<u>reader/writer locks</u>)
 
@@ -7198,9 +7148,9 @@ Represents a lock that is used to manage access to a resource, allowing multiple
 
 > ​	How to use it?
 
-When a `Task` needs to <u>**read**</u> something, :one: `EnterReadLock()`, after finished, :two:`ExitReadLock()`
+When a `Task` needs to <u>**read**</u> something, 1️⃣ `EnterReadLock()`, after finished, :two:`ExitReadLock()`
 
-When a `Task` needs to **<u>write</u>** something, :one: `EnterWriteLock()`, after finished, :two:`ExitWriteLock()`
+When a `Task` needs to **<u>write</u>** something, 1️⃣ `EnterWriteLock()`, after finished, :two:`ExitWriteLock()`
 
 > ​	Example
 
