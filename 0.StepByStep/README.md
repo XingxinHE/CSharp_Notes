@@ -2176,14 +2176,7 @@ They are:
 
 
 
-📌What is **definite assignment rule**?
 
-It is a **MUST** to assign a value to a variable before to use it. The following is wrong:
-
-```c#
-int age;
-Console.WriteLine(age);  //Error!!
-```
 
 
 
