@@ -842,7 +842,7 @@ public class ArrayHolder
 
 ### 11.Parameter arrays
 
-> ​	By using the `params` keyword, you can specify a [method parameter](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) that takes **a variable number of arguments**. :warning: However, the parameter type **must be a single-dimensional array**.
+> ​	By using the `params` keyword, you can specify a [method parameter](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/method-parameters) that takes **a variable number of arguments**. ⚠ However, the parameter type **must be a single-dimensional array**.
 
 ```c#
 public class MyClass
@@ -1108,7 +1108,7 @@ GC.Collect;
 
 14.4 Release a resource at a known point in time
 
-> :warning:cons: this is at the risk of resource leaks if an exception interrupts the execution
+> ⚠cons: this is at the risk of resource leaks if an exception interrupts the execution
 >
 > How to do it? => Write a **disposal method** (a method that disposes of a resource) and **call it explicitly** from the program.
 
@@ -1565,7 +1565,7 @@ personnel.Add(Simon);
 Person match = personnel.Find(p => p.ID == 3);  //there you go, you find Simon by searching ID==3
 ```
 
-:warning:Note: The `Stack<T>`, `Queue<T>`, and `HashSet<T>` collection classes **do not** support searching, although you can test for membership of an item in a hash set by using the `Contains` method.
+⚠Note: The `Stack<T>`, `Queue<T>`, and `HashSet<T>` collection classes **do not** support searching, although you can test for membership of an item in a hash set by using the `Contains` method.
 
 
 
@@ -2042,37 +2042,7 @@ private void generateGraphData(..., CancellationToken token)
 
 # Complete Notes
 
-### 1.Welcome to C#
-
-📌**Essential elements in a program**
-
-- all executable codes must be defined inside a method, and methods must be inside `class` and `struct`.
-- `Main` is the entry of a program and must be `static`.
-
-📌 **Using namespace**
-
-In short, it can prevent duplicated method or class names. For example
-
-```c#
-Rhino.Geometry.Circle;
-CGM.Basics.Circle;
-```
-
-:warning: class library can be split into a number of assemblies!
-
-
-
 ### 2.Variables, operators, and expressions
-
-#### 2.1 Basic Knowledge
-
-
-
-📌What is the difference between **syntax** and **semantic**?
-
-**Syntax** refers to **grammar**, while **semantics** refers to **meaning**.
-
-
 
 #### 2.3 Variables
 
@@ -2138,12 +2108,6 @@ decimal myVar = 28M;
 ```
 
 Since C# is a strong-typed language, this does matter!!
-
-
-
-📌What is **literal**? :star:
-
-The **literal** is the value you typed as code including numbers and strings. It literally means the value itself. For example, `28` literally is `28`. `Jason` is literally `Jason`.
 
 
 
@@ -2324,7 +2288,7 @@ myInt2 = myInt = 10;
 
 e.g. For declaration operation, it is from left to right. :arrow_forward:
 
-:warning:
+⚠
 
 ```c#
 int myInt, myInt2, myInt3 = 10;
@@ -2668,7 +2632,7 @@ void ransac(double[] input, int seed=1, string mode="default");
 
 The later 2 parameters are optional.
 
-> ​	:warning::rotating_light: Optional parameters **must** be declared after mandatory parameters.
+> ​	⚠:rotating_light: Optional parameters **must** be declared after mandatory parameters.
 
 ```c#
 void ransac(numbers);
@@ -4002,7 +3966,7 @@ class FileProcessor
 }
 ```
 
-Note: this is simply an example, and don't follow preceding pattern for opening and closing files.:warning:
+Note: this is simply an example, and don't follow preceding pattern for opening and closing files.⚠
 
 
 
@@ -4146,7 +4110,7 @@ The main purpose of the preceding code is to **read a text file line by line** a
 
 
 
-📌**Serious Problem!**:warning:
+📌**Serious Problem!**⚠
 
 It’s **not safe from exceptions**. If the call to the block`{}` throws an exception, the call to `Close()` **will not happen**; it will be bypassed. It may **<u>run out of file handles</u>** and be **<u>unable to open any more files</u>**.❌
 
@@ -4578,7 +4542,7 @@ Suppose you have **3** machines, and each machine has its own way to **shut down
 - Painting Machine
   - Paint Off
 
-Now you want to have a Controller to control all the **`Shut Down()`** button in case of any dangers.:warning:
+Now you want to have a Controller to control all the **`Shut Down()`** button in case of any dangers.⚠
 
 
 
@@ -4895,7 +4859,7 @@ public class CheckoutController
 }
 ```
 
-Attention!:star::warning:[^6]
+Attention!:star:⚠[^6]
 
 After setting up the structure above, we can implement the `MainPage.xaml.cs`.
 
@@ -5691,7 +5655,7 @@ static void Main()
 
 
 
-📌**Notes before using `Parallel`**:warning::star:
+📌**Notes before using `Parallel`**⚠:star:
 
 - If you are not running CPU-bound code[^10], parallelizing it <u>might not improve performance</u> since operations like creating a task, running task on a separate thread would be greater than the cost of running this method directly.
 - Only use `Parallel.Invoke` for <u>**computationally intensive operations**</u>
@@ -6329,7 +6293,7 @@ Using `await` does the opposite - it *unwraps* a `Task<T>` to a `T` value. It wo
 
 
 
-### 24.1.3. `async` method gotchas:warning::star:
+### 24.1.3. `async` method gotchas⚠:star:
 
 1️⃣ `async` does NOT 100% means method runs asynchronously ❌
 
@@ -6345,7 +6309,7 @@ Using `await` does the opposite - it *unwraps* a `Task<T>` to a `T` value. It wo
 
 
 
-:four: `await` is NOT `Wait`!:warning: The former would not block, the latter would.
+:four: `await` is NOT `Wait`!⚠ The former would not block, the latter would.
 
 
 
@@ -6372,7 +6336,7 @@ private async void slowMethod()
 
 
 
-:six:**Careless** use of asynchronous methods!!:warning:
+:six:**Careless** use of asynchronous methods!!⚠
 
 ```c#
 //suppose you have an async task
@@ -6845,7 +6809,7 @@ static void ParallelTest()
 
 The preceding method simply records the current loop index into a <u>shared variable</u> `j`, and store back the `j` value to current index of the array.
 
-This is WRONG!!! **Try NOT to use shared variable in concurrent process!!!:warning:**
+This is WRONG!!! **Try NOT to use shared variable in concurrent process!!!⚠**
 
 
 
@@ -7429,7 +7393,7 @@ If you consider synchronization primitives are <u>not scalable enough</u> and th
 
 📌**Notes before use**
 
-Adding thread safety to the methods in a collection class imposes <u>additional run-time overhead</u>, so these classes **are not as fast as the regular collection classes**.:warning: So use it when you really need it.
+Adding thread safety to the methods in a collection class imposes <u>additional run-time overhead</u>, so these classes **are not as fast as the regular collection classes**.⚠ So use it when you really need it.
 
 📌**What are they?**
 
