@@ -2047,54 +2047,6 @@ private void generateGraphData(..., CancellationToken token)
 #### 2.3 Variables
 
 
-📌**Naming Convention** :star:
-
-Rules:
-
-- Don't start with underscore.    e.g. `_Day`❌
-- Don’t create identifiers that differ only by case! e.g. 2 variables `myName`and`Myname`❌
-- Start with lower case. e.g. `myAge`✅
-- Use camelCase(1st word lower case, 2nd word upper case).   e.g. `myTotalHeight`✅
-
-Example:
-
-- `score`✅
-- `footBallTeam`✅
-- `_score`❌
-- `FootBallTeam`❌
-
-Reason behind:
-
-- words started with`_` can't be used in Visual Basic which is also .NET Framework
-- words like `myName` and `MyName` are the same in Visual Basic
-
-
-
-📌**Declare a variable**
-
-Declare in the following way.
-
-```c#
-type variableName;
-int age;
-```
-
-📌**Assign** value
-
-After declaration, you are allowed to assign value to variable by assign operator `=`   :
-
-```c#
-age = 28;
-```
-
-You can also combine **declare** and **assign** altogether:
-
-```c#
-int age = 28;
-```
-
-
-
 📌**Specify Value Type**
 
 In short, a number can be represented in few data types due to its **precision**. Taking the number `28` as example:
@@ -2146,9 +2098,6 @@ They are:
 
 📌**Special Meaning of `''` and `""`** 
 
-The single quotation mark `‘`  delimits character `char`. 
-
-The double quotation mark `“` delimits string constants  `string`.
 
 > ​	:thinking: So what if you want to set the string as `"` or `'` literally but not what inside them?
 
@@ -2205,14 +2154,6 @@ Console.WriteLine(message);
 
 #### 2.5 Arithmetic Operators
 
-📌**What are they?**
-
-`+`, `-` ,`*`, `/`
-
-Although they are called *arithmetic* operators, they are also able to do other operations like `string` operation.
-
-
-
 📌What are **operands & operators**?
 
 operand: 操作数/运算子, e.g. 750,20
@@ -2223,22 +2164,6 @@ operator: 操作符, e.g. `*`
 750*20
 ```
 
-
-
-📌**`+` for concatenation** and **`$` for string interpolation**
-
-`+` in string interpolation:
-
-```c#
-string name = "Sam";
-string message = "Hello " + "to " + name + "!";
-```
-
-With `$` for string interpolation:
-
-```c#
-string message = $"Hello to {name}!";
-```
 
 
 
@@ -2721,12 +2646,6 @@ They are `==`, `!=`.
 
 
 
-📌**conditional logic operator**
-
-`&&` , logic **AND**
-
-`||`, logic **OR**.
-
 
 
 📌**Bad habit using logic operator**:rotating_light:
@@ -2848,16 +2767,7 @@ num += 28;  //this is compound
 
 #### 5.2. `while` loop
 
-📌**`while` loop in abstract**
 
-```
-initialization
-while(Boolean expression)
-{
-	statement
-	update sentinel variable
-}
-```
 
 📌**sentinel variable哨兵变量**
 
@@ -3491,13 +3401,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3505,13 +3413,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3519,13 +3425,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3533,13 +3437,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3547,13 +3449,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3561,13 +3461,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3575,13 +3473,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3589,13 +3485,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3603,13 +3497,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3617,13 +3509,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3631,13 +3521,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3645,13 +3533,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3659,13 +3545,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3673,13 +3557,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3687,13 +3569,11 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3701,25 +3581,21 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
 
 
-📌****
 
 
 
@@ -3727,13 +3603,47 @@ class Circle
 
 
 
-📌****
 
 
 
 
 
-📌****
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4209,7 +4119,6 @@ The overload version of `protected virtual void Dispose(bool disposing)` has **2
 
 
 
-📌****
 
 
 
@@ -4217,7 +4126,8 @@ The overload version of `protected virtual void Dispose(bool disposing)` has **2
 
 
 
-📌****
+
+
 
 
 
