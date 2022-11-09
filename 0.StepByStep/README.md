@@ -2601,72 +2601,8 @@ The compiler does not know whether to use which method since the beginning of th
 
 ### 6.Errors and exceptions
 
-📌**What C# does?**
-
-C# use `exception` to handle error in a more robust way.
-
-
-
 #### 6.1. `try-catch` exception
 
-📌**`try-catch` block**
-
-```c#
-try
-{
-    //the code may have errors
-}
-catch (Exception ex)
-{
-    //handle the exception
-}
-```
-
-
-
-📌**unhandled exception**
-
-The catch mechanism is cascading back(由内向外遍历). If the certain type of exception was still not catch, then it will be **unhandled exception**.
-
-```c#
-string numStr = "2147483648";
-try
-{
-    int num = int.Parse(numStr);
-    Console.WriteLine(num);
-}
-catch(FormatException fEx)
-{
-    
-}
-```
-
-Because the `catch` block only handles `FormatException`, the number exceeds the maximum which will conduct an `OverflowException`.
-
-
-
-📌**multiple `catch` handler**
-
-C# supports multiple handlers in light of different exception.
-
-```c#
-string numStr = "2147483648";
-try
-{
-    int num = int.Parse(numStr);
-    Console.WriteLine(num);
-}
-catch(FormatException fEx)
-{
-    
-}
-catch(OverflowException oEx)
-{
-    
-}
-```
-
-With these pattern, the preceding code will not only handle `FormatException` but also `OverflowException`.
 
 
 
