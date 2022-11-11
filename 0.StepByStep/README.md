@@ -2605,28 +2605,6 @@ The compiler does not know whether to use which method since the beginning of th
 
 
 
-
-📌**catch multiple exception all in once**
-
-C# provides a robust solution for handling exception which is defined very carefully with an **inheritance hierarchies**(异常用继承层次结构组织). The following is an example:
-
-<img src="img/image-20211216005854504-16402580812792.png" alt="image-20211216005854504" style="zoom: 67%;" />
-
-Therefore, we could use `Exception` to catch any types of exception since it is the *great-granddaddy* of all exceptions.
-
-```c#
-try
-{
-    
-}
-catch (Exception ex)
-{
-    //this block will handle all kinds of exception
-}
-```
-
-
-
 📌**The order execute the `catch` block**
 
 Taking the following as an example:
